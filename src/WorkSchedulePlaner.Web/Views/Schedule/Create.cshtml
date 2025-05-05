@@ -1,0 +1,32 @@
+﻿@model WorkSchedulePlaner.Domain.Entities.WorkSchedule
+
+<div class="card">
+	<div class="card-header text-center">
+		<h3 class="card-title">Create New Schedule</h3>
+	</div>
+	<div class="card-body p-3">
+		<form method="post" class="row">
+			<div class="form-floating py-1 col-12">
+				<input class="form-control" asp-for="Title" />
+				<label for="Title" class="ms-2" >Title</label>
+			</div>
+			
+			<div class="row pt-2 d-flex justify-content-center gap-3">
+				<div class="col-4">
+					<button class="btn btn-success w-100" type="submit">
+						<i class="bi bi-plus-circle"></i>
+						Create
+					</button>
+				</div>
+				<div class="col-4">
+					<a class="btn btn-danger w-100" asp-controller="Home" asp-action="Index">
+						<i class="bi bi-x-circle"></i>
+						Cancel
+					</a>
+				</div>
+			</div>
+
+			
+		</form>
+	</div>
+</div>

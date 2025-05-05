@@ -1,0 +1,39 @@
+﻿
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <a class="btn btn-outline-primary" href>
+        ◀ Poprzedni tydzień
+    </a>
+
+    <h5 class="mb-0">Tydzień 1</h5>
+
+    <a class="btn btn-outline-primary" href>
+        Następny tydzień ▶
+    </a>
+</div>
+
+<div class="container-fluid pt-2 bg-light">
+    <div class="seven-columns">
+        <div>
+            <div class="card mb-2">
+                <div class="card-header">
+                    <h5 class="card-title text-center">Peron 1</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Pracownik 1 8:00-18:00</p>
+                    <p class="card-text">Pracownik 2 8:00-18:00</p>
+                </div>
+            </div>
+
+            <div class="card mb-2">
+                <a class="card-body d-flex flex-column align-items-center" asp-controller="ShiftTile"
+                asp-action="Create" asp-route-date="@DateTime.Now" asp-route-scheduleId="@ViewBag.ScheduleId">
+                    <i class="bi bi-plus-circle"></i>
+                    <p class="card-text">Add New Shift</p>
+                </a>
+            </div>
+        </div>
+
+
+
+    </div>
+</div>

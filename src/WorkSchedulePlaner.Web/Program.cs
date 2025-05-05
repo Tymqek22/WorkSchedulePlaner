@@ -1,10 +1,14 @@
 using Microsoft.EntityFrameworkCore;
+using WorkSchedulePlaner.Application.Repository;
+using WorkSchedulePlaner.Domain.Entities;
 using WorkSchedulePlaner.Infrastructure.Persistence;
+using WorkSchedulePlaner.Infrastructure.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IRepository<Employee>,Repository<Employee>>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("SchedulePlaner")));
