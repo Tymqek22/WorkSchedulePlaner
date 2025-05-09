@@ -1,4 +1,5 @@
-﻿using WorkSchedulePlaner.Application.Repository;
+﻿using WorkSchedulePlaner.Application.DTO;
+using WorkSchedulePlaner.Application.Repository;
 using WorkSchedulePlaner.Domain.Entities;
 
 namespace WorkSchedulePlaner.Application.ShiftTiles.AssignShift
@@ -8,15 +9,23 @@ namespace WorkSchedulePlaner.Application.ShiftTiles.AssignShift
 		IRepository<ShiftTile> shiftTileRepository,
 		IRepository<EmployeeShift> employeeShiftRepository)
 	{
+		private async Task<bool> AllEmployeesExist(List<EmployeeWorkHoursDto> employeeWorkHours)
+		{
+			foreach (var employee in employeeWorkHours) {
+
+				var exists = await employeeRepository.GetByIdAsync(employee.EmployeeId);
+
+				if (exists is null)
+					return false;
+			}
+
+			return true;
+		}
+
 		public async Task<AssignShiftResult> Handle(AssignShiftRequest request)
 		{
-			//find user in DB
-			var employee = await employeeRepository.GetByIdAsync(request.UserId);
-			
-			if (employee is null) {
-
+			if (!await this.AllEmployeesExist(request.EmployeeWorkHours))
 				return AssignShiftResult.UserNotFound;
-			}
 
 			//add tile to DB
 			var newShiftTile = new ShiftTile
@@ -31,15 +40,18 @@ namespace WorkSchedulePlaner.Application.ShiftTiles.AssignShift
 			await shiftTileRepository.SaveAsync();
 
 			//add EmployeeShift to DB
-			var employeeShift = new EmployeeShift
-			{
-				EmployeeId = request.UserId,
-				ShiftTileId = newShiftTile.Id,
-				StartTime = request.StartTime,
-				EndTime = request.EndTime
-			};
+			foreach (var employeeShift in request.EmployeeWorkHours) {
 
-			await employeeShiftRepository.InsertAsync(employeeShift);
+				var newEmployeeShift = new EmployeeShift
+				{
+					EmployeeId = employeeShift.EmployeeId,
+					ShiftTileId = newShiftTile.Id,
+					StartTime = employeeShift.StartTime,
+					EndTime = employeeShift.EndTime
+				};
+
+				await employeeShiftRepository.InsertAsync(newEmployeeShift);
+			}
 			await employeeShiftRepository.SaveAsync();
 
 			return AssignShiftResult.Success;

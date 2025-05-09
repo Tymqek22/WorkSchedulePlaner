@@ -26,7 +26,7 @@
 
             <div class="card mb-2">
                 <a class="card-body d-flex flex-column align-items-center" asp-controller="ShiftTile"
-                asp-action="Create" asp-route-date="@DateTime.Now" asp-route-scheduleId="@ViewBag.ScheduleId">
+                asp-action="Create" asp-route-date="@DateTime.Now.ToShortDateString()" asp-route-scheduleId="@ViewBag.ScheduleId">
                     <i class="bi bi-plus-circle"></i>
                     <p class="card-text">Add New Shift</p>
                 </a>

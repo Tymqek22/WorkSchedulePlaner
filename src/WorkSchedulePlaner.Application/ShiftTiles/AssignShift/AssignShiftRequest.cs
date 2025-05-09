@@ -1,11 +1,11 @@
-﻿namespace WorkSchedulePlaner.Application.ShiftTiles.AssignShift
+﻿using WorkSchedulePlaner.Application.DTO;
+
+namespace WorkSchedulePlaner.Application.ShiftTiles.AssignShift
 {
 	public record AssignShiftRequest(
-		int UserId,
+		List<EmployeeWorkHoursDto> EmployeeWorkHours,
 		string Title,
 		string? Description,
 		DateTime Date,
-		int ScheduleId,
-		TimeSpan StartTime,
-		TimeSpan EndTime);
+		int ScheduleId);
 }

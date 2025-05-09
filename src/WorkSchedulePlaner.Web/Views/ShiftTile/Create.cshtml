@@ -6,20 +6,20 @@
 	</div>
 	<div class="card-body">
 		<form method="post" class="row">
-			<input class="form-floating" asp-for="ShiftTile.Title" />
-			<label for="ShiftTile.Title" class="ms-2">Title</label>
-			<input class="form-floating" asp-for="ShiftTile.Description" />
-			@*<label for="ShiftTile.Description" class="ms-2">Description</label>
-			<select class="form-floating" asp-for="EmployeeId" asp-items="@ViewBag.Employees">
-				<option>--Select Employee--</option>
-			</select>*@
-			<label for="EmployeeId" class="ms-2">Employee</label>
-			<input class="form-floating" type="time" asp-for="StartTime" />
-			<label for="StartTime" class="ms-2">Start Time</label>
-			<input class="form-floating" type="time" asp-for="EndTime" />
-			<label for="EndTime" class="ms-2">End Time</label>
+			<div class="form-floating mb-2">
+				<input class="form-control" id="floatingTitle" asp-for="ShiftTile.Title" />
+				<label for="floatingTitle" class="ms-2">Title</label>
+			</div>
+			<div class="form-floating mb-2">
+				<input class="form-control" id="floatingDescription" asp-for="ShiftTile.Description" />
+				<label for="floatingDescription" class="ms-2">Description</label>
+			</div>
 
-			<input type="hidden" asp-for="EmployeeId" value="1" />
+			<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#employeeModal">
+				Add Employee
+			</button>
+
+			<div id="itemsContainer"></div>
 			<input type="hidden" asp-for="ShiftTile.Date" value="@ViewBag.Date" />
 			<input type="hidden" asp-for="ShiftTile.ScheduleId" value="@ViewBag.ScheduleId" />
 
@@ -27,3 +27,68 @@
 		</form>
 	</div>
 </div>
+
+<div class="modal fade" id="employeeModal" tabindex="-1" aria-labelledby="employeeModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="employeeModalLabel">Add Employee</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form class="form-control" method="post" id="employeeForm">
+					<select class="form-select mb-2" id="selectEmployee" asp-items="@ViewBag.Employees">
+						<option>--Select Employee--</option>
+					</select>
+
+					<div class="d-flex justify-content-center gap-5">
+						<div class="form-floating mb-2">
+							<input class="form-control" type="time" id="startTime" />
+							<label for="startTime" class="ms-2">Start Time</label>
+						</div>
+						<div class="form-floating mb-2">
+							<input class="form-control" type="time" id="endTime" />
+							<label for="endTime" class="ms-2">End Time</label>
+						</div>
+					</div>
+					
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-success" id="addEmployee" data-bs-dismiss="modal">Add</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<script>
+		let index = 0;
+
+		document.getElementById("addEmployee").addEventListener("click", function () {
+
+			const employeeId = document.getElementById("selectEmployee").value;
+			const startTime = document.getElementById("startTime").value;
+			const endTime = document.getElementById("endTime").value;
+
+			const container = document.getElementById("itemsContainer");
+
+			const itemHtml = `
+					<div>
+						<input class="form-control" value="${employeeId} | ${startTime} | ${endTime}" />
+						<input type="hidden" name="EmployeeWorkHours[${index}].EmployeeId" value="${employeeId}" />
+						<input type="hidden" name="EmployeeWorkHours[${index}].StartTime" value="${startTime}" />
+						<input type="hidden" name="EmployeeWorkHours[${index}].EndTime" value="${endTime}" />
+					</div>
+			`;
+
+			container.insertAdjacentHTML("beforeend",itemHtml);
+			index++;
+
+			document.getElementById("selectEmployee").selectedIndex = 0;
+			document.getElementById("startTime").value = "";
+			document.getElementById("endTime").value = "";
+		});
+	</script>
+}

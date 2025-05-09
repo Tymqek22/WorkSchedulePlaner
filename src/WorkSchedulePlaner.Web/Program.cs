@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using WorkSchedulePlaner.Application.Repository;
+using WorkSchedulePlaner.Application.ShiftTiles.AssignShift;
 using WorkSchedulePlaner.Domain.Entities;
 using WorkSchedulePlaner.Infrastructure.Persistence;
 using WorkSchedulePlaner.Infrastructure.Repository;
@@ -8,10 +9,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddScoped<IRepository<Employee>,Repository<Employee>>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("SchedulePlaner")));
+
+builder.Services.AddScoped<IRepository<Employee>,Repository<Employee>>();
+builder.Services.AddScoped<IRepository<ShiftTile>,Repository<ShiftTile>>();
+builder.Services.AddScoped<IRepository<EmployeeShift>,Repository<EmployeeShift>>();
+builder.Services.AddTransient<AssignShift>();
 
 var app = builder.Build();
 
