@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using WorkSchedulePlaner.Application.Repository;
 using WorkSchedulePlaner.Application.ShiftTiles.AssignShift;
 using WorkSchedulePlaner.Application.ShiftTiles.DeleteShift;
+using WorkSchedulePlaner.Application.ShiftTiles.UpdateShift;
 using WorkSchedulePlaner.Domain.Entities;
 using WorkSchedulePlaner.Infrastructure.Persistence;
 using WorkSchedulePlaner.Infrastructure.Repository;
@@ -22,6 +23,7 @@ builder.Services.AddScoped<IEmployeeShiftRepository,EmployeeShiftRepository>();
 builder.Services.AddScoped<IWorkScheduleRepository,WorkScheduleRepository>();
 builder.Services.AddTransient<AssignShift>();
 builder.Services.AddTransient<DeleteShift>();
+builder.Services.AddTransient<UpdateShift>();
 
 var app = builder.Build();
 

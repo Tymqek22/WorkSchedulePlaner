@@ -14,5 +14,10 @@ namespace WorkSchedulePlaner.Infrastructure.Repository
 
 			_dbSet.RemoveRange(shiftsToRemove);
 		}
+
+		public async Task<IEnumerable<EmployeeShift>> GetManyAsync(Func<EmployeeShift,bool> predicate)
+		{
+			return _dbSet.Where(predicate);
+		}
 	}
 }
