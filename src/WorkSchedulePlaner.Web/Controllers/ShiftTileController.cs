@@ -23,7 +23,7 @@ namespace WorkSchedulePlaner.Web.Controllers
 
 		public async Task<IActionResult> Create(DateTime date, int scheduleId)
 		{
-			ViewBag.Date = date.ToString("dd MM yyyy");
+			ViewBag.Date = date.ToString("dd.MM.yyyy");
 			ViewBag.ScheduleId = scheduleId;
 			ViewBag.Employees = new SelectList(await _repository.GetAllAsync(),"Id","Name");
 
@@ -52,7 +52,7 @@ namespace WorkSchedulePlaner.Web.Controllers
 				return View("Error",error);
 			}
 
-			return RedirectToAction("Details","Schedule");
+			return RedirectToAction("Details","Schedule", new { id = request.ScheduleId });
 		}
 
 		public IActionResult Update()

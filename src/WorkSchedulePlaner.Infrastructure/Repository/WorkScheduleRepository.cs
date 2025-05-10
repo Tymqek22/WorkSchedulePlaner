@@ -14,6 +14,7 @@ namespace WorkSchedulePlaner.Infrastructure.Repository
 			return await _dbSet
 				.Include(ws => ws.ShiftTiles)
 				.ThenInclude(st => st.EmployeeShifts)
+				.ThenInclude(e => e.Employee)
 				.FirstOrDefaultAsync(ws => ws.Id == id);
 		}
 	}

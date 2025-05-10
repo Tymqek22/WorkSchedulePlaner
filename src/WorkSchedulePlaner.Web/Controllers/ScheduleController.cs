@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
-using System.Threading.Tasks;
 using WorkSchedulePlaner.Application.Repository;
-using WorkSchedulePlaner.Domain.Entities;
 using WorkSchedulePlaner.Web.ViewModels;
 
 namespace WorkSchedulePlaner.Web.Controllers

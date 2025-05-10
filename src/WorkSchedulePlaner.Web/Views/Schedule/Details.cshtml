@@ -17,7 +17,7 @@
         @foreach (var day in Model.Dates)
         {
             <div>
-                @foreach (var tile in Model.Schedule.ShiftTiles) {
+                @foreach (var tile in Model.Schedule.ShiftTiles.Where(st => st.Date == day)) {
                     <div class="card mb-2">
                         <div class="card-header">
                             <h5 class="card-title text-center">@tile.Title</h5>
@@ -32,7 +32,7 @@
                 }
                 <div class="card mb-2">
                     <a class="card-body d-flex flex-column align-items-center" asp-controller="ShiftTile"
-                       asp-action="Create" asp-route-date="@day.ToString("MM dd yyyy")" asp-route-scheduleId="@Model.Schedule.Id">
+                       asp-action="Create" asp-route-date="@day.ToString("MM.dd.yyyy")" asp-route-scheduleId="@Model.Schedule.Id">
                         <i class="bi bi-plus-circle"></i>
                         <p class="card-text">Add New Shift</p>
                     </a>
