@@ -10,4 +10,8 @@
     <ProjectReference Include="..\WorkSchedulePlaner.Domain\WorkSchedulePlaner.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ShiftTiles\UpdateShift\" />
+  </ItemGroup>
+
 </Project>

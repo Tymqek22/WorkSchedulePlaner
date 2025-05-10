@@ -1,4 +1,5 @@
-﻿
+﻿@model WorkSchedulePlaner.Web.ViewModels.ScheduleDetailsVM
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <a class="btn btn-outline-primary" href>
         ◀ Poprzedni tydzień
@@ -13,27 +14,32 @@
 
 <div class="container-fluid pt-2 bg-light">
     <div class="seven-columns">
-        <div>
-            <div class="card mb-2">
-                <div class="card-header">
-                    <h5 class="card-title text-center">Peron 1</h5>
-                </div>
-                <div class="card-body">
-                    <p class="card-text">Pracownik 1 8:00-18:00</p>
-                    <p class="card-text">Pracownik 2 8:00-18:00</p>
+        @foreach (var day in Model.Dates)
+        {
+            <div>
+                @foreach (var tile in Model.Schedule.ShiftTiles) {
+                    <div class="card mb-2">
+                        <div class="card-header">
+                            <h5 class="card-title text-center">@tile.Title</h5>
+                        </div>
+                        <div class="card-body">
+                            @foreach (var employee in tile.EmployeeShifts) {
+                                <p class="card-text">@employee.Employee.Name @employee.Employee.LastName 
+                                    @employee.StartTime-@employee.EndTime</p>
+                            }
+                        </div>
+                    </div>
+                }
+                <div class="card mb-2">
+                    <a class="card-body d-flex flex-column align-items-center" asp-controller="ShiftTile"
+                       asp-action="Create" asp-route-date="@day.ToString("MM dd yyyy")" asp-route-scheduleId="@Model.Schedule.Id">
+                        <i class="bi bi-plus-circle"></i>
+                        <p class="card-text">Add New Shift</p>
+                    </a>
                 </div>
             </div>
+        }
 
-            <div class="card mb-2">
-                <a class="card-body d-flex flex-column align-items-center" asp-controller="ShiftTile"
-                asp-action="Create" asp-route-date="@DateTime.Now.ToShortDateString()" asp-route-scheduleId="@ViewBag.ScheduleId">
-                    <i class="bi bi-plus-circle"></i>
-                    <p class="card-text">Add New Shift</p>
-                </a>
-            </div>
-        </div>
-
-
-
+        
     </div>
 </div>
