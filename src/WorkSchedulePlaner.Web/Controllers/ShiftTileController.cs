@@ -15,10 +15,12 @@ namespace WorkSchedulePlaner.Web.Controllers
 		private readonly AssignShift _assignShift;
 		private readonly DeleteShift _deleteShift;
 
-		public ShiftTileController(IRepository<Employee> repository, AssignShift assignShift)
+		public ShiftTileController(IRepository<Employee> repository, AssignShift assignShift,
+			DeleteShift deleteShift)
 		{
 			_repository = repository;
 			_assignShift = assignShift;
+			_deleteShift = deleteShift;
 		}
 
 		public async Task<IActionResult> Create(DateTime date, int scheduleId)
@@ -60,10 +62,9 @@ namespace WorkSchedulePlaner.Web.Controllers
 			return View();
 		}
 
-		[HttpPost]
-		public async Task<IActionResult> Delete(int id)
+		public async Task<IActionResult> Delete(int tileId, int scheduleId)
 		{
-			var request = new DeleteShiftRequest(id);
+			var request = new DeleteShiftRequest(tileId);
 
 			var result = await _deleteShift.Handle(request);
 
@@ -77,7 +78,7 @@ namespace WorkSchedulePlaner.Web.Controllers
 				return View("Error",error);
 			}
 
-			return RedirectToAction("Details","Schedule");
+			return RedirectToAction("Details","Schedule", new { id = scheduleId });
 		}
 	}
 }

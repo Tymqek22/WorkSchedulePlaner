@@ -28,6 +28,10 @@
                                     @employee.StartTime-@employee.EndTime</p>
                             }
                         </div>
+                        <div class="card-footer">
+                            <a class="btn btn-danger" asp-controller="ShiftTile" asp-action="Delete"
+                            asp-route-tileId="@tile.Id" asp-route-scheduleId="@tile.ScheduleId">Delete</a>
+                        </div>
                     </div>
                 }
                 <div class="card mb-2">
