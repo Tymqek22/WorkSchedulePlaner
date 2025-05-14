@@ -21,7 +21,9 @@
 						<td>@employee.Position</td>
 						<td>
 							<a class="btn btn-danger">Delete</a>
-							<a class="btn btn-outline-info">Update</a>
+							<a class="btn btn-outline-info" asp-controller="Employee" asp-action="Update" 
+							asp-route-scheduleId="@employee.ScheduleId" asp-route-employeeId="@employee.Id">
+							Update</a>
 						</td>
 					</tr>
 				}

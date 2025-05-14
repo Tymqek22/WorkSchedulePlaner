@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WorkSchedulePlaner.Application.Employees.UpdateEmployee;
 using WorkSchedulePlaner.Application.Repository;
 using WorkSchedulePlaner.Application.Schedules.AddEmployee;
 using WorkSchedulePlaner.Domain.Entities;
@@ -10,11 +11,14 @@ namespace WorkSchedulePlaner.Web.Controllers
 	{
 		private readonly IRepository<Employee> _employeeRepository;
 		private readonly AddEmployee _addEmployee;
+		private readonly UpdateEmployee _updateEmployee;
 
-		public EmployeeController(IRepository<Employee> employeeRepository, AddEmployee addEmployee)
+		public EmployeeController(IRepository<Employee> employeeRepository, AddEmployee addEmployee,
+			UpdateEmployee updateEmployee)
 		{
 			_employeeRepository = employeeRepository;
 			_addEmployee = addEmployee;
+			_updateEmployee = updateEmployee;
 		}
 
 		public async Task<IActionResult> Employees(int scheduleId)
@@ -56,9 +60,35 @@ namespace WorkSchedulePlaner.Web.Controllers
 			return RedirectToAction("Details","Schedule",new { id = request.ScheduleId });
 		}
 
-		public IActionResult Update()
+		public async Task<IActionResult> Update(int scheduleId, int employeeId)
 		{
-			return View();
+			var employee = await _employeeRepository.GetByIdAsync(employeeId);
+
+			return View(employee);
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> Update(Employee employee)
+		{
+			var request = new UpdateEmployeeRequest(
+				employee.Id,
+				employee.Name,
+				employee.LastName,
+				employee.Position);
+
+			var result = await _updateEmployee.Handle(request);
+
+			if (result != UpdateEmployeeResult.Success) {
+
+				var error = new ErrorViewModel
+				{
+					RequestId = "Cannot update employee."
+				};
+
+				return View("Error",error);
+			}
+
+			return RedirectToAction("Details","Schedule",new { id = employee.ScheduleId });
 		}
 
 		public IActionResult Delete()
