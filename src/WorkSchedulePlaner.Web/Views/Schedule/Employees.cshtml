@@ -1,0 +1,31 @@
+﻿@model List<WorkSchedulePlaner.Domain.Entities.Employee>
+
+<div class="card">
+	<div class="card-header text-center">
+		<h3 class="card-title">Employees</h3>
+	</div>
+	<div class="card-body">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Position</th>
+					<th>Options</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var employee in Model)
+				{
+					<tr>
+						<td>@employee.Name @employee.LastName</td>
+						<td>@employee.Position</td>
+						<td>
+							<a class="btn btn-danger">Delete</a>
+							<a class="btn btn-outline-info">Update</a>
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+</div>
