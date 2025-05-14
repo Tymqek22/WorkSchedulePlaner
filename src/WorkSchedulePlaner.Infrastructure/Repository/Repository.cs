@@ -31,6 +31,11 @@ namespace WorkSchedulePlaner.Infrastructure.Repository
 			return await _dbSet.ToListAsync();
 		}
 
+		public async Task<IEnumerable<T>> GetAsync(Func<T,bool> predicate)
+		{
+			return _dbSet.Where(predicate);
+		}
+
 		public async Task<T?> GetByIdAsync(int id)
 		{
 			return await _dbSet.FindAsync(id);

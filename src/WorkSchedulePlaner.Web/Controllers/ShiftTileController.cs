@@ -15,13 +15,13 @@ namespace WorkSchedulePlaner.Web.Controllers
 	{
 		private readonly IRepository<Employee> _repository;
 		private readonly IRepository<ShiftTile> _shiftTileRepository;
-		private readonly IEmployeeShiftRepository _employeeShiftRepository;
+		private readonly IRepository<EmployeeShift> _employeeShiftRepository;
 		private readonly AssignShift _assignShift;
 		private readonly DeleteShift _deleteShift;
 		private readonly UpdateShift _updateShift;
 
 		public ShiftTileController(IRepository<Employee> repository, IRepository<ShiftTile> shiftTileRepository,
-			IEmployeeShiftRepository employeeShiftRepository, AssignShift assignShift, DeleteShift deleteShift, 
+			IRepository<EmployeeShift> employeeShiftRepository, AssignShift assignShift, DeleteShift deleteShift, 
 			UpdateShift updateShift)
 		{
 			_repository = repository;
@@ -72,7 +72,7 @@ namespace WorkSchedulePlaner.Web.Controllers
 			ViewBag.Employees = new SelectList(await _repository.GetAllAsync(),"Id","Name");
 
 			var tile = await _shiftTileRepository.GetByIdAsync(id);
-			var employeeShifts = await _employeeShiftRepository.GetManyAsync(es => es.ShiftTileId == tile.Id);
+			var employeeShifts = await _employeeShiftRepository.GetAsync(es => es.ShiftTileId == tile.Id);
 
 			var employeeWorkHours = new List<EmployeeWorkHoursDto>();
 
