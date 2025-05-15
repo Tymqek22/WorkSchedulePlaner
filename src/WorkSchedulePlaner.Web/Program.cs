@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using WorkSchedulePlaner.Application.Abstractions.Repository;
 using WorkSchedulePlaner.Application.Employees.UpdateEmployee;
-using WorkSchedulePlaner.Application.Repository;
 using WorkSchedulePlaner.Application.Schedules.AddEmployee;
 using WorkSchedulePlaner.Application.ShiftTiles.AssignShift;
 using WorkSchedulePlaner.Application.ShiftTiles.DeleteShift;

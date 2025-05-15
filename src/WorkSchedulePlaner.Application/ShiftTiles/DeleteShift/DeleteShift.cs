@@ -1,4 +1,4 @@
-﻿using WorkSchedulePlaner.Application.Repository;
+﻿using WorkSchedulePlaner.Application.Abstractions.Repository;
 using WorkSchedulePlaner.Domain.Entities;
 
 namespace WorkSchedulePlaner.Application.ShiftTiles.DeleteShift

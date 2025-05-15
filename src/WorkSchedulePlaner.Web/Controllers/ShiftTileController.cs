@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using WorkSchedulePlaner.Application.Abstractions.Repository;
 using WorkSchedulePlaner.Application.DTO;
-using WorkSchedulePlaner.Application.Repository;
 using WorkSchedulePlaner.Application.ShiftTiles.AssignShift;
 using WorkSchedulePlaner.Application.ShiftTiles.DeleteShift;
 using WorkSchedulePlaner.Application.ShiftTiles.UpdateShift;

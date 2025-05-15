@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WorkSchedulePlaner.Application.Abstractions.Repository;
 using WorkSchedulePlaner.Application.Employees.UpdateEmployee;
-using WorkSchedulePlaner.Application.Repository;
 using WorkSchedulePlaner.Application.Schedules.AddEmployee;
 using WorkSchedulePlaner.Domain.Entities;
 using WorkSchedulePlaner.Web.Models;

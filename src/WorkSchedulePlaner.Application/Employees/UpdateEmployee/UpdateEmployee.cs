@@ -1,4 +1,4 @@
-﻿using WorkSchedulePlaner.Application.Repository;
+﻿using WorkSchedulePlaner.Application.Abstractions.Repository;
 using WorkSchedulePlaner.Application.Schedules.AddEmployee;
 using WorkSchedulePlaner.Domain.Entities;
 

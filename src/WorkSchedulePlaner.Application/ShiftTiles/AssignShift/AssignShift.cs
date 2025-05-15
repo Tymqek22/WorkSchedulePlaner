@@ -1,5 +1,5 @@
-﻿using WorkSchedulePlaner.Application.DTO;
-using WorkSchedulePlaner.Application.Repository;
+﻿using WorkSchedulePlaner.Application.Abstractions.Repository;
+using WorkSchedulePlaner.Application.DTO;
 using WorkSchedulePlaner.Domain.Entities;
 
 namespace WorkSchedulePlaner.Application.ShiftTiles.AssignShift
