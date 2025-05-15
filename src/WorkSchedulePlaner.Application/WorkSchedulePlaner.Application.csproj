@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <Folder Include="Features\Employees\DTOs\" />
+    <Folder Include="Features\ShiftTiles\Queries\" />
   </ItemGroup>
 
 </Project>

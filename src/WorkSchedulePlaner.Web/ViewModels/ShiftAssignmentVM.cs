@@ -1,4 +1,4 @@
-﻿using WorkSchedulePlaner.Application.DTO;
+﻿using WorkSchedulePlaner.Application.Features.ShiftTiles.DTOs;
 using WorkSchedulePlaner.Domain.Entities;
 
 namespace WorkSchedulePlaner.Web.ViewModels
