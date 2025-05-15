@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WorkSchedulePlaner.Application.Abstractions.Messaging
+﻿namespace WorkSchedulePlaner.Application.Abstractions.Messaging
 {
-	internal interface IQueryHandler
+	public interface IQueryHandler<in TQuery, TResponse>
+		where TQuery : IQuery<TResponse>
 	{
+		public Task<TResponse> Handle(TQuery query,CancellationToken cancellationToken = default);
 	}
 }

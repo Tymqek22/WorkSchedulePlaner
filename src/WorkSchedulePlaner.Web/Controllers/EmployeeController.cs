@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WorkSchedulePlaner.Application.Abstractions.Repository;
-using WorkSchedulePlaner.Application.Employees.UpdateEmployee;
-using WorkSchedulePlaner.Application.Schedules.AddEmployee;
+using WorkSchedulePlaner.Application.Abstractions.Messaging;
+using WorkSchedulePlaner.Application.Features.Employees.Commands.AddEmployee;
+using WorkSchedulePlaner.Application.Features.Employees.Commands.UpdateEmployee;
+using WorkSchedulePlaner.Application.Features.Employees.Queries.GetByIdFromSchedule;
+using WorkSchedulePlaner.Application.Features.Employees.Queries.GetFromSchedule;
 using WorkSchedulePlaner.Domain.Entities;
 using WorkSchedulePlaner.Web.Models;
 
@@ -9,24 +11,14 @@ namespace WorkSchedulePlaner.Web.Controllers
 {
 	public class EmployeeController : Controller
 	{
-		private readonly IRepository<Employee> _employeeRepository;
-		private readonly AddEmployee _addEmployee;
-		private readonly UpdateEmployee _updateEmployee;
-
-		public EmployeeController(IRepository<Employee> employeeRepository, AddEmployee addEmployee,
-			UpdateEmployee updateEmployee)
+		public async Task<IActionResult> Employees(int scheduleId,
+			[FromServices] IQueryHandler<GetFromScheduleQuery,List<Employee>> handler)
 		{
-			_employeeRepository = employeeRepository;
-			_addEmployee = addEmployee;
-			_updateEmployee = updateEmployee;
-		}
+			var query = new GetFromScheduleQuery(scheduleId);
 
-		public async Task<IActionResult> Employees(int scheduleId)
-		{
-			//temporary
-			var employees = await _employeeRepository.GetAsync(e => e.ScheduleId == scheduleId);
+			var employees = await handler.Handle(query);
 
-			return View(employees.ToList());
+			return View(employees);
 		}
 
 		public IActionResult Create(int scheduleId)
@@ -37,15 +29,16 @@ namespace WorkSchedulePlaner.Web.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Create(Employee employee)
+		public async Task<IActionResult> Create(Employee employee,
+			[FromServices] ICommandHandler<AddEmployeeCommand,AddEmployeeResult> handler)
 		{
-			var request = new AddEmployeeRequest(
+			var command = new AddEmployeeCommand(
 				employee.Name,
 				employee.LastName,
 				employee.Position,
 				employee.ScheduleId);
 
-			var result = await _addEmployee.Handle(request);
+			var result = await handler.Handle(command);
 
 			if (result != AddEmployeeResult.Success) {
 
@@ -57,26 +50,30 @@ namespace WorkSchedulePlaner.Web.Controllers
 				return View("Error",error);
 			}
 
-			return RedirectToAction("Details","Schedule",new { id = request.ScheduleId });
+			return RedirectToAction("Details","Schedule",new { id = command.ScheduleId });
 		}
 
-		public async Task<IActionResult> Update(int scheduleId, int employeeId)
+		public async Task<IActionResult> Update(int scheduleId, int employeeId,
+			[FromServices] IQueryHandler<GetByIdFromScheduleQuery,Employee> handler)
 		{
-			var employee = await _employeeRepository.GetByIdAsync(employeeId);
+			var query = new GetByIdFromScheduleQuery(scheduleId,employeeId);
+
+			var employee = await handler.Handle(query);
 
 			return View(employee);
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Update(Employee employee)
+		public async Task<IActionResult> Update(Employee employee,
+			[FromServices] ICommandHandler<UpdateEmployeeCommand,UpdateEmployeeResult> handler)
 		{
-			var request = new UpdateEmployeeRequest(
+			var command = new UpdateEmployeeCommand(
 				employee.Id,
 				employee.Name,
 				employee.LastName,
 				employee.Position);
 
-			var result = await _updateEmployee.Handle(request);
+			var result = await handler.Handle(command);
 
 			if (result != UpdateEmployeeResult.Success) {
 

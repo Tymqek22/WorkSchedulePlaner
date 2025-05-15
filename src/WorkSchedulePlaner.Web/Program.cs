@@ -1,7 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+using WorkSchedulePlaner.Application.Abstractions.Messaging;
 using WorkSchedulePlaner.Application.Abstractions.Repository;
-using WorkSchedulePlaner.Application.Employees.UpdateEmployee;
-using WorkSchedulePlaner.Application.Schedules.AddEmployee;
+using WorkSchedulePlaner.Application.Features.Employees.Commands.AddEmployee;
+using WorkSchedulePlaner.Application.Features.Employees.Commands.UpdateEmployee;
+using WorkSchedulePlaner.Application.Features.Employees.Queries.GetByIdFromSchedule;
+using WorkSchedulePlaner.Application.Features.Employees.Queries.GetFromSchedule;
 using WorkSchedulePlaner.Application.ShiftTiles.AssignShift;
 using WorkSchedulePlaner.Application.ShiftTiles.DeleteShift;
 using WorkSchedulePlaner.Application.ShiftTiles.UpdateShift;
@@ -26,8 +29,10 @@ builder.Services.AddScoped<IWorkScheduleRepository,WorkScheduleRepository>();
 builder.Services.AddTransient<AssignShift>();
 builder.Services.AddTransient<DeleteShift>();
 builder.Services.AddTransient<UpdateShift>();
-builder.Services.AddTransient<AddEmployee>();
-builder.Services.AddTransient<UpdateEmployee>();
+builder.Services.AddScoped<ICommandHandler<AddEmployeeCommand,AddEmployeeResult>,AddEmployeeCommandHandler>();
+builder.Services.AddScoped<ICommandHandler<UpdateEmployeeCommand,UpdateEmployeeResult>,UpdateEmployeeComandHandler>();
+builder.Services.AddScoped<IQueryHandler<GetFromScheduleQuery,List<Employee>>,GetFromScheduleQueryHandler>();
+builder.Services.AddScoped<IQueryHandler<GetByIdFromScheduleQuery,Employee>,GetByIdFromScheduleQueryHandler>();
 
 var app = builder.Build();
 

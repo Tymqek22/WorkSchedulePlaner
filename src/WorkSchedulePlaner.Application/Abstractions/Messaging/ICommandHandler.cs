@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WorkSchedulePlaner.Application.Abstractions.Messaging
+﻿namespace WorkSchedulePlaner.Application.Abstractions.Messaging
 {
-	internal interface ICommandHandler
+	public interface ICommandHandler<in TCommand> 
+		where TCommand : ICommand
 	{
+		public Task Handle(TCommand command,CancellationToken cancellationToken = default);
+	}
+
+	public interface ICommandHandler<in TCommand, TResponse> 
+		where TCommand : ICommand<TResponse>
+	{
+		public Task<TResponse> Handle(TCommand command,CancellationToken cancellationToken = default);
 	}
 }
