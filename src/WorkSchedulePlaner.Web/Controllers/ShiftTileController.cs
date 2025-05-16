@@ -17,31 +17,36 @@ namespace WorkSchedulePlaner.Web.Controllers
 	{
 		private readonly IRepository<ShiftTile> _shiftTileRepository;
 		private readonly IRepository<EmployeeShift> _employeeShiftRepository;
+		private readonly ICommandDispatcher _commandDispatcher;
+		private readonly IQueryDispatcher _queryDispatcher;
 
 		public ShiftTileController(
 			IRepository<ShiftTile> shiftTileRepository,
-			IRepository<EmployeeShift> employeeShiftRepository)
+			IRepository<EmployeeShift> employeeShiftRepository,
+			ICommandDispatcher commandDispatcher,
+			IQueryDispatcher queryDispatcher)
 		{
 			_shiftTileRepository = shiftTileRepository;
 			_employeeShiftRepository = employeeShiftRepository;
+			_commandDispatcher = commandDispatcher;
+			_queryDispatcher = queryDispatcher;
 		}
 
-		public async Task<IActionResult> Create(DateTime date, int scheduleId,
-			[FromServices] IQueryHandler<GetFromScheduleQuery,List<Employee>> handler)
+		public async Task<IActionResult> Create(DateTime date, int scheduleId)
 		{
 			ViewBag.Date = date.ToString("dd.MM.yyyy");
 			ViewBag.ScheduleId = scheduleId;
 
 			var query = new GetFromScheduleQuery(scheduleId);
+			var employees = await _queryDispatcher.Dispatch<GetFromScheduleQuery,List<Employee>>(query);
 
-			ViewBag.Employees = new SelectList(await handler.Handle(query),"Id","Name");
+			ViewBag.Employees = new SelectList(employees,"Id","Name");
 
 			return View();
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Create(ShiftAssignmentVM viewModel,
-			[FromServices] ICommandHandler<AssignShiftCommand,AssignShiftResult> handler)
+		public async Task<IActionResult> Create(ShiftAssignmentVM viewModel)
 		{
 			var command = new AssignShiftCommand(
 				viewModel.ShiftTile.Title,
@@ -50,7 +55,7 @@ namespace WorkSchedulePlaner.Web.Controllers
 				viewModel.ShiftTile.Date,
 				viewModel.ShiftTile.ScheduleId);
 
-			var result = await handler.Handle(command);
+			var result = await _commandDispatcher.Dispatch<AssignShiftCommand,AssignShiftResult>(command);
 
 			if (result != AssignShiftResult.Success) {
 
@@ -65,15 +70,15 @@ namespace WorkSchedulePlaner.Web.Controllers
 			return RedirectToAction("Details","Schedule", new { id = command.ScheduleId });
 		}
 
-		public async Task<IActionResult> Update(int id,
-			[FromServices] IQueryHandler<GetFromScheduleQuery,List<Employee>> handler)
+		public async Task<IActionResult> Update(int id)
 		{
 			//temporary
 
 			var tile = await _shiftTileRepository.GetByIdAsync(id);
 
 			var query = new GetFromScheduleQuery(tile.ScheduleId);
-			ViewBag.Employees = new SelectList(await handler.Handle(query),"Id","Name");
+			var employees = await _queryDispatcher.Dispatch<GetFromScheduleQuery,List<Employee>>(query);
+			ViewBag.Employees = new SelectList(employees,"Id","Name");
 
 			var employeeShifts = await _employeeShiftRepository.GetAsync(es => es.ShiftTileId == tile.Id);
 			var employeeWorkHours = new List<EmployeeWorkHoursDto>();
@@ -98,8 +103,7 @@ namespace WorkSchedulePlaner.Web.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Update(ShiftAssignmentVM viewModel,
-			[FromServices] ICommandHandler<UpdateShiftCommand,UpdateShiftResult> handler)
+		public async Task<IActionResult> Update(ShiftAssignmentVM viewModel)
 		{
 			var command = new UpdateShiftCommand(
 				viewModel.ShiftTile.Id,
@@ -107,7 +111,7 @@ namespace WorkSchedulePlaner.Web.Controllers
 				viewModel.ShiftTile.Description,
 				viewModel.EmployeeWorkHours);
 
-			var result = await handler.Handle(command);
+			var result = await _commandDispatcher.Dispatch<UpdateShiftCommand,UpdateShiftResult>(command);
 
 			if (result != UpdateShiftResult.Success) {
 
@@ -122,12 +126,11 @@ namespace WorkSchedulePlaner.Web.Controllers
 			return RedirectToAction("Details","Schedule",new { id = viewModel.ShiftTile.ScheduleId });
 		}
 
-		public async Task<IActionResult> Delete(int tileId, int scheduleId,
-			[FromServices] ICommandHandler<DeleteShiftCommand,DeleteShiftResult> handler)
+		public async Task<IActionResult> Delete(int tileId, int scheduleId)
 		{
 			var command = new DeleteShiftCommand(tileId);
 
-			var result = await handler.Handle(command);
+			var result = await _commandDispatcher.Dispatch<DeleteShiftCommand,DeleteShiftResult>(command);
 
 			if (result != DeleteShiftResult.Success) {
 
