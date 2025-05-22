@@ -7,10 +7,12 @@ namespace WorkSchedulePlaner.Application.Features.Employees.Commands.UpdateEmplo
 	public class UpdateEmployeeComandHandler : ICommandHandler<UpdateEmployeeCommand,UpdateEmployeeResult>
 	{
 		private readonly IRepository<Employee> _employeeRepository;
+		private readonly IUnitOfWork _unitOfWork;
 
-		public UpdateEmployeeComandHandler(IRepository<Employee> employeeRepository)
+		public UpdateEmployeeComandHandler(IRepository<Employee> employeeRepository,IUnitOfWork unitOfWork)
 		{
 			_employeeRepository = employeeRepository;
+			_unitOfWork = unitOfWork;
 		}
 
 		public async Task<UpdateEmployeeResult> Handle(
@@ -26,7 +28,8 @@ namespace WorkSchedulePlaner.Application.Features.Employees.Commands.UpdateEmplo
 			employee.LastName = command.LastName;
 			employee.Position = command.Position;
 
-			await _employeeRepository.SaveAsync();
+			await _employeeRepository.UpdateAsync(employee);
+			await _unitOfWork.SaveAsync();
 
 			return UpdateEmployeeResult.Success;
 		}

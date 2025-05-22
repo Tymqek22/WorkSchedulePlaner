@@ -46,11 +46,6 @@ namespace WorkSchedulePlaner.Infrastructure.Repository
 			await _dbSet.AddAsync(entity);
 		}
 
-		public async Task SaveAsync()
-		{
-			await _dbContext.SaveChangesAsync();
-		}
-
 		public async Task UpdateAsync(T entity)
 		{
 			_dbSet.Update(entity);

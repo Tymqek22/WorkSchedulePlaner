@@ -7,10 +7,12 @@ namespace WorkSchedulePlaner.Application.Features.Employees.Commands.AddEmployee
 	public class AddEmployeeCommandHandler : ICommandHandler<AddEmployeeCommand,AddEmployeeResult>
 	{
 		private readonly IRepository<Employee> _employeeRepository;
+		private readonly IUnitOfWork _unitOfWork;
 
-		public AddEmployeeCommandHandler(IRepository<Employee> employeeRepository)
+		public AddEmployeeCommandHandler(IRepository<Employee> employeeRepository,IUnitOfWork unitOfWork)
 		{
 			_employeeRepository = employeeRepository;
+			_unitOfWork = unitOfWork;
 		}
 
 		public async Task<AddEmployeeResult> Handle(
@@ -26,7 +28,7 @@ namespace WorkSchedulePlaner.Application.Features.Employees.Commands.AddEmployee
 			};
 
 			await _employeeRepository.InsertAsync(employee);
-			await _employeeRepository.SaveAsync();
+			await _unitOfWork.SaveAsync();
 
 			return AddEmployeeResult.Success;
 		}

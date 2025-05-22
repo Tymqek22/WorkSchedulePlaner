@@ -8,13 +8,16 @@ namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.UpdateShif
 	{
 		private readonly IRepository<ShiftTile> _shiftTileRepository;
 		private readonly IEmployeeShiftRepository _shiftsRepository;
+		private readonly IUnitOfWork _unitOfWork;
 
 		public UpdateShiftCommandHandler(
 			IRepository<ShiftTile> shiftTileRepository,
-			IEmployeeShiftRepository shiftsRepository)
+			IEmployeeShiftRepository shiftsRepository,
+			IUnitOfWork unitOfWork)
 		{
 			_shiftTileRepository = shiftTileRepository;
 			_shiftsRepository = shiftsRepository;
+			_unitOfWork = unitOfWork;
 		}
 
 		public async Task<UpdateShiftResult> Handle(
@@ -29,7 +32,6 @@ namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.UpdateShif
 
 			//delete employee shifts for that tile
 			await _shiftsRepository.DeleteManyAsync(es => es.ShiftTileId == command.ShiftTileId);
-			await _shiftsRepository.SaveAsync();
 
 			//add updated shifts for tile
 			foreach (var employeeShift in command.EmployeeWorkHours) {
@@ -44,13 +46,12 @@ namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.UpdateShif
 
 				await _shiftsRepository.InsertAsync(shift);
 			}
-			await _shiftsRepository.SaveAsync();
 
 			//update rest of tile
 			tile.Title = command.Title;
 			tile.Description = command.Description;
 
-			await _shiftTileRepository.SaveAsync();
+			await _unitOfWork.SaveAsync();
 
 			return UpdateShiftResult.Success;
 		}

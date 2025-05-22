@@ -10,15 +10,18 @@ namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.AssignShif
 		private readonly IRepository<Employee> _employeeRepository;
 		private readonly IRepository<ShiftTile> _shiftTileRepository;
 		private readonly IRepository<EmployeeShift> _employeeShiftRepository;
+		private readonly IUnitOfWork _unitOfWork;
 
 		public AssignShiftCommandHandler(
 			IRepository<Employee> employeeRepository,
 			IRepository<ShiftTile> shiftTileRepository,
-			IRepository<EmployeeShift> employeeShiftRepository)
+			IRepository<EmployeeShift> employeeShiftRepository,
+			IUnitOfWork unitOfWork)
 		{
 			_employeeRepository = employeeRepository;
 			_shiftTileRepository = shiftTileRepository;
 			_employeeShiftRepository = employeeShiftRepository;
+			_unitOfWork = unitOfWork;
 		}
 
 		public async Task<AssignShiftResult> Handle(
@@ -36,9 +39,7 @@ namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.AssignShif
 				Date = command.Date,
 				ScheduleId = command.ScheduleId
 			};
-
 			await _shiftTileRepository.InsertAsync(newShiftTile);
-			await _shiftTileRepository.SaveAsync();
 
 			//add EmployeeShift to DB
 			foreach (var employeeShift in command.EmployeeWorkHours) {
@@ -46,14 +47,13 @@ namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.AssignShif
 				var newEmployeeShift = new EmployeeShift
 				{
 					EmployeeId = employeeShift.EmployeeId,
-					ShiftTileId = newShiftTile.Id,
+					ShiftTile = newShiftTile,
 					StartTime = employeeShift.StartTime,
 					EndTime = employeeShift.EndTime
 				};
-
 				await _employeeShiftRepository.InsertAsync(newEmployeeShift);
 			}
-			await _employeeShiftRepository.SaveAsync();
+			await _unitOfWork.SaveAsync();
 
 			return AssignShiftResult.Success;
 		}

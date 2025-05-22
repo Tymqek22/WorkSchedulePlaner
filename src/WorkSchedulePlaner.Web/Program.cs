@@ -27,6 +27,7 @@ builder.Services.AddScoped<IRepository<ShiftTile>,Repository<ShiftTile>>();
 builder.Services.AddScoped<IRepository<EmployeeShift>,Repository<EmployeeShift>>();
 builder.Services.AddScoped<IEmployeeShiftRepository,EmployeeShiftRepository>();
 builder.Services.AddScoped<IWorkScheduleRepository,WorkScheduleRepository>();
+builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
 
 builder.Services.AddScoped<ICommandHandler<AddEmployeeCommand,AddEmployeeResult>,AddEmployeeCommandHandler>();
 builder.Services.AddScoped<ICommandHandler<UpdateEmployeeCommand,UpdateEmployeeResult>,UpdateEmployeeComandHandler>();
