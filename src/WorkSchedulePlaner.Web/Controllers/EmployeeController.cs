@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WorkSchedulePlaner.Application.Abstractions.Messaging;
 using WorkSchedulePlaner.Application.Features.Employees.Commands.AddEmployee;
+using WorkSchedulePlaner.Application.Features.Employees.Commands.DeleteEmployee;
 using WorkSchedulePlaner.Application.Features.Employees.Commands.UpdateEmployee;
 using WorkSchedulePlaner.Application.Features.Employees.Queries.GetByIdFromSchedule;
 using WorkSchedulePlaner.Application.Features.Employees.Queries.GetFromSchedule;
@@ -93,9 +94,23 @@ namespace WorkSchedulePlaner.Web.Controllers
 			return RedirectToAction("Details","Schedule",new { id = employee.ScheduleId });
 		}
 
-		public IActionResult Delete()
+		public async Task<IActionResult> Delete(int scheduleId, int employeeId)
 		{
-			return View();
+			var command = new DeleteEmployeeCommand(employeeId);
+
+			var result = await _commandDispatcher.Dispatch<DeleteEmployeeCommand,DeleteEmployeeResult>(command);
+
+			if (result != DeleteEmployeeResult.Success) {
+
+				var error = new ErrorViewModel
+				{
+					RequestId = "Cannot delete employee."
+				};
+
+				return View("Error",error);
+			}
+
+			return RedirectToAction("Details","Schedule",new { id = scheduleId });
 		}
 	}
 }

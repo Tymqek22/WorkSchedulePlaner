@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using WorkSchedulePlaner.Application.Abstractions.Messaging;
 using WorkSchedulePlaner.Application.Abstractions.Repository;
 using WorkSchedulePlaner.Application.Features.Employees.Commands.AddEmployee;
+using WorkSchedulePlaner.Application.Features.Employees.Commands.DeleteEmployee;
 using WorkSchedulePlaner.Application.Features.Employees.Commands.UpdateEmployee;
 using WorkSchedulePlaner.Application.Features.Employees.Queries.GetByIdFromSchedule;
 using WorkSchedulePlaner.Application.Features.Employees.Queries.GetFromSchedule;
@@ -36,6 +37,7 @@ builder.Services.AddScoped<IQueryHandler<GetByIdFromScheduleQuery,Employee>,GetB
 builder.Services.AddScoped<ICommandHandler<AssignShiftCommand,AssignShiftResult>,AssignShiftCommandHandler>();
 builder.Services.AddScoped<ICommandHandler<DeleteShiftCommand,DeleteShiftResult>,DeleteShiftCommandHandler>();
 builder.Services.AddScoped<ICommandHandler<UpdateShiftCommand,UpdateShiftResult>,UpdateShiftCommandHandler>();
+builder.Services.AddScoped<ICommandHandler<DeleteEmployeeCommand,DeleteEmployeeResult>,DeleteEmployeeCommandHandler>();
 builder.Services.AddScoped<ICommandDispatcher,CommandDispatcher>();
 builder.Services.AddScoped<IQueryDispatcher,QueryDispatcher>();
 
