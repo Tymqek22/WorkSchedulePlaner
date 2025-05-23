@@ -4,12 +4,12 @@ using WorkSchedulePlaner.Domain.Entities;
 
 namespace WorkSchedulePlaner.Application.Features.Employees.Commands.UpdateEmployee
 {
-	public class UpdateEmployeeComandHandler : ICommandHandler<UpdateEmployeeCommand,UpdateEmployeeResult>
+	public class UpdateEmployeeCommandHandler : ICommandHandler<UpdateEmployeeCommand,UpdateEmployeeResult>
 	{
 		private readonly IRepository<Employee> _employeeRepository;
 		private readonly IUnitOfWork _unitOfWork;
 
-		public UpdateEmployeeComandHandler(IRepository<Employee> employeeRepository,IUnitOfWork unitOfWork)
+		public UpdateEmployeeCommandHandler(IRepository<Employee> employeeRepository,IUnitOfWork unitOfWork)
 		{
 			_employeeRepository = employeeRepository;
 			_unitOfWork = unitOfWork;

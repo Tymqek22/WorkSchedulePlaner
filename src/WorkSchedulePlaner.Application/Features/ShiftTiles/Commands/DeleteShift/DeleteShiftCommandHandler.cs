@@ -7,12 +7,12 @@ namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.DeleteShif
 	public class DeleteShiftCommandHandler : ICommandHandler<DeleteShiftCommand,DeleteShiftResult>
 	{
 		private readonly IRepository<ShiftTile> _shiftTileRepository;
-		private readonly IEmployeeShiftRepository _shiftsRepository;
+		private readonly IRepository<EmployeeShift> _shiftsRepository;
 		private readonly IUnitOfWork _unitOfWork;
 
 		public DeleteShiftCommandHandler(
 			IRepository<ShiftTile> shiftTileRepository,
-			IEmployeeShiftRepository shiftsRepository,
+			IRepository<EmployeeShift> shiftsRepository,
 			IUnitOfWork unitOfWork)
 		{
 			_shiftTileRepository = shiftTileRepository;

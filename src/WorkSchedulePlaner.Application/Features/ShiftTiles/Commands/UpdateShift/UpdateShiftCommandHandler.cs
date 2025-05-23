@@ -7,12 +7,12 @@ namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.UpdateShif
 	public class UpdateShiftCommandHandler : ICommandHandler<UpdateShiftCommand,UpdateShiftResult>
 	{
 		private readonly IRepository<ShiftTile> _shiftTileRepository;
-		private readonly IEmployeeShiftRepository _shiftsRepository;
+		private readonly IRepository<EmployeeShift> _shiftsRepository;
 		private readonly IUnitOfWork _unitOfWork;
 
 		public UpdateShiftCommandHandler(
 			IRepository<ShiftTile> shiftTileRepository,
-			IEmployeeShiftRepository shiftsRepository,
+			IRepository<EmployeeShift> shiftsRepository,
 			IUnitOfWork unitOfWork)
 		{
 			_shiftTileRepository = shiftTileRepository;

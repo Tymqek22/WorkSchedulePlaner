@@ -26,6 +26,13 @@ namespace WorkSchedulePlaner.Infrastructure.Repository
 			}
 		}
 
+		public async Task DeleteManyAsync(Func<T,bool> predicate)
+		{
+			var itemsToRemove = _dbSet.Where(predicate);
+
+			_dbSet.RemoveRange(itemsToRemove);
+		}
+
 		public async Task<IEnumerable<T>> GetAllAsync()
 		{
 			return await _dbSet.ToListAsync();

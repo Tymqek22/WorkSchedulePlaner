@@ -8,12 +8,12 @@ namespace WorkSchedulePlaner.Application.Features.Employees.Commands.DeleteEmplo
 		: ICommandHandler<DeleteEmployeeCommand,DeleteEmployeeResult>
 	{
 		private readonly IRepository<Employee> _employeeRepository;
-		private readonly IEmployeeShiftRepository _shiftsRepository;
+		private readonly IRepository<EmployeeShift> _shiftsRepository;
 		private readonly IUnitOfWork _unitOfWork;
 
 		public DeleteEmployeeCommandHandler(
 			IRepository<Employee> employeeRepository,
-			IEmployeeShiftRepository shiftsRepository,
+			IRepository<EmployeeShift> shiftsRepository,
 			IUnitOfWork unitOfWork)
 		{
 			_employeeRepository = employeeRepository;
