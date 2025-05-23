@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
-using System.Threading.Tasks;
 using WorkSchedulePlaner.Application.Abstractions.Messaging;
 using WorkSchedulePlaner.Application.Abstractions.Repository;
 using WorkSchedulePlaner.Application.Features.Schedules.Commands.CreateSchedule;
 using WorkSchedulePlaner.Application.Features.Schedules.Commands.DeleteSchedule;
 using WorkSchedulePlaner.Application.Features.Schedules.Commands.UpdateSchedule;
+using WorkSchedulePlaner.Application.Features.Schedules.DTOs;
+using WorkSchedulePlaner.Application.Features.Schedules.Queries.GetScheduleById;
 using WorkSchedulePlaner.Domain.Entities;
 using WorkSchedulePlaner.Web.Models;
 using WorkSchedulePlaner.Web.ViewModels;
@@ -16,11 +17,16 @@ namespace WorkSchedulePlaner.Web.Controllers
 	{
 		private readonly IWorkScheduleRepository _repository;
 		private readonly ICommandDispatcher _commandDispatcher;
+		private readonly IQueryDispatcher _queryDispatcher;
 
-		public ScheduleController(IWorkScheduleRepository repository, ICommandDispatcher commandDispatcher)
+		public ScheduleController(
+			IWorkScheduleRepository repository, 
+			ICommandDispatcher commandDispatcher,
+			IQueryDispatcher queryDispatcher)
 		{
 			_repository = repository;
 			_commandDispatcher = commandDispatcher;
+			_queryDispatcher = queryDispatcher;
 		}
 
 		public async Task<IActionResult> Details(int id)
@@ -92,10 +98,11 @@ namespace WorkSchedulePlaner.Web.Controllers
 
 		public async Task<IActionResult> Update(int scheduleId)
 		{
-			//temporary
-			var schedule = await _repository.GetByIdAsync(scheduleId);
+			var query = new GetScheduleByIdQuery(scheduleId);
 
-			return View(schedule);
+			var result = await _queryDispatcher.Dispatch<GetScheduleByIdQuery,WorkScheduleDto>(query);
+
+			return View(result);
 		}
 
 		[HttpPost]

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using WorkSchedulePlaner.Application.Abstractions.Messaging;
 using WorkSchedulePlaner.Application.Abstractions.Repository;
+using WorkSchedulePlaner.Application.Features.Employees.DTOs;
 using WorkSchedulePlaner.Application.Features.Employees.Queries.GetFromSchedule;
 using WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.AssignShift;
 using WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.DeleteShift;
@@ -38,7 +39,7 @@ namespace WorkSchedulePlaner.Web.Controllers
 			ViewBag.ScheduleId = scheduleId;
 
 			var query = new GetFromScheduleQuery(scheduleId);
-			var employees = await _queryDispatcher.Dispatch<GetFromScheduleQuery,List<Employee>>(query);
+			var employees = await _queryDispatcher.Dispatch<GetFromScheduleQuery,List<EmployeeDto>>(query);
 
 			ViewBag.Employees = new SelectList(employees,"Id","Name");
 
@@ -77,7 +78,7 @@ namespace WorkSchedulePlaner.Web.Controllers
 			var tile = await _shiftTileRepository.GetByIdAsync(id);
 
 			var query = new GetFromScheduleQuery(tile.ScheduleId);
-			var employees = await _queryDispatcher.Dispatch<GetFromScheduleQuery,List<Employee>>(query);
+			var employees = await _queryDispatcher.Dispatch<GetFromScheduleQuery,List<EmployeeDto>>(query);
 			ViewBag.Employees = new SelectList(employees,"Id","Name");
 
 			var employeeShifts = await _employeeShiftRepository.GetAsync(es => es.ShiftTileId == tile.Id);

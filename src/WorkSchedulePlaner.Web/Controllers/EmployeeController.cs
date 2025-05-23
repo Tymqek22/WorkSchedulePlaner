@@ -3,6 +3,7 @@ using WorkSchedulePlaner.Application.Abstractions.Messaging;
 using WorkSchedulePlaner.Application.Features.Employees.Commands.AddEmployee;
 using WorkSchedulePlaner.Application.Features.Employees.Commands.DeleteEmployee;
 using WorkSchedulePlaner.Application.Features.Employees.Commands.UpdateEmployee;
+using WorkSchedulePlaner.Application.Features.Employees.DTOs;
 using WorkSchedulePlaner.Application.Features.Employees.Queries.GetByIdFromSchedule;
 using WorkSchedulePlaner.Application.Features.Employees.Queries.GetFromSchedule;
 using WorkSchedulePlaner.Domain.Entities;
@@ -25,7 +26,7 @@ namespace WorkSchedulePlaner.Web.Controllers
 		{
 			var query = new GetFromScheduleQuery(scheduleId);
 
-			var employees = await _queryDispatcher.Dispatch<GetFromScheduleQuery,List<Employee>>(query);
+			var employees = await _queryDispatcher.Dispatch<GetFromScheduleQuery,List<EmployeeDto>>(query);
 
 			return View(employees);
 		}
@@ -65,7 +66,7 @@ namespace WorkSchedulePlaner.Web.Controllers
 		{
 			var query = new GetByIdFromScheduleQuery(scheduleId,employeeId);
 
-			var employee = await _queryDispatcher.Dispatch<GetByIdFromScheduleQuery,Employee>(query);
+			var employee = await _queryDispatcher.Dispatch<GetByIdFromScheduleQuery,EmployeeDto>(query);
 
 			return View(employee);
 		}

@@ -1,8 +1,8 @@
 ﻿using WorkSchedulePlaner.Application.Abstractions.Messaging;
-using WorkSchedulePlaner.Domain.Entities;
+using WorkSchedulePlaner.Application.Features.Employees.DTOs;
 
 namespace WorkSchedulePlaner.Application.Features.Employees.Queries.GetByIdFromSchedule
 {
 	public record GetByIdFromScheduleQuery(int ScheduleId, int EmployeeId)
-		: IQuery<Employee>;
+		: IQuery<EmployeeDto>;
 }
