@@ -1,5 +1,5 @@
 ﻿using WorkSchedulePlaner.Application.Abstractions.Messaging;
-using WorkSchedulePlaner.Application.Features.ShiftTiles.DTOs;
+using WorkSchedulePlaner.Application.DTOs;
 
 namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.AssignShift
 {

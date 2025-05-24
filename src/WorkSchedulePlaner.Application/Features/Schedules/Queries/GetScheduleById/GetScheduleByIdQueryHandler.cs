@@ -1,6 +1,6 @@
 ﻿using WorkSchedulePlaner.Application.Abstractions.Messaging;
 using WorkSchedulePlaner.Application.Abstractions.Repository;
-using WorkSchedulePlaner.Application.Features.Schedules.DTOs;
+using WorkSchedulePlaner.Application.DTOs;
 
 namespace WorkSchedulePlaner.Application.Features.Schedules.Queries.GetScheduleById
 {

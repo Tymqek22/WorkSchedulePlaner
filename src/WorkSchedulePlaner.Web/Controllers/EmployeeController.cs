@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WorkSchedulePlaner.Application.Abstractions.Messaging;
+using WorkSchedulePlaner.Application.DTOs;
 using WorkSchedulePlaner.Application.Features.Employees.Commands.AddEmployee;
 using WorkSchedulePlaner.Application.Features.Employees.Commands.DeleteEmployee;
 using WorkSchedulePlaner.Application.Features.Employees.Commands.UpdateEmployee;
-using WorkSchedulePlaner.Application.Features.Employees.DTOs;
 using WorkSchedulePlaner.Application.Features.Employees.Queries.GetByIdFromSchedule;
 using WorkSchedulePlaner.Application.Features.Employees.Queries.GetFromSchedule;
 using WorkSchedulePlaner.Domain.Entities;

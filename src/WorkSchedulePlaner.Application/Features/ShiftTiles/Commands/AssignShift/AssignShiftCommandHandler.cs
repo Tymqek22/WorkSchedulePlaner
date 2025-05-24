@@ -1,6 +1,6 @@
 ﻿using WorkSchedulePlaner.Application.Abstractions.Messaging;
 using WorkSchedulePlaner.Application.Abstractions.Repository;
-using WorkSchedulePlaner.Application.Features.ShiftTiles.DTOs;
+using WorkSchedulePlaner.Application.DTOs;
 using WorkSchedulePlaner.Domain.Entities;
 
 namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.AssignShift

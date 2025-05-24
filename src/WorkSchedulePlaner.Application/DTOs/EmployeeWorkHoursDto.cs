@@ -1,6 +1,4 @@
-﻿using WorkSchedulePlaner.Application.Features.Employees.DTOs;
-
-namespace WorkSchedulePlaner.Application.Features.ShiftTiles.DTOs
+﻿namespace WorkSchedulePlaner.Application.DTOs
 {
 	public class EmployeeWorkHoursDto
 	{

@@ -1,4 +1,4 @@
-﻿namespace WorkSchedulePlaner.Application.Features.Employees.DTOs
+﻿namespace WorkSchedulePlaner.Application.DTOs
 {
 	public class EmployeeDto
 	{

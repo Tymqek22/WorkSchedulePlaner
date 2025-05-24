@@ -1,5 +1,5 @@
 ﻿using WorkSchedulePlaner.Application.Abstractions.Messaging;
-using WorkSchedulePlaner.Application.Features.Employees.DTOs;
+using WorkSchedulePlaner.Application.DTOs;
 
 namespace WorkSchedulePlaner.Application.Features.Employees.Queries.GetByIdFromSchedule
 {

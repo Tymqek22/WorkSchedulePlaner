@@ -1,4 +1,4 @@
-﻿namespace WorkSchedulePlaner.Application.Features.ShiftTiles.DTOs
+﻿namespace WorkSchedulePlaner.Application.DTOs
 {
 	public class ShiftTileDto
 	{
@@ -6,7 +6,6 @@
 		public string Title { get; set; }
 		public string? Description { get; set; }
 		public DateTime Date { get; set; }
-		public int ScheduleId { get; set; }
 		public List<EmployeeWorkHoursDto>? Shifts { get; set; }
 	}
 }

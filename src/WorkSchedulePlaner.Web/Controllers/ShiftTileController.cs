@@ -2,12 +2,11 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using WorkSchedulePlaner.Application.Abstractions.Messaging;
 using WorkSchedulePlaner.Application.Abstractions.Repository;
-using WorkSchedulePlaner.Application.Features.Employees.DTOs;
+using WorkSchedulePlaner.Application.DTOs;
 using WorkSchedulePlaner.Application.Features.Employees.Queries.GetFromSchedule;
 using WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.AssignShift;
 using WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.DeleteShift;
 using WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.UpdateShift;
-using WorkSchedulePlaner.Application.Features.ShiftTiles.DTOs;
 using WorkSchedulePlaner.Domain.Entities;
 using WorkSchedulePlaner.Web.Models;
 
@@ -102,7 +101,6 @@ namespace WorkSchedulePlaner.Web.Controllers
 				Title = tile.Title,
 				Description = tile.Description,
 				Date = tile.Date,
-				ScheduleId = tile.ScheduleId,
 				Shifts = employeeWorkHours
 			};
 
@@ -110,8 +108,10 @@ namespace WorkSchedulePlaner.Web.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Update(ShiftTileDto viewModel)
+		public async Task<IActionResult> Update(int scheduleId,ShiftTileDto viewModel)
 		{
+			ViewBag.ScheduleId = scheduleId;
+
 			var command = new UpdateShiftCommand(
 				viewModel.Id,
 				viewModel.Title,
@@ -130,7 +130,7 @@ namespace WorkSchedulePlaner.Web.Controllers
 				return View("Error",error);
 			}
 
-			return RedirectToAction("Details","Schedule",new { id = viewModel.ScheduleId });
+			return RedirectToAction("Details","Schedule",new { id = scheduleId });
 		}
 
 		public async Task<IActionResult> Delete(int tileId, int scheduleId)
