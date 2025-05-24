@@ -46,7 +46,7 @@ namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.AssignShif
 
 				var newEmployeeShift = new EmployeeShift
 				{
-					EmployeeId = employeeShift.EmployeeId,
+					EmployeeId = employeeShift.Employee.Id,
 					ShiftTile = newShiftTile,
 					StartTime = employeeShift.StartTime,
 					EndTime = employeeShift.EndTime
@@ -62,7 +62,7 @@ namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.AssignShif
 		{
 			foreach (var employee in employeeWorkHours) {
 
-				var exists = await _employeeRepository.GetByIdAsync(employee.EmployeeId);
+				var exists = await _employeeRepository.GetByIdAsync(employee.Employee.Id);
 
 				if (exists is null)
 					return false;

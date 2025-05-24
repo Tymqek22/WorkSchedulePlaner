@@ -10,7 +10,6 @@ using WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.UpdateShift;
 using WorkSchedulePlaner.Application.Features.ShiftTiles.DTOs;
 using WorkSchedulePlaner.Domain.Entities;
 using WorkSchedulePlaner.Web.Models;
-using WorkSchedulePlaner.Web.ViewModels;
 
 namespace WorkSchedulePlaner.Web.Controllers
 {
@@ -47,14 +46,14 @@ namespace WorkSchedulePlaner.Web.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Create(ShiftAssignmentVM viewModel)
+		public async Task<IActionResult> Create(int scheduleId,ShiftTileDto viewModel)
 		{
 			var command = new AssignShiftCommand(
-				viewModel.ShiftTile.Title,
-				viewModel.ShiftTile.Description,
-				viewModel.EmployeeWorkHours,
-				viewModel.ShiftTile.Date,
-				viewModel.ShiftTile.ScheduleId);
+				viewModel.Title,
+				viewModel.Description,
+				viewModel.Shifts,
+				viewModel.Date,
+				scheduleId);
 
 			var result = await _commandDispatcher.Dispatch<AssignShiftCommand,AssignShiftResult>(command);
 
@@ -68,7 +67,7 @@ namespace WorkSchedulePlaner.Web.Controllers
 				return View("Error",error);
 			}
 
-			return RedirectToAction("Details","Schedule", new { id = command.ScheduleId });
+			return RedirectToAction("Details","Schedule", new { id = scheduleId });
 		}
 
 		public async Task<IActionResult> Update(int id)
@@ -76,6 +75,7 @@ namespace WorkSchedulePlaner.Web.Controllers
 			//temporary
 
 			var tile = await _shiftTileRepository.GetByIdAsync(id);
+			ViewBag.ScheduleId = tile.ScheduleId;
 
 			var query = new GetFromScheduleQuery(tile.ScheduleId);
 			var employees = await _queryDispatcher.Dispatch<GetFromScheduleQuery,List<EmployeeDto>>(query);
@@ -86,31 +86,37 @@ namespace WorkSchedulePlaner.Web.Controllers
 
 			foreach (var employeeShift in employeeShifts) {
 
+				var employeeToAdd = employees.FirstOrDefault(e => e.Id == employeeShift.EmployeeId);
+
 				employeeWorkHours.Add(new EmployeeWorkHoursDto
-				{
-					EmployeeId = employeeShift.EmployeeId,
+				{ 
+					Employee = employeeToAdd,
 					StartTime = employeeShift.StartTime,
 					EndTime = employeeShift.EndTime
 				});
 			}
 
-			var viewModel = new ShiftAssignmentVM
+			var viewModel = new ShiftTileDto
 			{
-				ShiftTile = tile,
-				EmployeeWorkHours = employeeWorkHours
+				Id = tile.Id,
+				Title = tile.Title,
+				Description = tile.Description,
+				Date = tile.Date,
+				ScheduleId = tile.ScheduleId,
+				Shifts = employeeWorkHours
 			};
 
 			return View(viewModel);
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Update(ShiftAssignmentVM viewModel)
+		public async Task<IActionResult> Update(ShiftTileDto viewModel)
 		{
 			var command = new UpdateShiftCommand(
-				viewModel.ShiftTile.Id,
-				viewModel.ShiftTile.Title,
-				viewModel.ShiftTile.Description,
-				viewModel.EmployeeWorkHours);
+				viewModel.Id,
+				viewModel.Title,
+				viewModel.Description,
+				viewModel.Shifts);
 
 			var result = await _commandDispatcher.Dispatch<UpdateShiftCommand,UpdateShiftResult>(command);
 
@@ -124,7 +130,7 @@ namespace WorkSchedulePlaner.Web.Controllers
 				return View("Error",error);
 			}
 
-			return RedirectToAction("Details","Schedule",new { id = viewModel.ShiftTile.ScheduleId });
+			return RedirectToAction("Details","Schedule",new { id = viewModel.ScheduleId });
 		}
 
 		public async Task<IActionResult> Delete(int tileId, int scheduleId)

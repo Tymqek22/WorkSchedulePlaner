@@ -38,7 +38,7 @@ namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.UpdateShif
 
 				var shift = new EmployeeShift
 				{
-					EmployeeId = employeeShift.EmployeeId,
+					EmployeeId = employeeShift.Employee.Id,
 					ShiftTileId = command.ShiftTileId,
 					StartTime = employeeShift.StartTime,
 					EndTime = employeeShift.EndTime

@@ -2,11 +2,14 @@
 using System.Globalization;
 using WorkSchedulePlaner.Application.Abstractions.Messaging;
 using WorkSchedulePlaner.Application.Abstractions.Repository;
+using WorkSchedulePlaner.Application.Features.Employees.DTOs;
+using WorkSchedulePlaner.Application.Features.Employees.Queries.GetFromSchedule;
 using WorkSchedulePlaner.Application.Features.Schedules.Commands.CreateSchedule;
 using WorkSchedulePlaner.Application.Features.Schedules.Commands.DeleteSchedule;
 using WorkSchedulePlaner.Application.Features.Schedules.Commands.UpdateSchedule;
 using WorkSchedulePlaner.Application.Features.Schedules.DTOs;
 using WorkSchedulePlaner.Application.Features.Schedules.Queries.GetScheduleById;
+using WorkSchedulePlaner.Application.Features.ShiftTiles.DTOs;
 using WorkSchedulePlaner.Domain.Entities;
 using WorkSchedulePlaner.Web.Models;
 using WorkSchedulePlaner.Web.ViewModels;
@@ -33,6 +36,8 @@ namespace WorkSchedulePlaner.Web.Controllers
 		{
 			//temporary
 			var schedule = await _repository.GetWithIncludesAsync(id);
+			var query = new GetFromScheduleQuery(schedule.Id);
+			var employees = await _queryDispatcher.Dispatch<GetFromScheduleQuery,List<EmployeeDto>>(query);
 
 			DateTime startDay = DateTime.Today.AddDays(
 				(int)CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek -
@@ -45,7 +50,33 @@ namespace WorkSchedulePlaner.Web.Controllers
 
 			var viewModel = new ScheduleDetailsVM
 			{
-				Schedule = schedule,
+				Schedule = new WorkScheduleDto
+				{
+					Id = schedule.Id,
+					Title = schedule.Title,
+					ShiftTiles = schedule.ShiftTiles
+						.Select(st => new ShiftTileDto
+						{
+							Id = st.Id,
+							Title = st.Title,
+							Description = st.Description,
+							Date = st.Date,
+							Shifts = st.EmployeeShifts
+								.Select(es =>
+								{
+									var employee = employees.FirstOrDefault(e => e.Id == es.EmployeeId);
+
+									return new EmployeeWorkHoursDto
+									{
+										Employee = employee,
+										StartTime = es.StartTime,
+										EndTime = es.EndTime
+									};
+								})
+								.ToList()
+						})
+						.ToList()
+				},
 				Dates = dates
 			};
 

@@ -1,4 +1,4 @@
-﻿@model WorkSchedulePlaner.Web.ViewModels.ShiftAssignmentVM
+﻿@model WorkSchedulePlaner.Application.Features.ShiftTiles.DTOs.ShiftTileDto
 
 <div class="card">
 	<div class="card-header text-center">
@@ -7,11 +7,11 @@
 	<div class="card-body">
 		<form method="post" class="row">
 			<div class="form-floating mb-2">
-				<input class="form-control" id="floatingTitle" asp-for="ShiftTile.Title" />
+				<input class="form-control" id="floatingTitle" asp-for="Title" />
 				<label for="floatingTitle" class="ms-2">Title</label>
 			</div>
 			<div class="form-floating mb-2">
-				<input class="form-control" id="floatingDescription" asp-for="ShiftTile.Description" />
+				<input class="form-control" id="floatingDescription" asp-for="Description" />
 				<label for="floatingDescription" class="ms-2">Description</label>
 			</div>
 
@@ -21,9 +21,9 @@
 				Add Employee
 			</button>
 
-			<input type="hidden" asp-for="ShiftTile.Id" value="@Model.ShiftTile.Id" />
-			<input type="hidden" asp-for="ShiftTile.Date" value="@Model.ShiftTile.Date" />
-			<input type="hidden" asp-for="ShiftTile.ScheduleId" value="@Model.ShiftTile.ScheduleId" />
+			<input type="hidden" asp-for="Id" value="@Model.Id" />
+			<input type="hidden" asp-for="Date" value="@Model.Date" />
+			<input type="hidden" asp-for="ScheduleId" value="@Model.ScheduleId" />
 
 			<div class="d-flex justify-content-center gap-4">
 				<button type="submit" class="btn btn-success w-100">
@@ -31,7 +31,7 @@
 					Update Shift
 				</button>
 				<a class="btn btn-danger w-100" asp-controller="Schedule" asp-action="Details"
-				   asp-route-id="@Model.ShiftTile.ScheduleId">
+				   asp-route-id="@ViewBag.ScheduleId">
 					<i class="bi bi-x-circle"></i>
 					Cancel
 				</a>
@@ -91,9 +91,9 @@
 			const itemHtml = `
 					<div id="${itemId}" class="subitem">
 						<input class="form-control subitem" value="${employeeId} | ${startTime} | ${endTime}" disabled readonly/>
-						<input type="hidden" name="EmployeeWorkHours[${index}].EmployeeId" value="${employeeId}" />
-						<input type="hidden" name="EmployeeWorkHours[${index}].StartTime" value="${startTime}" />
-						<input type="hidden" name="EmployeeWorkHours[${index}].EndTime" value="${endTime}" />
+						<input type="hidden" name="Shifts[${index}].Employee.Id" value="${employeeId}" />
+						<input type="hidden" name="Shifts[${index}].StartTime" value="${startTime}" />
+						<input type="hidden" name="Shifts[${index}].EndTime" value="${endTime}" />
 						<button type="button" class="btn btn-danger remove-btn" onclick="removeItem('${itemId}')">Delete</button>
 					</div>
 			`;

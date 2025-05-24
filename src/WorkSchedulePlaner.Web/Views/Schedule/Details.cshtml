@@ -23,14 +23,14 @@
                             <h5 class="card-title text-center">@tile.Title</h5>
                         </div>
                         <div class="card-body">
-                            @foreach (var employee in tile.EmployeeShifts) {
+                            @foreach (var employee in tile.Shifts) {
                                 <p class="card-text">@employee.Employee.Name @employee.Employee.LastName 
                                     @employee.StartTime-@employee.EndTime</p>
                             }
                         </div>
                         <div class="card-footer d-flex justify-content-center gap-2">
                             <a class="btn btn-danger" asp-controller="ShiftTile" asp-action="Delete"
-                            asp-route-tileId="@tile.Id" asp-route-scheduleId="@tile.ScheduleId">Delete</a>
+                            asp-route-tileId="@tile.Id" asp-route-scheduleId="@Model.Schedule.Id">Delete</a>
                             <a class="btn btn-outline-info" asp-controller="ShiftTile" asp-action="Update"
                             asp-route-id="@tile.Id">Update</a>
                         </div>
