@@ -16,5 +16,14 @@ namespace WorkSchedulePlaner.Infrastructure.Repository
 				.ThenInclude(es => es.Employee)
 				.FirstOrDefaultAsync(st => st.Id == id);
 		}
+
+		public async Task<IEnumerable<ShiftTile>> GetShiftTilesFromPeriod(DateTime startDate,DateTime endDate)
+		{
+			return await _dbSet
+				.Include(st => st.EmployeeShifts)
+				.ThenInclude(es => es.Employee)
+				.Where(st => st.Date >= startDate && st.Date <= endDate)
+				.ToListAsync();
+		}
 	}
 }

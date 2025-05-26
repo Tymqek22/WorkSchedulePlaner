@@ -1,4 +1,5 @@
-﻿using WorkSchedulePlaner.Application.Abstractions.Messaging;
+﻿using System.Diagnostics.CodeAnalysis;
+using WorkSchedulePlaner.Application.Abstractions.Messaging;
 using WorkSchedulePlaner.Application.Abstractions.Repository;
 using WorkSchedulePlaner.Application.DTOs;
 using WorkSchedulePlaner.Domain.Entities;
@@ -8,13 +9,13 @@ namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.AssignShif
 	public class AssignShiftCommandHandler : ICommandHandler<AssignShiftCommand,AssignShiftResult>
 	{
 		private readonly IRepository<Employee> _employeeRepository;
-		private readonly IRepository<ShiftTile> _shiftTileRepository;
+		private readonly IShiftTileRepository _shiftTileRepository;
 		private readonly IRepository<EmployeeShift> _employeeShiftRepository;
 		private readonly IUnitOfWork _unitOfWork;
 
 		public AssignShiftCommandHandler(
 			IRepository<Employee> employeeRepository,
-			IRepository<ShiftTile> shiftTileRepository,
+			IShiftTileRepository shiftTileRepository,
 			IRepository<EmployeeShift> employeeShiftRepository,
 			IUnitOfWork unitOfWork)
 		{
@@ -28,8 +29,19 @@ namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.AssignShif
 			AssignShiftCommand command,
 			CancellationToken cancellationToken = default)
 		{
-			if (!await this.AllEmployeesExist(command.EmployeeWorkHours))
+			//temp validation
+			if (!this.IsAnyEmployeeAssigned(command.EmployeeWorkHours))
+				return AssignShiftResult.Failure;
+			else if (!await this.AllEmployeesExist(command.EmployeeWorkHours))
 				return AssignShiftResult.UserNotFound;
+			else if (this.IsEmployeeDuplicatedOnShift(command.EmployeeWorkHours))
+				return AssignShiftResult.Failure;
+
+			foreach (var employeeShift in command.EmployeeWorkHours) {
+
+				if (!await this.IsEmployeeAssignedOnce(employeeShift.Employee.Id,command.Date))
+					return AssignShiftResult.Failure;
+			}
 
 			//add tile to DB
 			var newShiftTile = new ShiftTile
@@ -69,6 +81,29 @@ namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.AssignShif
 			}
 
 			return true;
+		}
+
+		private async Task<bool> IsEmployeeAssignedOnce(int employeeId,DateTime date)
+		{
+			var shiftTilesFromToday = await _shiftTileRepository.GetShiftTilesFromPeriod(date,date);
+
+			if (shiftTilesFromToday.Any(st => st.EmployeeShifts.Any(es => es.EmployeeId == employeeId)))
+				return false;
+
+			return true;
+		}
+
+		private bool IsAnyEmployeeAssigned(List<EmployeeWorkHoursDto> employeeShifts)
+		{
+			return employeeShifts is not null;
+		}
+
+		private bool IsEmployeeDuplicatedOnShift(List<EmployeeWorkHoursDto> employeeShifts)
+		{
+			return employeeShifts
+				.GroupBy(es => es.Employee)
+				.Select(e => e.Count())
+				.Any(c => c > 1);
 		}
 	}
 }

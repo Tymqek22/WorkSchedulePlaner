@@ -93,7 +93,7 @@ namespace WorkSchedulePlaner.Web.Controllers
 
 				var error = new ErrorViewModel
 				{
-					RequestId = "Cannot add shift."
+					RequestId = "Cannot update shift."
 				};
 
 				return View("Error",error);
