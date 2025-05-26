@@ -1,6 +1,7 @@
 ﻿using WorkSchedulePlaner.Application.Abstractions.Messaging;
 using WorkSchedulePlaner.Application.Abstractions.Repository;
 using WorkSchedulePlaner.Application.DTOs;
+using WorkSchedulePlaner.Application.Mappings;
 
 namespace WorkSchedulePlaner.Application.Features.Schedules.Queries.GetScheduleById
 {
@@ -19,11 +20,7 @@ namespace WorkSchedulePlaner.Application.Features.Schedules.Queries.GetScheduleB
 		{
 			var schedule = await _workScheduleRepository.GetByIdAsync(query.Id);
 
-			return new WorkScheduleDto 
-			{ 
-				Id = schedule.Id,
-				Title = schedule.Title 
-			};
+			return schedule.MapToDto();
 		}
 	}
 }

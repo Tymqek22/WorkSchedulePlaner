@@ -1,6 +1,7 @@
 ﻿using WorkSchedulePlaner.Application.Abstractions.Messaging;
 using WorkSchedulePlaner.Application.Abstractions.Repository;
 using WorkSchedulePlaner.Application.DTOs;
+using WorkSchedulePlaner.Application.Mappings;
 using WorkSchedulePlaner.Domain.Entities;
 
 namespace WorkSchedulePlaner.Application.Features.Employees.Queries.GetByIdFromSchedule
@@ -23,14 +24,7 @@ namespace WorkSchedulePlaner.Application.Features.Employees.Queries.GetByIdFromS
 
 			var employee = employeesFromSchedule.FirstOrDefault(e => e.Id == query.EmployeeId);
 
-			return new EmployeeDto
-			{
-				Id = employee.Id,
-				Name = employee.Name,
-				LastName = employee.LastName,
-				Position = employee.Position,
-				ScheduleId = employee.ScheduleId
-			};
+			return employee.MapToDto();
 		}
 	}
 }
