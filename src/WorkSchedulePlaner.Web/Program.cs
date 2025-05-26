@@ -14,6 +14,7 @@ using WorkSchedulePlaner.Application.Features.Schedules.Queries.GetScheduleById;
 using WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.AssignShift;
 using WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.DeleteShift;
 using WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.UpdateShift;
+using WorkSchedulePlaner.Application.Features.ShiftTiles.Queries.GetTileById;
 using WorkSchedulePlaner.Domain.Entities;
 using WorkSchedulePlaner.Infrastructure.Dispatching;
 using WorkSchedulePlaner.Infrastructure.Persistence;
@@ -31,6 +32,7 @@ builder.Services.AddScoped<IRepository<Employee>,Repository<Employee>>();
 builder.Services.AddScoped<IRepository<ShiftTile>,Repository<ShiftTile>>();
 builder.Services.AddScoped<IRepository<EmployeeShift>,Repository<EmployeeShift>>();
 builder.Services.AddScoped<IWorkScheduleRepository,WorkScheduleRepository>();
+builder.Services.AddScoped<IShiftTileRepository,ShiftTileRepository>();
 builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
 
 builder.Services.AddScoped<ICommandHandler<AddEmployeeCommand,AddEmployeeResult>,AddEmployeeCommandHandler>();
@@ -45,6 +47,7 @@ builder.Services.AddScoped<ICommandHandler<DeleteScheduleCommand,DeleteScheduleR
 builder.Services.AddScoped<IQueryHandler<GetFromScheduleQuery,List<EmployeeDto>>,GetFromScheduleQueryHandler>();
 builder.Services.AddScoped<IQueryHandler<GetByIdFromScheduleQuery,EmployeeDto>,GetByIdFromScheduleQueryHandler>();
 builder.Services.AddScoped<IQueryHandler<GetScheduleByIdQuery,WorkScheduleDto>,GetScheduleByIdQueryHandler>();
+builder.Services.AddScoped<IQueryHandler<GetTileByIdQuery,ShiftTileDto>,GetTileByIdQueryHandler>();
 builder.Services.AddScoped<ICommandDispatcher,CommandDispatcher>();
 builder.Services.AddScoped<IQueryDispatcher,QueryDispatcher>();
 

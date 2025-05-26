@@ -10,9 +10,4 @@
     <ProjectReference Include="..\WorkSchedulePlaner.Domain\WorkSchedulePlaner.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Features\ShiftTiles\Queries\" />
-    <Folder Include="Mappings\" />
-  </ItemGroup>
-
 </Project>

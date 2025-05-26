@@ -32,7 +32,7 @@
                             <a class="btn btn-danger" asp-controller="ShiftTile" asp-action="Delete"
                             asp-route-tileId="@tile.Id" asp-route-scheduleId="@Model.Schedule.Id">Delete</a>
                             <a class="btn btn-outline-info" asp-controller="ShiftTile" asp-action="Update"
-                            asp-route-id="@tile.Id">Update</a>
+                            asp-route-scheduleId="@Model.Schedule.Id" asp-route-tileId="@tile.Id">Update</a>
                         </div>
                     </div>
                 }
