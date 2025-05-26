@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 using WorkSchedulePlaner.Application.Abstractions.Messaging;
-using WorkSchedulePlaner.Application.Abstractions.Repository;
 using WorkSchedulePlaner.Application.DTOs;
 using WorkSchedulePlaner.Application.Features.Employees.Queries.GetFromSchedule;
 using WorkSchedulePlaner.Application.Features.Schedules.Commands.CreateSchedule;
 using WorkSchedulePlaner.Application.Features.Schedules.Commands.DeleteSchedule;
 using WorkSchedulePlaner.Application.Features.Schedules.Commands.UpdateSchedule;
 using WorkSchedulePlaner.Application.Features.Schedules.Queries.GetScheduleById;
+using WorkSchedulePlaner.Application.Features.Schedules.Queries.GetScheduleDetailsFromPeriod;
 using WorkSchedulePlaner.Domain.Entities;
 using WorkSchedulePlaner.Web.Models;
 using WorkSchedulePlaner.Web.ViewModels;
@@ -16,27 +16,19 @@ namespace WorkSchedulePlaner.Web.Controllers
 {
 	public class ScheduleController : Controller
 	{
-		private readonly IWorkScheduleRepository _repository;
 		private readonly ICommandDispatcher _commandDispatcher;
 		private readonly IQueryDispatcher _queryDispatcher;
 
-		public ScheduleController(
-			IWorkScheduleRepository repository, 
+		public ScheduleController( 
 			ICommandDispatcher commandDispatcher,
 			IQueryDispatcher queryDispatcher)
 		{
-			_repository = repository;
 			_commandDispatcher = commandDispatcher;
 			_queryDispatcher = queryDispatcher;
 		}
 
 		public async Task<IActionResult> Details(int id)
 		{
-			//temporary
-			var schedule = await _repository.GetWithIncludesAsync(id);
-			var query = new GetFromScheduleQuery(schedule.Id);
-			var employees = await _queryDispatcher.Dispatch<GetFromScheduleQuery,List<EmployeeDto>>(query);
-
 			DateTime startDay = DateTime.Today.AddDays(
 				(int)CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek -
 				(int)DateTime.Today.DayOfWeek);
@@ -46,35 +38,15 @@ namespace WorkSchedulePlaner.Web.Controllers
 				.Select(i => startDay.AddDays(i))
 				.ToList();
 
+			var query1 = new GetScheduleDetailsFromPeriodQuery(id,dates[0],dates[6]);
+			var schedule = await _queryDispatcher.Dispatch<GetScheduleDetailsFromPeriodQuery,WorkScheduleDto>(query1);
+
+			var query2 = new GetFromScheduleQuery(schedule.Id);
+			var employees = await _queryDispatcher.Dispatch<GetFromScheduleQuery,List<EmployeeDto>>(query2);
+
 			var viewModel = new ScheduleDetailsVM
 			{
-				Schedule = new WorkScheduleDto
-				{
-					Id = schedule.Id,
-					Title = schedule.Title,
-					ShiftTiles = schedule.ShiftTiles
-						.Select(st => new ShiftTileDto
-						{
-							Id = st.Id,
-							Title = st.Title,
-							Description = st.Description,
-							Date = st.Date,
-							Shifts = st.EmployeeShifts
-								.Select(es =>
-								{
-									var employee = employees.FirstOrDefault(e => e.Id == es.EmployeeId);
-
-									return new EmployeeWorkHoursDto
-									{
-										Employee = employee,
-										StartTime = es.StartTime,
-										EndTime = es.EndTime
-									};
-								})
-								.ToList()
-						})
-						.ToList()
-				},
+				Schedule = schedule,
 				Dates = dates
 			};
 

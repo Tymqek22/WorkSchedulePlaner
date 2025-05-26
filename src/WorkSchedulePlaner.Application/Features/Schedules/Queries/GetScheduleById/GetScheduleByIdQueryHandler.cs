@@ -18,7 +18,7 @@ namespace WorkSchedulePlaner.Application.Features.Schedules.Queries.GetScheduleB
 			GetScheduleByIdQuery query,
 			CancellationToken cancellationToken = default)
 		{
-			var schedule = await _workScheduleRepository.GetByIdAsync(query.Id);
+			var schedule = await _workScheduleRepository.GetWithIncludesAsync(query.Id);
 
 			return schedule.MapToDto();
 		}
