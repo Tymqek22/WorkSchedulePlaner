@@ -24,6 +24,7 @@ namespace WorkSchedulePlaner.Web.Controllers
 
 		public async Task<IActionResult> Employees(int scheduleId)
 		{
+			ViewBag.ScheduleId = scheduleId;
 			var query = new GetFromScheduleQuery(scheduleId);
 
 			var employees = await _queryDispatcher.Dispatch<GetFromScheduleQuery,List<EmployeeDto>>(query);
@@ -59,7 +60,7 @@ namespace WorkSchedulePlaner.Web.Controllers
 				return View("Error",error);
 			}
 
-			return RedirectToAction("Details","Schedule",new { id = command.ScheduleId });
+			return RedirectToAction("Employees","Employee",new { scheduleId = command.ScheduleId });
 		}
 
 		public async Task<IActionResult> Update(int scheduleId, int employeeId)
@@ -92,7 +93,7 @@ namespace WorkSchedulePlaner.Web.Controllers
 				return View("Error",error);
 			}
 
-			return RedirectToAction("Details","Schedule",new { id = employee.ScheduleId });
+			return RedirectToAction("Employees","Employee",new { scheduleId = employee.ScheduleId });
 		}
 
 		public async Task<IActionResult> Delete(int scheduleId, int employeeId)
@@ -111,7 +112,7 @@ namespace WorkSchedulePlaner.Web.Controllers
 				return View("Error",error);
 			}
 
-			return RedirectToAction("Details","Schedule",new { id = scheduleId });
+			return RedirectToAction("Employees","Employee",new { scheduleId = scheduleId });
 		}
 	}
 }

@@ -1,6 +1,14 @@
 ﻿@using WorkSchedulePlaner.Application.DTOs
 @model List<EmployeeDto>
 
+<a class="btn btn-success" asp-controller="Employee" asp-action="Create" 
+	asp-route-scheduleId="@ViewBag.ScheduleId">
+	<i class="bi bi-plus-circle"></i>
+	Add Employee
+</a>
+<a class="btn btn-info" asp-controller="Schedule" asp-action="Details" 
+	asp-route-id="@ViewBag.ScheduleId">Return To Schedule</a>
+
 <div class="card">
 	<div class="card-header text-center">
 		<h3 class="card-title">Employees</h3>

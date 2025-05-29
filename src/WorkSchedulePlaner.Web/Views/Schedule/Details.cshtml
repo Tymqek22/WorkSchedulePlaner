@@ -1,46 +1,72 @@
 ﻿@model WorkSchedulePlaner.Web.ViewModels.ScheduleDetailsVM
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <a class="btn btn-outline-primary" href>
-        ◀ Poprzedni tydzień
-    </a>
+<a class="btn btn-outline-info mb-3" asp-controller="Employee" asp-action="Employees"
+   asp-route-scheduleId="@Model.Schedule.Id">
+    <i class="bi bi-people-fill"></i> Manage Employees
+</a>
 
-    <h5 class="mb-0">Tydzień 1</h5>
+<div class="badge bg-dark-subtle col-12 p-2 mb-2">
+    <div class="d-flex justify-content-between align-items-center">
+    <a class="btn btn-outline-primary" asp-controller="Schedule" asp-action="Details"
+    asp-route-id="@Model.Schedule.Id" asp-route-weekOffset="@(@ViewBag.WeekOffset-1)">Previous Week &laquo;</a>
 
-    <a class="btn btn-outline-primary" href>
-        Następny tydzień ▶
-    </a>
+    <h5 class="mb-0">@Model.Dates[0].ToString("dd.MM")-@Model.Dates.Last().ToString("dd.MM.yyyy")</h5>
+
+    <a class="btn btn-outline-primary" asp-controller="Schedule" asp-action="Details"
+    asp-route-id="@Model.Schedule.Id" asp-route-weekOffset="@(@ViewBag.WeekOffset+1)">Next Week &raquo;</a>
 </div>
+</div>
+
 
 <div class="container-fluid pt-2 bg-light">
     <div class="seven-columns">
         @foreach (var day in Model.Dates)
         {
-            <div>
+            var isWeekend = day.DayOfWeek == DayOfWeek.Saturday || day.DayOfWeek == DayOfWeek.Sunday;
+            var columnClass = isWeekend ? "weekend" : "";
+
+            <div class="@columnClass">
+                <div class="d-flex justify-content-center mb-2">
+                    <span class="badge text-bg-info">@day.DayOfWeek @day.ToShortDateString()</span>
+                </div>
+                
                 @foreach (var tile in Model.Schedule.ShiftTiles.Where(st => st.Date == day)) {
+
+                    var collapseId = $"collapse-{tile.Id}";
+
                     <div class="card mb-2">
-                        <div class="card-header">
+                        <div class="card-header bg-info" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#@collapseId" aria-expanded="false" aria-controls="@collapseId">
                             <h5 class="card-title text-center">@tile.Title</h5>
                         </div>
-                        <div class="card-body">
-                            @foreach (var employee in tile.Shifts) {
-                                <p class="card-text">@employee.Employee.Name @employee.Employee.LastName 
-                                    @employee.StartTime-@employee.EndTime</p>
-                            }
-                        </div>
-                        <div class="card-footer d-flex justify-content-center gap-2">
-                            <a class="btn btn-danger" asp-controller="ShiftTile" asp-action="Delete"
-                            asp-route-tileId="@tile.Id" asp-route-scheduleId="@Model.Schedule.Id">Delete</a>
-                            <a class="btn btn-outline-info" asp-controller="ShiftTile" asp-action="Update"
-                            asp-route-scheduleId="@Model.Schedule.Id" asp-route-tileId="@tile.Id">Update</a>
+                        <div id="@collapseId" class="collapse">
+                            <div class="card-body">
+                                @foreach (var employee in tile.Shifts) {
+                                    <p class="mb-1">
+                                        <i class="bi bi-person-badge"></i> 
+                                        @employee.Employee.Name @employee.Employee.LastName<br />
+                                        <small class="text-muted">@employee.StartTime - @employee.EndTime</small>
+                                    </p>
+                                }
+                            </div>
+                            <div class="card-footer d-flex justify-content-center gap-2">
+                                <a class="btn btn-sm btn-danger" asp-controller="ShiftTile" asp-action="Delete"
+                                   asp-route-tileId="@tile.Id" asp-route-scheduleId="@Model.Schedule.Id">
+                                   Delete
+                                </a>
+                                <a class="btn btn-sm btn-outline-info" asp-controller="ShiftTile" asp-action="Update"
+                                   asp-route-scheduleId="@Model.Schedule.Id" asp-route-tileId="@tile.Id">
+                                   Update
+                                </a>
+                            </div>
                         </div>
                     </div>
                 }
-                <div class="card mb-2">
-                    <a class="card-body d-flex flex-column align-items-center" asp-controller="ShiftTile"
-                       asp-action="Create" asp-route-date="@day.ToString("MM.dd.yyyy")" asp-route-scheduleId="@Model.Schedule.Id">
-                        <i class="bi bi-plus-circle"></i>
-                        <p class="card-text">Add New Shift</p>
+                <div class="card text-center border-dashed mt-2">
+                    <a class="card-body text-muted" style="cursor: pointer;" asp-controller="ShiftTile"
+                       asp-action="Create" asp-route-date="@day.ToString("MM.dd.yyyy")"
+                       asp-route-scheduleId="@Model.Schedule.Id">
+                        <i class="bi bi-plus-circle fs-4"></i><br />
+                        Add New Shift
                     </a>
                 </div>
             </div>

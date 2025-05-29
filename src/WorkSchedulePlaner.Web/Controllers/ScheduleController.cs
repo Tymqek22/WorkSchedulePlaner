@@ -27,11 +27,14 @@ namespace WorkSchedulePlaner.Web.Controllers
 			_queryDispatcher = queryDispatcher;
 		}
 
-		public async Task<IActionResult> Details(int id)
+		public async Task<IActionResult> Details(int id, int weekOffset = 0)
 		{
 			DateTime startDay = DateTime.Today.AddDays(
 				(int)CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek -
-				(int)DateTime.Today.DayOfWeek);
+				(int)DateTime.Today.DayOfWeek)
+				.AddDays(7 * weekOffset);
+
+			ViewBag.WeekOffset = weekOffset;
 
 			var dates = Enumerable
 				.Range(0,7)

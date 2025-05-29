@@ -35,3 +35,9 @@ body {
     grid-template-columns: repeat(7,1fr);
     gap: 1rem;
 }
+
+.seven-columns > .weekend {
+    background-color: #e2e3e5;
+    border-radius: 8px;
+    padding: 0.5rem;
+}
