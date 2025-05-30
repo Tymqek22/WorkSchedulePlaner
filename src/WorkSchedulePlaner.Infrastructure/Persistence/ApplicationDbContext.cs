@@ -1,12 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using WorkSchedulePlaner.Domain.Entities;
+using WorkSchedulePlaner.Infrastructure.Identity.Models;
+using WorkSchedulePlaner.Infrastructure.Persistence.Configuration;
 
 
 namespace WorkSchedulePlaner.Infrastructure.Persistence
 {
-	public class ApplicationDbContext : DbContext
+	public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 	{
-		public ApplicationDbContext(DbContextOptions options) : base(options) {}
+		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) {}
 
 		public DbSet<Employee> Employees { get; set; }
 		public DbSet<ShiftTile> ShiftTiles { get; set; }
@@ -15,22 +18,11 @@ namespace WorkSchedulePlaner.Infrastructure.Persistence
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			modelBuilder.Entity<EmployeeShift>()
-				.HasKey(es => new { es.EmployeeId,es.ShiftTileId });
+			base.OnModelCreating(modelBuilder);
 
-			modelBuilder.Entity<EmployeeShift>()
-				.HasOne(e => e.Employee)
-				.WithMany(es => es.EmployeeShifts)
-				.HasForeignKey(es => es.EmployeeId)
-				.OnDelete(DeleteBehavior.NoAction);
-
-			modelBuilder.Entity<EmployeeShift>()
-				.HasOne(s => s.ShiftTile)
-				.WithMany(es => es.EmployeeShifts)
-				.HasForeignKey(es => es.ShiftTileId)
-				.OnDelete(DeleteBehavior.NoAction);
-
-			modelBuilder.Entity<EmployeeShift>().ToTable("EmployeesShifts");
+			modelBuilder.ApplyConfiguration(new EmployeeShiftConfiguration());
+			modelBuilder.ApplyConfiguration(new ScheduleConfiguration());
+			modelBuilder.ApplyConfiguration(new EmployeeConfiguration());
 		}
 	}
 }
