@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WorkSchedulePlaner.Application.Abstractions.Messaging;
 using WorkSchedulePlaner.Application.Abstractions.Repository;
@@ -18,16 +19,26 @@ using WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.UpdateShift;
 using WorkSchedulePlaner.Application.Features.ShiftTiles.Queries.GetTileById;
 using WorkSchedulePlaner.Domain.Entities;
 using WorkSchedulePlaner.Infrastructure.Dispatching;
+using WorkSchedulePlaner.Infrastructure.Identity.DbInitializer;
+using WorkSchedulePlaner.Infrastructure.Identity.Models;
 using WorkSchedulePlaner.Infrastructure.Persistence;
 using WorkSchedulePlaner.Infrastructure.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
-
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("SchedulePlaner")));
+
+builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
+options.SignIn.RequireConfirmedAccount = false)
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultUI()
+	.AddDefaultTokenProviders();
+
+builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
 
 builder.Services.AddScoped<IRepository<Employee>,Repository<Employee>>();
 builder.Services.AddScoped<IRepository<ShiftTile>,Repository<ShiftTile>>();
@@ -55,6 +66,11 @@ builder.Services.AddScoped<IQueryDispatcher,QueryDispatcher>();
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope()) {
+	var services = scope.ServiceProvider;
+	await DbInitializer.SeedRoles(services);
+}
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -64,8 +80,10 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
@@ -75,5 +93,6 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
+app.MapRazorPages();
 
 app.Run();

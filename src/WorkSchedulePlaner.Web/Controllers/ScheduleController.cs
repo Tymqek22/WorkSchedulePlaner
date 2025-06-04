@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 using WorkSchedulePlaner.Application.Abstractions.Messaging;
 using WorkSchedulePlaner.Application.DTOs;
@@ -14,6 +15,7 @@ using WorkSchedulePlaner.Web.ViewModels;
 
 namespace WorkSchedulePlaner.Web.Controllers
 {
+	[Authorize]
 	public class ScheduleController : Controller
 	{
 		private readonly ICommandDispatcher _commandDispatcher;

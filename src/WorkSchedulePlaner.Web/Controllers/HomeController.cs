@@ -1,10 +1,12 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WorkSchedulePlaner.Application.Abstractions.Repository;
 using WorkSchedulePlaner.Web.Models;
 
 namespace WorkSchedulePlaner.Web.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using WorkSchedulePlaner.Application.Abstractions.Messaging;
 using WorkSchedulePlaner.Application.DTOs;
@@ -11,6 +12,7 @@ using WorkSchedulePlaner.Web.Models;
 
 namespace WorkSchedulePlaner.Web.Controllers
 {
+	[Authorize]
 	public class ShiftTileController : Controller
 	{
 		private readonly ICommandDispatcher _commandDispatcher;
