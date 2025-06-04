@@ -43,6 +43,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddScoped<IRepository<Employee>,Repository<Employee>>();
 builder.Services.AddScoped<IRepository<ShiftTile>,Repository<ShiftTile>>();
 builder.Services.AddScoped<IRepository<EmployeeShift>,Repository<EmployeeShift>>();
+builder.Services.AddScoped<IRepository<ScheduleUser>,Repository<ScheduleUser>>();
 builder.Services.AddScoped<IWorkScheduleRepository,WorkScheduleRepository>();
 builder.Services.AddScoped<IShiftTileRepository,ShiftTileRepository>();
 builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();

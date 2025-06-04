@@ -10,6 +10,8 @@
 				<input class="form-control" asp-for="Title" />
 				<label for="Title" class="ms-2" >Title</label>
 			</div>
+
+			<input type="hidden" asp-for="OwnerId" value="@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value" />
 			
 			<div class="row pt-2 d-flex justify-content-center gap-3">
 				<div class="col-4">

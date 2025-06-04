@@ -10,6 +10,7 @@ namespace WorkSchedulePlaner.Application.Features.Schedules.Commands.DeleteSched
 		private readonly IRepository<ShiftTile> _shiftTileRepository;
 		private readonly IRepository<Employee> _employeeRepository;
 		private readonly IRepository<EmployeeShift> _employeeShiftRepository;
+		private readonly IRepository<ScheduleUser> _scheduleUserRepository;
 		private readonly IWorkScheduleRepository _scheduleRepository;
 		private readonly IUnitOfWork _unitOfWork;
 
@@ -17,12 +18,14 @@ namespace WorkSchedulePlaner.Application.Features.Schedules.Commands.DeleteSched
 			IRepository<ShiftTile> shiftTileRepository,
 			IRepository<Employee> employeeRepository,
 			IRepository<EmployeeShift> employeeShiftRepository,
+			IRepository<ScheduleUser> scheduleUserRepository,
 			IWorkScheduleRepository scheduleRepository,
 			IUnitOfWork unitOfWork)
 		{
 			_shiftTileRepository = shiftTileRepository;
 			_employeeRepository = employeeRepository;
 			_employeeShiftRepository = employeeShiftRepository;
+			_scheduleUserRepository = scheduleUserRepository;
 			_scheduleRepository = scheduleRepository;
 			_unitOfWork = unitOfWork;
 		}
@@ -49,6 +52,9 @@ namespace WorkSchedulePlaner.Application.Features.Schedules.Commands.DeleteSched
 
 			//delete all employees
 			await _employeeRepository.DeleteManyAsync(e => e.ScheduleId == schedule.Id);
+
+			//delete all userRoles in schedule
+			await _scheduleUserRepository.DeleteManyAsync(su => su.ScheduleId == schedule.Id);
 
 			//delete schedule
 			await _scheduleRepository.DeleteAsync(schedule.Id);

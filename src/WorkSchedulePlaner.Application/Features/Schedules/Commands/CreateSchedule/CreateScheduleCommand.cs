@@ -2,6 +2,6 @@
 
 namespace WorkSchedulePlaner.Application.Features.Schedules.Commands.CreateSchedule
 {
-	public record CreateScheduleCommand(string Title)
+	public record CreateScheduleCommand(string Title,string OwnerId)
 		: ICommand<CreateScheduleResult>;
 }
