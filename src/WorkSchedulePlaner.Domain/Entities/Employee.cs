@@ -15,6 +15,6 @@ namespace WorkSchedulePlaner.Domain.Entities
 		public int ScheduleId { get; set; }
 		public WorkSchedule Schedule { get; set; }
 
-		public List<EmployeeShift>? EmployeeShifts { get; set; }
+		public ICollection<EmployeeShift>? EmployeeShifts { get; set; }
 	}
 }

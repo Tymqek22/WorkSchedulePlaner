@@ -8,7 +8,8 @@ namespace WorkSchedulePlaner.Domain.Entities
 		public string Title { get; set; }
 		public string OwnerId { get; set; }
 
-		public List<Employee> Employees { get; set; }
-		public List<ShiftTile> ShiftTiles { get; set; }
+		public ICollection<Employee> Employees { get; set; }
+		public ICollection<ShiftTile> ShiftTiles { get; set; }
+		public ICollection<ScheduleUser> UsersInSchedule { get; set; }
 	}
 }

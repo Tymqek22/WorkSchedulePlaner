@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WorkSchedulePlaner.Domain.Entities;
 using WorkSchedulePlaner.Infrastructure.Identity.Models;
@@ -7,7 +8,7 @@ using WorkSchedulePlaner.Infrastructure.Persistence.Configuration;
 
 namespace WorkSchedulePlaner.Infrastructure.Persistence
 {
-	public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+	public class ApplicationDbContext : IdentityDbContext<ApplicationUser,IdentityRole,string>
 	{
 		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) {}
 
@@ -15,6 +16,7 @@ namespace WorkSchedulePlaner.Infrastructure.Persistence
 		public DbSet<ShiftTile> ShiftTiles { get; set; }
 		public DbSet<WorkSchedule> WorkSchedules { get; set; }
 		public DbSet<EmployeeShift> EmployeesShifts { get; set; }
+		public DbSet<ScheduleUser> SchedulesUsers { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
@@ -23,6 +25,7 @@ namespace WorkSchedulePlaner.Infrastructure.Persistence
 			modelBuilder.ApplyConfiguration(new EmployeeShiftConfiguration());
 			modelBuilder.ApplyConfiguration(new ScheduleConfiguration());
 			modelBuilder.ApplyConfiguration(new EmployeeConfiguration());
+			modelBuilder.ApplyConfiguration(new ScheduleUserConfiguration());
 		}
 	}
 }

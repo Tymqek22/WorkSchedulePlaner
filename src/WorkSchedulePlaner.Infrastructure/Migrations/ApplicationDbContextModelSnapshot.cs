@@ -102,10 +102,12 @@ namespace WorkSchedulePlaner.Infrastructure.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -142,10 +144,12 @@ namespace WorkSchedulePlaner.Infrastructure.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -208,6 +212,25 @@ namespace WorkSchedulePlaner.Infrastructure.Migrations
                     b.HasIndex("ShiftTileId");
 
                     b.ToTable("EmployeesShifts", (string)null);
+                });
+
+            modelBuilder.Entity("WorkSchedulePlaner.Domain.Entities.ScheduleUser", b =>
+                {
+                    b.Property<int>("ScheduleId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ScheduleId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("SchedulesUsers", (string)null);
                 });
 
             modelBuilder.Entity("WorkSchedulePlaner.Domain.Entities.ShiftTile", b =>
@@ -423,6 +446,23 @@ namespace WorkSchedulePlaner.Infrastructure.Migrations
                     b.Navigation("ShiftTile");
                 });
 
+            modelBuilder.Entity("WorkSchedulePlaner.Domain.Entities.ScheduleUser", b =>
+                {
+                    b.HasOne("WorkSchedulePlaner.Domain.Entities.WorkSchedule", "Schedule")
+                        .WithMany("UsersInSchedule")
+                        .HasForeignKey("ScheduleId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("WorkSchedulePlaner.Infrastructure.Identity.Models.ApplicationUser", null)
+                        .WithMany("SchedulesAssigned")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Schedule");
+                });
+
             modelBuilder.Entity("WorkSchedulePlaner.Domain.Entities.ShiftTile", b =>
                 {
                     b.HasOne("WorkSchedulePlaner.Domain.Entities.WorkSchedule", "Schedule")
@@ -437,7 +477,7 @@ namespace WorkSchedulePlaner.Infrastructure.Migrations
             modelBuilder.Entity("WorkSchedulePlaner.Domain.Entities.WorkSchedule", b =>
                 {
                     b.HasOne("WorkSchedulePlaner.Infrastructure.Identity.Models.ApplicationUser", null)
-                        .WithMany("Schedules")
+                        .WithMany("SchedulesOwned")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -458,13 +498,17 @@ namespace WorkSchedulePlaner.Infrastructure.Migrations
                     b.Navigation("Employees");
 
                     b.Navigation("ShiftTiles");
+
+                    b.Navigation("UsersInSchedule");
                 });
 
             modelBuilder.Entity("WorkSchedulePlaner.Infrastructure.Identity.Models.ApplicationUser", b =>
                 {
                     b.Navigation("AssignedEmployees");
 
-                    b.Navigation("Schedules");
+                    b.Navigation("SchedulesAssigned");
+
+                    b.Navigation("SchedulesOwned");
                 });
 #pragma warning restore 612, 618
         }
