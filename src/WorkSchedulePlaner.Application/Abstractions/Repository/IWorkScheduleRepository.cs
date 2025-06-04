@@ -6,5 +6,6 @@ namespace WorkSchedulePlaner.Application.Abstractions.Repository
 	{
 		Task<WorkSchedule> GetWithIncludesAsync(int id);
 		Task<WorkSchedule> GetScheduleDetailsFromPeriod(int id,DateTime startDate,DateTime endDate);
+		Task<IEnumerable<WorkSchedule>> GetAllUserSchedules(string userId);
 	}
 }

@@ -13,6 +13,7 @@ using WorkSchedulePlaner.Application.Features.Schedules.Commands.DeleteSchedule;
 using WorkSchedulePlaner.Application.Features.Schedules.Commands.UpdateSchedule;
 using WorkSchedulePlaner.Application.Features.Schedules.Queries.GetScheduleById;
 using WorkSchedulePlaner.Application.Features.Schedules.Queries.GetScheduleDetailsFromPeriod;
+using WorkSchedulePlaner.Application.Features.Schedules.Queries.GetUserSchedules;
 using WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.AssignShift;
 using WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.DeleteShift;
 using WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.UpdateShift;
@@ -61,6 +62,7 @@ builder.Services.AddScoped<IQueryHandler<GetFromScheduleQuery,List<EmployeeDto>>
 builder.Services.AddScoped<IQueryHandler<GetByIdFromScheduleQuery,EmployeeDto>,GetByIdFromScheduleQueryHandler>();
 builder.Services.AddScoped<IQueryHandler<GetScheduleByIdQuery,WorkScheduleDto>,GetScheduleByIdQueryHandler>();
 builder.Services.AddScoped<IQueryHandler<GetScheduleDetailsFromPeriodQuery,WorkScheduleDto>,GetScheduleDetailsFromPeriodQueryHandler>();
+builder.Services.AddScoped<IQueryHandler<GetUserSchedulesQuery,List<WorkScheduleDto>>,GetUserSchedulesQueryHandler>();
 builder.Services.AddScoped<IQueryHandler<GetTileByIdQuery,ShiftTileDto>,GetTileByIdQueryHandler>();
 builder.Services.AddScoped<ICommandDispatcher,CommandDispatcher>();
 builder.Services.AddScoped<IQueryDispatcher,QueryDispatcher>();
@@ -91,7 +93,7 @@ app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
+    pattern: "{controller=Schedule}/{action=Index}")
     .WithStaticAssets();
 
 app.MapRazorPages();

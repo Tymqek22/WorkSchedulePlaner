@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 using WorkSchedulePlaner.Application.Abstractions.Messaging;
@@ -9,7 +10,9 @@ using WorkSchedulePlaner.Application.Features.Schedules.Commands.DeleteSchedule;
 using WorkSchedulePlaner.Application.Features.Schedules.Commands.UpdateSchedule;
 using WorkSchedulePlaner.Application.Features.Schedules.Queries.GetScheduleById;
 using WorkSchedulePlaner.Application.Features.Schedules.Queries.GetScheduleDetailsFromPeriod;
+using WorkSchedulePlaner.Application.Features.Schedules.Queries.GetUserSchedules;
 using WorkSchedulePlaner.Domain.Entities;
+using WorkSchedulePlaner.Infrastructure.Identity.Models;
 using WorkSchedulePlaner.Web.Models;
 using WorkSchedulePlaner.Web.ViewModels;
 
@@ -20,13 +23,27 @@ namespace WorkSchedulePlaner.Web.Controllers
 	{
 		private readonly ICommandDispatcher _commandDispatcher;
 		private readonly IQueryDispatcher _queryDispatcher;
+		private readonly UserManager<ApplicationUser> _userManager;
 
 		public ScheduleController( 
 			ICommandDispatcher commandDispatcher,
-			IQueryDispatcher queryDispatcher)
+			IQueryDispatcher queryDispatcher,
+			UserManager<ApplicationUser> userManager)
 		{
 			_commandDispatcher = commandDispatcher;
 			_queryDispatcher = queryDispatcher;
+			_userManager = userManager;
+		}
+
+		public async Task<IActionResult> Index()
+		{
+			var userId = _userManager.GetUserId(User);
+
+			var query = new GetUserSchedulesQuery(userId);
+
+			var result = await _queryDispatcher.Dispatch<GetUserSchedulesQuery,List<WorkScheduleDto>>(query);
+
+			return View(result);
 		}
 
 		public async Task<IActionResult> Details(int id, int weekOffset = 0)
@@ -80,7 +97,7 @@ namespace WorkSchedulePlaner.Web.Controllers
 				return View("Error",error);
 			}
 
-			return RedirectToAction("Index","Home");
+			return RedirectToAction("Index","Schedule");
 		}
 
 		public async Task<IActionResult> Delete(int scheduleId)
@@ -99,7 +116,7 @@ namespace WorkSchedulePlaner.Web.Controllers
 				return View("Error",error);
 			}
 
-			return RedirectToAction("Index","Home");
+			return RedirectToAction("Index","Schedule");
 		}
 
 		public async Task<IActionResult> Update(int scheduleId)
@@ -128,7 +145,7 @@ namespace WorkSchedulePlaner.Web.Controllers
 				return View("Error",error);
 			}
 
-			return RedirectToAction("Index","Home");
+			return RedirectToAction("Index","Schedule");
 		}
 	}
 }

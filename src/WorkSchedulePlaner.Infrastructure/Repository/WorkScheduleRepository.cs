@@ -9,6 +9,17 @@ namespace WorkSchedulePlaner.Infrastructure.Repository
 	{
 		public WorkScheduleRepository(ApplicationDbContext dbContext) : base(dbContext) {}
 
+		public async Task<IEnumerable<WorkSchedule>> GetAllUserSchedules(string userId)
+		{
+			return await _dbSet
+				.Include(ws => ws.ShiftTiles)
+				.ThenInclude(st => st.EmployeeShifts)
+				.ThenInclude(es => es.Employee)
+				.Include(ws => ws.UsersInSchedule)
+				.Where(ws => ws.OwnerId == userId || ws.UsersInSchedule.Any(su => su.UserId == userId))
+				.ToListAsync();
+		}
+
 		public async Task<WorkSchedule> GetScheduleDetailsFromPeriod(
 			int id,
 			DateTime startDate,
