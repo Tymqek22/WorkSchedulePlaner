@@ -1,4 +1,5 @@
-﻿using WorkSchedulePlaner.Application.Abstractions.Repository;
+﻿using Microsoft.EntityFrameworkCore;
+using WorkSchedulePlaner.Application.Abstractions.Repository;
 using WorkSchedulePlaner.Domain.Entities;
 using WorkSchedulePlaner.Infrastructure.Persistence;
 
@@ -17,8 +18,15 @@ namespace WorkSchedulePlaner.Infrastructure.Repository
 
 		public async Task<ScheduleUser> GetByMultipleIdsAsync(string userId,int scheduleId)
 		{
-			return _dbSet.
-				FirstOrDefault(su => su.UserId == userId && su.ScheduleId == scheduleId);
+			return await _dbSet.
+				FirstOrDefaultAsync(su => su.UserId == userId && su.ScheduleId == scheduleId);
+		}
+
+		public async Task<string> GetUserRoleInSchedule(string userId,int scheduleId)
+		{
+			var scheduleUser = await this.GetByMultipleIdsAsync(userId,scheduleId);
+
+			return scheduleUser.Role;
 		}
 	}
 }

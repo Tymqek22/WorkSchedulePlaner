@@ -16,8 +16,11 @@
                         <div class="card-footer">
                             <a class="btn btn-outline-info" asp-controller="Schedule"
                                asp-action="Details" asp-route-id="@schedule.Id">Details</a>
-                            <a class="btn btn-outline-danger" asp-controller="Schedule"
+                            @if (schedule.IsAdmin)
+                            {
+                               <a class="btn btn-outline-danger" asp-controller="Schedule"
                                asp-action="Delete" asp-route-scheduleId="@schedule.Id">Delete</a>
+                            }
                         </div>
                     </div>
                 </div>

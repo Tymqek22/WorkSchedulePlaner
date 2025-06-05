@@ -7,7 +7,6 @@ using WorkSchedulePlaner.Application.Features.Employees.Commands.DeleteEmployee;
 using WorkSchedulePlaner.Application.Features.Employees.Commands.UpdateEmployee;
 using WorkSchedulePlaner.Application.Features.Employees.Queries.GetByIdFromSchedule;
 using WorkSchedulePlaner.Application.Features.Employees.Queries.GetFromSchedule;
-using WorkSchedulePlaner.Domain.Entities;
 using WorkSchedulePlaner.Web.Models;
 
 namespace WorkSchedulePlaner.Web.Controllers
