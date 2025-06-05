@@ -19,6 +19,10 @@
 				<input class="form-control" id="floatingPosition" asp-for="Position" />
 				<label for="floatingPosition" class="ms-2">Position</label>
 			</div>
+			<div class="form-floating mb-2">
+				<input class="form-control" id="floatingEmail" asp-for="Email" />
+				<label for="floatingEmail" class="ms-2">Email</label>
+			</div>
 
 			<input type="hidden" asp-for="Id" value="@Model.Id" />
 			<input type="hidden" asp-for="ScheduleId" value="@Model.ScheduleId" />

@@ -49,6 +49,7 @@ builder.Services.AddScoped<IRepository<EmployeeShift>,Repository<EmployeeShift>>
 builder.Services.AddScoped<IRepository<ScheduleUser>,Repository<ScheduleUser>>();
 builder.Services.AddScoped<IWorkScheduleRepository,WorkScheduleRepository>();
 builder.Services.AddScoped<IShiftTileRepository,ShiftTileRepository>();
+builder.Services.AddScoped<IScheduleUserRepository,ScheduleUserRepository>();
 builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
 
 builder.Services.AddScoped<ICommandHandler<AddEmployeeCommand,AddEmployeeResult>,AddEmployeeCommandHandler>();

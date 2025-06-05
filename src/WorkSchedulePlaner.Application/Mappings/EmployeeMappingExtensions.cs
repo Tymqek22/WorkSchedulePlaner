@@ -16,5 +16,18 @@ namespace WorkSchedulePlaner.Application.Mappings
 				ScheduleId = employee.ScheduleId
 			};
 		}
+
+		public static EmployeeDto MapToDtoWithEmail(this Employee employee, string email)
+		{
+			return new EmployeeDto
+			{
+				Id = employee.Id,
+				Name = employee.Name,
+				LastName = employee.LastName,
+				Position = employee.Position,
+				Email = email,
+				ScheduleId = employee.ScheduleId
+			};
+		}
 	}
 }

@@ -76,13 +76,14 @@ namespace WorkSchedulePlaner.Web.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Update(Employee employee)
+		public async Task<IActionResult> Update(EmployeeDto employee)
 		{
 			var command = new UpdateEmployeeCommand(
 				employee.Id,
 				employee.Name,
 				employee.LastName,
-				employee.Position);
+				employee.Position,
+				employee.Email);
 
 			var result = await _commandDispatcher.Dispatch<UpdateEmployeeCommand,UpdateEmployeeResult>(command);
 

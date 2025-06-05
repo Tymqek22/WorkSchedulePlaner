@@ -19,7 +19,7 @@ namespace WorkSchedulePlaner.Infrastructure.Identity.DbInitializer
 					await roleManager.CreateAsync(new IdentityRole(role));
 			}
 
-			var adminEmail = "admin@example.com";
+			var adminEmail = "admin3@example.com";
 			var adminPassword = "Admin123!";
 
 			var adminUser = await userManager.FindByEmailAsync(adminEmail);
