@@ -53,6 +53,10 @@ namespace WorkSchedulePlaner.Application.Features.Employees.Commands.UpdateEmplo
 				await _scheduleUserRepository.InsertAsync(scheduleUser);
 				employee.UserId = userId;
 			}
+			else {
+				await _scheduleUserRepository.DeleteAsyncByIds(employee.UserId,employee.ScheduleId);
+				employee.UserId = null;
+			}
 
 			employee.Name = command.Name;
 			employee.LastName = command.LastName;
