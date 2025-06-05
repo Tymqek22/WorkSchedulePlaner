@@ -2,9 +2,10 @@
 
 namespace WorkSchedulePlaner.Web.ViewModels
 {
-	public class ScheduleListVM
+	public class ScheduleDetailsVM
 	{
-		public List<WorkScheduleDto> Schedules { get; set; }
+		public WorkScheduleDto Schedule { get; set; }
+		public List<DateTime> Dates { get; set; }
 		public bool IsCurrentUserAdmin { get; set; }
 	}
 }
