@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 using WorkSchedulePlaner.Application.Abstractions.Messaging;
 using WorkSchedulePlaner.Application.DTOs;
-using WorkSchedulePlaner.Application.Features.Employees.Queries.GetUserRoleInSchedule;
+using WorkSchedulePlaner.Application.Features.Employees.Queries.GetFromSchedule;
 using WorkSchedulePlaner.Application.Features.Schedules.Commands.CreateSchedule;
 using WorkSchedulePlaner.Application.Features.Schedules.Commands.DeleteSchedule;
 using WorkSchedulePlaner.Application.Features.Schedules.Commands.UpdateSchedule;
@@ -39,11 +39,11 @@ namespace WorkSchedulePlaner.Web.Controllers
 		{
 			var userId = _userManager.GetUserId(User);
 
-			var query1 = new GetUserSchedulesQuery(userId);
+			var query = new GetUserSchedulesQuery(userId);
 
-			var schedules = await _queryDispatcher.Dispatch<GetUserSchedulesQuery,List<WorkScheduleDto>>(query1);
+			var result = await _queryDispatcher.Dispatch<GetUserSchedulesQuery,List<WorkScheduleDto>>(query);
 
-			return View(schedules);
+			return View(result);
 		}
 
 		public async Task<IActionResult> Details(int id, int weekOffset = 0)
@@ -63,21 +63,13 @@ namespace WorkSchedulePlaner.Web.Controllers
 			var query1 = new GetScheduleDetailsFromPeriodQuery(id,dates[0],dates[6]);
 			var schedule = await _queryDispatcher.Dispatch<GetScheduleDetailsFromPeriodQuery,WorkScheduleDto>(query1);
 
-			var userId = _userManager.GetUserId(User);
-
-			var query3 = new GetUserRoleInScheduleQuery(userId,id);
-			var result = await _queryDispatcher.Dispatch<GetUserRoleInScheduleQuery,string>(query3);
-			bool admin;
-			if (result == "admin")
-				admin = true;
-			else
-				admin = false;
+			var query2 = new GetFromScheduleQuery(schedule.Id);
+			var employees = await _queryDispatcher.Dispatch<GetFromScheduleQuery,List<EmployeeDto>>(query2);
 
 			var viewModel = new ScheduleDetailsVM
 			{
 				Schedule = schedule,
-				Dates = dates,
-				IsCurrentUserAdmin = admin
+				Dates = dates
 			};
 
 			return View(viewModel);

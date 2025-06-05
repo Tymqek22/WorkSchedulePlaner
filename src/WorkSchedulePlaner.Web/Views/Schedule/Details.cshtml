@@ -1,13 +1,9 @@
 ﻿@model WorkSchedulePlaner.Web.ViewModels.ScheduleDetailsVM
 
-@if (Model.IsCurrentUserAdmin)
-{
-    <a class="btn btn-outline-info mb-3" asp-controller="Employee" asp-action="Employees"
-       asp-route-scheduleId="@Model.Schedule.Id">
-        <i class="bi bi-people-fill"></i> Manage Employees
-    </a>  
-}
-
+<a class="btn btn-outline-info mb-3" asp-controller="Employee" asp-action="Employees"
+   asp-route-scheduleId="@Model.Schedule.Id">
+    <i class="bi bi-people-fill"></i> Manage Employees
+</a>
 
 <div class="badge bg-dark-subtle col-12 p-2 mb-2">
     <div class="d-flex justify-content-between align-items-center">
@@ -52,33 +48,27 @@
                                     </p>
                                 }
                             </div>
-                            @if (Model.IsCurrentUserAdmin)
-                            {
-                                <div class="card-footer d-flex justify-content-center gap-2">
-                                    <a class="btn btn-sm btn-danger" asp-controller="ShiftTile" asp-action="Delete"
-                                       asp-route-tileId="@tile.Id" asp-route-scheduleId="@Model.Schedule.Id">
-                                       Delete
-                                    </a>
-                                    <a class="btn btn-sm btn-outline-info" asp-controller="ShiftTile" asp-action="Update"
-                                       asp-route-scheduleId="@Model.Schedule.Id" asp-route-tileId="@tile.Id">
-                                       Update
-                                    </a>
-                                </div>
-                            }
+                            <div class="card-footer d-flex justify-content-center gap-2">
+                                <a class="btn btn-sm btn-danger" asp-controller="ShiftTile" asp-action="Delete"
+                                   asp-route-tileId="@tile.Id" asp-route-scheduleId="@Model.Schedule.Id">
+                                   Delete
+                                </a>
+                                <a class="btn btn-sm btn-outline-info" asp-controller="ShiftTile" asp-action="Update"
+                                   asp-route-scheduleId="@Model.Schedule.Id" asp-route-tileId="@tile.Id">
+                                   Update
+                                </a>
+                            </div>
                         </div>
                     </div>
                 }
-                @if (Model.IsCurrentUserAdmin)
-                {
-                    <div class="card text-center border-dashed mt-2">
-                        <a class="card-body text-muted" style="cursor: pointer;" asp-controller="ShiftTile"
-                           asp-action="Create" asp-route-date="@day.ToString("MM.dd.yyyy")"
-                           asp-route-scheduleId="@Model.Schedule.Id">
-                            <i class="bi bi-plus-circle fs-4"></i><br />
-                            Add New Shift
-                        </a>
-                    </div>
-                }
+                <div class="card text-center border-dashed mt-2">
+                    <a class="card-body text-muted" style="cursor: pointer;" asp-controller="ShiftTile"
+                       asp-action="Create" asp-route-date="@day.ToString("MM.dd.yyyy")"
+                       asp-route-scheduleId="@Model.Schedule.Id">
+                        <i class="bi bi-plus-circle fs-4"></i><br />
+                        Add New Shift
+                    </a>
+                </div>
             </div>
         }
 

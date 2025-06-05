@@ -9,7 +9,6 @@ using WorkSchedulePlaner.Application.Features.Employees.Commands.DeleteEmployee;
 using WorkSchedulePlaner.Application.Features.Employees.Commands.UpdateEmployee;
 using WorkSchedulePlaner.Application.Features.Employees.Queries.GetByIdFromSchedule;
 using WorkSchedulePlaner.Application.Features.Employees.Queries.GetFromSchedule;
-using WorkSchedulePlaner.Application.Features.Employees.Queries.GetUserRoleInSchedule;
 using WorkSchedulePlaner.Application.Features.Schedules.Commands.CreateSchedule;
 using WorkSchedulePlaner.Application.Features.Schedules.Commands.DeleteSchedule;
 using WorkSchedulePlaner.Application.Features.Schedules.Commands.UpdateSchedule;
@@ -68,7 +67,6 @@ builder.Services.AddScoped<IQueryHandler<GetScheduleByIdQuery,WorkScheduleDto>,G
 builder.Services.AddScoped<IQueryHandler<GetScheduleDetailsFromPeriodQuery,WorkScheduleDto>,GetScheduleDetailsFromPeriodQueryHandler>();
 builder.Services.AddScoped<IQueryHandler<GetUserSchedulesQuery,List<WorkScheduleDto>>,GetUserSchedulesQueryHandler>();
 builder.Services.AddScoped<IQueryHandler<GetTileByIdQuery,ShiftTileDto>,GetTileByIdQueryHandler>();
-builder.Services.AddScoped<IQueryHandler<GetUserRoleInScheduleQuery,string>,GetUserRoleInScheduleQueryHandler>();
 builder.Services.AddScoped<ICommandDispatcher,CommandDispatcher>();
 builder.Services.AddScoped<IQueryDispatcher,QueryDispatcher>();
 

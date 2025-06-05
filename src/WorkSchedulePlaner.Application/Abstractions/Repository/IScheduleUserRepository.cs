@@ -6,6 +6,5 @@ namespace WorkSchedulePlaner.Application.Abstractions.Repository
 	{
 		Task<ScheduleUser> GetByMultipleIdsAsync(string userId,int scheduleId);
 		Task DeleteAsyncByIds(string userId,int scheduleId);
-		Task<string> GetUserRoleInSchedule(string userId,int scheduleId);
 	}
 }

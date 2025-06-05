@@ -21,17 +21,7 @@ namespace WorkSchedulePlaner.Application.Features.Schedules.Queries.GetUserSched
 			var userSchedules = await _workScheduleRepository.GetAllUserSchedules(query.UserId);
 
 			return userSchedules
-				.Select(ws =>
-				{
-					var dto = ws.MapToDto();
-
-					if (ws.OwnerId == query.UserId)
-						dto.IsAdmin = true;
-					else
-						dto.IsAdmin = false;
-
-					return dto;
-				})
+				.Select(ws => ws.MapToDto())
 				.ToList();
 		}
 	}
