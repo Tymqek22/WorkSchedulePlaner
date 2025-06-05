@@ -6,6 +6,7 @@ namespace WorkSchedulePlaner.Application.Features.Employees.Commands.AddEmployee
 		string Name,
 		string LastName,
 		string? Position,
+		string? UserEmail,
 		int ScheduleId)
 		: ICommand<AddEmployeeResult>;
 }

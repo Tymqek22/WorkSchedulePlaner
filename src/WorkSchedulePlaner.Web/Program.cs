@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WorkSchedulePlaner.Application.Abstractions.Messaging;
 using WorkSchedulePlaner.Application.Abstractions.Repository;
+using WorkSchedulePlaner.Application.Abstractions.Services;
 using WorkSchedulePlaner.Application.DTOs;
 using WorkSchedulePlaner.Application.Features.Employees.Commands.AddEmployee;
 using WorkSchedulePlaner.Application.Features.Employees.Commands.DeleteEmployee;
@@ -22,6 +23,7 @@ using WorkSchedulePlaner.Domain.Entities;
 using WorkSchedulePlaner.Infrastructure.Dispatching;
 using WorkSchedulePlaner.Infrastructure.Identity.DbInitializer;
 using WorkSchedulePlaner.Infrastructure.Identity.Models;
+using WorkSchedulePlaner.Infrastructure.Identity.Services;
 using WorkSchedulePlaner.Infrastructure.Persistence;
 using WorkSchedulePlaner.Infrastructure.Repository;
 
@@ -66,6 +68,8 @@ builder.Services.AddScoped<IQueryHandler<GetUserSchedulesQuery,List<WorkSchedule
 builder.Services.AddScoped<IQueryHandler<GetTileByIdQuery,ShiftTileDto>,GetTileByIdQueryHandler>();
 builder.Services.AddScoped<ICommandDispatcher,CommandDispatcher>();
 builder.Services.AddScoped<IQueryDispatcher,QueryDispatcher>();
+
+builder.Services.AddScoped<IIdentityService,IdentityService>();
 
 var app = builder.Build();
 

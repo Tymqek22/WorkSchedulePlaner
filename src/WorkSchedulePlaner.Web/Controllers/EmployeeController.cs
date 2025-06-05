@@ -42,12 +42,13 @@ namespace WorkSchedulePlaner.Web.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Create(Employee employee)
+		public async Task<IActionResult> Create(EmployeeDto employee)
 		{
 			var command = new AddEmployeeCommand(
 				employee.Name,
 				employee.LastName,
 				employee.Position,
+				employee.Email,
 				employee.ScheduleId);
 
 			var result = await _commandDispatcher.Dispatch<AddEmployeeCommand,AddEmployeeResult>(command);
