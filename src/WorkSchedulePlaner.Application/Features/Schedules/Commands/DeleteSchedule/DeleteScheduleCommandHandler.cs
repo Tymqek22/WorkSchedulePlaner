@@ -1,11 +1,13 @@
 ﻿using WorkSchedulePlaner.Application.Abstractions.Messaging;
 using WorkSchedulePlaner.Application.Abstractions.Repository;
+using WorkSchedulePlaner.Application.Common.Errors;
+using WorkSchedulePlaner.Application.Common.Results;
 using WorkSchedulePlaner.Domain.Entities;
 
 namespace WorkSchedulePlaner.Application.Features.Schedules.Commands.DeleteSchedule
 {
 	public class DeleteScheduleCommandHandler
-		: ICommandHandler<DeleteScheduleCommand,DeleteScheduleResult>
+		: ICommandHandler<DeleteScheduleCommand,Result>
 	{
 		private readonly IRepository<ShiftTile> _shiftTileRepository;
 		private readonly IRepository<Employee> _employeeRepository;
@@ -30,7 +32,7 @@ namespace WorkSchedulePlaner.Application.Features.Schedules.Commands.DeleteSched
 			_unitOfWork = unitOfWork;
 		}
 
-		public async Task<DeleteScheduleResult> Handle(
+		public async Task<Result> Handle(
 			DeleteScheduleCommand command,
 			CancellationToken cancellationToken = default)
 		{
@@ -38,7 +40,7 @@ namespace WorkSchedulePlaner.Application.Features.Schedules.Commands.DeleteSched
 			var schedule = await _scheduleRepository.GetByIdAsync(command.Id);
 
 			if (schedule is null)
-				return DeleteScheduleResult.Failure;
+				return Result.Failure(Errors.Schedule.NotFound);
 
 			//get shift tiles to delete
 			var shiftTiles = await _shiftTileRepository.GetAsync(st => st.ScheduleId == schedule.Id);
@@ -60,7 +62,7 @@ namespace WorkSchedulePlaner.Application.Features.Schedules.Commands.DeleteSched
 			await _scheduleRepository.DeleteAsync(schedule.Id);
 			await _unitOfWork.SaveAsync();
 
-			return DeleteScheduleResult.Success;
+			return Result.Success();
 		}
 	}
 }

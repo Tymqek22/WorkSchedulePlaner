@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 using WorkSchedulePlaner.Application.Abstractions.Messaging;
+using WorkSchedulePlaner.Application.Common.Results;
 using WorkSchedulePlaner.Application.DTOs;
 using WorkSchedulePlaner.Application.Features.Employees.Queries.GetUserRoleInSchedule;
 using WorkSchedulePlaner.Application.Features.Schedules.Commands.CreateSchedule;
@@ -93,13 +94,13 @@ namespace WorkSchedulePlaner.Web.Controllers
 		{
 			var command = new CreateScheduleCommand(schedule.Title,schedule.OwnerId);
 
-			var result = await _commandDispatcher.Dispatch<CreateScheduleCommand,CreateScheduleResult>(command);
+			var result = await _commandDispatcher.Dispatch<CreateScheduleCommand,Result>(command);
 
-			if (result != CreateScheduleResult.Success) {
+			if (result.IsFailure) {
 
 				var error = new ErrorViewModel
 				{
-					RequestId = "Cannot create schedule."
+					RequestId = result.Error.Message
 				};
 
 				return View("Error",error);
@@ -112,13 +113,13 @@ namespace WorkSchedulePlaner.Web.Controllers
 		{
 			var command = new DeleteScheduleCommand(scheduleId);
 
-			var result = await _commandDispatcher.Dispatch<DeleteScheduleCommand,DeleteScheduleResult>(command);
+			var result = await _commandDispatcher.Dispatch<DeleteScheduleCommand,Result>(command);
 
-			if (result != DeleteScheduleResult.Success) {
+			if (result.IsFailure) {
 
 				var error = new ErrorViewModel
 				{
-					RequestId = "Cannot delete schedule."
+					RequestId = result.Error.Message
 				};
 
 				return View("Error",error);
@@ -141,13 +142,13 @@ namespace WorkSchedulePlaner.Web.Controllers
 		{
 			var command = new UpdateScheduleCommand(schedule.Id,schedule.Title);
 
-			var result = await _commandDispatcher.Dispatch<UpdateScheduleCommand,UpdateScheduleResult>(command);
+			var result = await _commandDispatcher.Dispatch<UpdateScheduleCommand,Result>(command);
 
-			if (result != UpdateScheduleResult.Success) {
+			if (result.IsFailure) {
 
 				var error = new ErrorViewModel
 				{
-					RequestId = "Cannot update schedule."
+					RequestId = result.Error.Message
 				};
 
 				return View("Error",error);

@@ -1,11 +1,13 @@
 ﻿using WorkSchedulePlaner.Application.Abstractions.Messaging;
 using WorkSchedulePlaner.Application.Abstractions.Repository;
+using WorkSchedulePlaner.Application.Common.Errors;
+using WorkSchedulePlaner.Application.Common.Results;
 using WorkSchedulePlaner.Domain.Entities;
 
 namespace WorkSchedulePlaner.Application.Features.Schedules.Commands.UpdateSchedule
 {
 	public class UpdateScheduleCommandHandler
-		: ICommandHandler<UpdateScheduleCommand,UpdateScheduleResult>
+		: ICommandHandler<UpdateScheduleCommand,Result>
 	{
 		private readonly IWorkScheduleRepository _scheduleRepository;
 		private readonly IUnitOfWork _unitOfWork;
@@ -18,21 +20,21 @@ namespace WorkSchedulePlaner.Application.Features.Schedules.Commands.UpdateSched
 			_unitOfWork = unitOfWork;
 		}
 
-		public async Task<UpdateScheduleResult> Handle(
+		public async Task<Result> Handle(
 			UpdateScheduleCommand command,
 			CancellationToken cancellationToken = default)
 		{
 			var schedule = await _scheduleRepository.GetByIdAsync(command.Id);
 
 			if (schedule is null)
-				return UpdateScheduleResult.Failure;
+				return Result.Failure(Errors.Schedule.NotFound);
 
 			schedule.Title = command.Title;
 
 			await _scheduleRepository.UpdateAsync(schedule);
 			await _unitOfWork.SaveAsync();
 
-			return UpdateScheduleResult.Success;
+			return Result.Success();
 		}
 	}
 }

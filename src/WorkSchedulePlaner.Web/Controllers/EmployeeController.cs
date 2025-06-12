@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WorkSchedulePlaner.Application.Abstractions.Messaging;
+using WorkSchedulePlaner.Application.Common.Results;
 using WorkSchedulePlaner.Application.DTOs;
 using WorkSchedulePlaner.Application.Features.Employees.Commands.AddEmployee;
 using WorkSchedulePlaner.Application.Features.Employees.Commands.DeleteEmployee;
@@ -50,13 +51,13 @@ namespace WorkSchedulePlaner.Web.Controllers
 				employee.Email,
 				employee.ScheduleId);
 
-			var result = await _commandDispatcher.Dispatch<AddEmployeeCommand,AddEmployeeResult>(command);
+			var result = await _commandDispatcher.Dispatch<AddEmployeeCommand,Result>(command);
 
-			if (result != AddEmployeeResult.Success) {
+			if (result.IsFailure) {
 
 				var error = new ErrorViewModel
 				{
-					RequestId = "Cannot add employee."
+					RequestId = result.Error.Message
 				};
 
 				return View("Error",error);
@@ -84,13 +85,13 @@ namespace WorkSchedulePlaner.Web.Controllers
 				employee.Position,
 				employee.Email);
 
-			var result = await _commandDispatcher.Dispatch<UpdateEmployeeCommand,UpdateEmployeeResult>(command);
+			var result = await _commandDispatcher.Dispatch<UpdateEmployeeCommand,Result>(command);
 
-			if (result != UpdateEmployeeResult.Success) {
+			if (result.IsFailure) {
 
 				var error = new ErrorViewModel
 				{
-					RequestId = "Cannot update employee."
+					RequestId = result.Error.Message
 				};
 
 				return View("Error",error);
@@ -103,13 +104,13 @@ namespace WorkSchedulePlaner.Web.Controllers
 		{
 			var command = new DeleteEmployeeCommand(employeeId);
 
-			var result = await _commandDispatcher.Dispatch<DeleteEmployeeCommand,DeleteEmployeeResult>(command);
+			var result = await _commandDispatcher.Dispatch<DeleteEmployeeCommand,Result>(command);
 
-			if (result != DeleteEmployeeResult.Success) {
+			if (result.IsFailure) {
 
 				var error = new ErrorViewModel
 				{
-					RequestId = "Cannot delete employee."
+					RequestId = result.Error.Message
 				};
 
 				return View("Error",error);

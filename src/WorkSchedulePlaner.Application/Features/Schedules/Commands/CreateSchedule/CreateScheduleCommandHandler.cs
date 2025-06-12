@@ -1,11 +1,12 @@
 ﻿using WorkSchedulePlaner.Application.Abstractions.Messaging;
 using WorkSchedulePlaner.Application.Abstractions.Repository;
+using WorkSchedulePlaner.Application.Common.Results;
 using WorkSchedulePlaner.Domain.Entities;
 
 namespace WorkSchedulePlaner.Application.Features.Schedules.Commands.CreateSchedule
 {
 	public class CreateScheduleCommandHandler
-		: ICommandHandler<CreateScheduleCommand,CreateScheduleResult>
+		: ICommandHandler<CreateScheduleCommand,Result>
 	{
 		private readonly IWorkScheduleRepository _scheduleRepository;
 		private readonly IRepository<ScheduleUser> _scheduleUserRepository;
@@ -21,7 +22,7 @@ namespace WorkSchedulePlaner.Application.Features.Schedules.Commands.CreateSched
 			_unitOfWork = unitOfWork;
 		}
 
-		public async Task<CreateScheduleResult> Handle(
+		public async Task<Result> Handle(
 			CreateScheduleCommand command,
 			CancellationToken cancellationToken = default)
 		{
@@ -42,7 +43,7 @@ namespace WorkSchedulePlaner.Application.Features.Schedules.Commands.CreateSched
 			await _scheduleUserRepository.InsertAsync(scheduleUserRole);
 			await _unitOfWork.SaveAsync();
 
-			return CreateScheduleResult.Success;
+			return Result.Success();
 		}
 	}
 }

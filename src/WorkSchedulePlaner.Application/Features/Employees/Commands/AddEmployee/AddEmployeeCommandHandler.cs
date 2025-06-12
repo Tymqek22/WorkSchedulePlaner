@@ -1,11 +1,13 @@
 ﻿using WorkSchedulePlaner.Application.Abstractions.Messaging;
 using WorkSchedulePlaner.Application.Abstractions.Repository;
 using WorkSchedulePlaner.Application.Abstractions.Services;
+using WorkSchedulePlaner.Application.Common.Errors;
+using WorkSchedulePlaner.Application.Common.Results;
 using WorkSchedulePlaner.Domain.Entities;
 
 namespace WorkSchedulePlaner.Application.Features.Employees.Commands.AddEmployee
 {
-	public class AddEmployeeCommandHandler : ICommandHandler<AddEmployeeCommand,AddEmployeeResult>
+	public class AddEmployeeCommandHandler : ICommandHandler<AddEmployeeCommand,Result>
 	{
 		private readonly IRepository<Employee> _employeeRepository;
 		private readonly IRepository<ScheduleUser> _scheduleUserRepository;
@@ -24,7 +26,7 @@ namespace WorkSchedulePlaner.Application.Features.Employees.Commands.AddEmployee
 			_identityService = identityService;
 		}
 
-		public async Task<AddEmployeeResult> Handle(
+		public async Task<Result> Handle(
 			AddEmployeeCommand command,
 			CancellationToken cancellationToken = default)
 		{
@@ -35,7 +37,7 @@ namespace WorkSchedulePlaner.Application.Features.Employees.Commands.AddEmployee
 				userId = await _identityService.GetUserIdByEmail(command.UserEmail);
 
 				if (userId is null)
-					return AddEmployeeResult.Failure;
+					return Result.Failure(Errors.Employee.NotFound);
 
 				var scheduleUser = new ScheduleUser
 				{
@@ -59,7 +61,7 @@ namespace WorkSchedulePlaner.Application.Features.Employees.Commands.AddEmployee
 			await _employeeRepository.InsertAsync(employee);
 			await _unitOfWork.SaveAsync();
 
-			return AddEmployeeResult.Success;
+			return Result.Success();
 		}
 	}
 }

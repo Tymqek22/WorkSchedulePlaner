@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using WorkSchedulePlaner.Application.Abstractions.Messaging;
+using WorkSchedulePlaner.Application.Common.Results;
 using WorkSchedulePlaner.Application.DTOs;
 using WorkSchedulePlaner.Application.Features.Employees.Queries.GetFromSchedule;
 using WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.AssignShift;
@@ -49,13 +50,13 @@ namespace WorkSchedulePlaner.Web.Controllers
 				viewModel.Date,
 				scheduleId);
 
-			var result = await _commandDispatcher.Dispatch<AssignShiftCommand,AssignShiftResult>(command);
+			var result = await _commandDispatcher.Dispatch<AssignShiftCommand,Result>(command);
 
-			if (result != AssignShiftResult.Success) {
+			if (result.IsFailure) {
 
 				var error = new ErrorViewModel
 				{
-					RequestId = "Cannot add shift."
+					RequestId = result.Error.Message
 				};
 
 				return View("Error",error);
@@ -89,13 +90,13 @@ namespace WorkSchedulePlaner.Web.Controllers
 				viewModel.Description,
 				viewModel.Shifts);
 
-			var result = await _commandDispatcher.Dispatch<UpdateShiftCommand,UpdateShiftResult>(command);
+			var result = await _commandDispatcher.Dispatch<UpdateShiftCommand,Result>(command);
 
-			if (result != UpdateShiftResult.Success) {
+			if (result.IsFailure) {
 
 				var error = new ErrorViewModel
 				{
-					RequestId = "Cannot update shift."
+					RequestId = result.Error.Message
 				};
 
 				return View("Error",error);
@@ -108,13 +109,13 @@ namespace WorkSchedulePlaner.Web.Controllers
 		{
 			var command = new DeleteShiftCommand(tileId);
 
-			var result = await _commandDispatcher.Dispatch<DeleteShiftCommand,DeleteShiftResult>(command);
+			var result = await _commandDispatcher.Dispatch<DeleteShiftCommand,Result>(command);
 
-			if (result != DeleteShiftResult.Success) {
+			if (result.IsFailure) {
 
 				var error = new ErrorViewModel
 				{
-					RequestId = "Cannot delete shift."
+					RequestId = result.Error.Message
 				};
 
 				return View("Error",error);

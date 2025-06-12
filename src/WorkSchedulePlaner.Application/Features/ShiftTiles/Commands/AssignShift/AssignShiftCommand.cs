@@ -1,4 +1,5 @@
 ﻿using WorkSchedulePlaner.Application.Abstractions.Messaging;
+using WorkSchedulePlaner.Application.Common.Results;
 using WorkSchedulePlaner.Application.DTOs;
 
 namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.AssignShift
@@ -9,5 +10,5 @@ namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.AssignShif
 		List<EmployeeWorkHoursDto> EmployeeWorkHours,
 		DateTime Date,
 		int ScheduleId)
-		: ICommand<AssignShiftResult>;
+		: ICommand<Result>;
 }

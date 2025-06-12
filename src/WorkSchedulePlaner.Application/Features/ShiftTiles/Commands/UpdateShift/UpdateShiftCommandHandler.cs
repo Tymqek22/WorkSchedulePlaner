@@ -1,12 +1,14 @@
 ﻿using WorkSchedulePlaner.Application.Abstractions.Messaging;
 using WorkSchedulePlaner.Application.Abstractions.Repository;
+using WorkSchedulePlaner.Application.Common.Errors;
+using WorkSchedulePlaner.Application.Common.Results;
 using WorkSchedulePlaner.Application.DTOs;
 using WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.AssignShift;
 using WorkSchedulePlaner.Domain.Entities;
 
 namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.UpdateShift
 {
-	public class UpdateShiftCommandHandler : ICommandHandler<UpdateShiftCommand,UpdateShiftResult>
+	public class UpdateShiftCommandHandler : ICommandHandler<UpdateShiftCommand,Result>
 	{
 		private readonly IShiftTileRepository _shiftTileRepository;
 		private readonly IRepository<EmployeeShift> _shiftsRepository;
@@ -25,7 +27,7 @@ namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.UpdateShif
 			_unitOfWork = unitOfWork;
 		}
 
-		public async Task<UpdateShiftResult> Handle(
+		public async Task<Result> Handle(
 			UpdateShiftCommand command,
 			CancellationToken cancellationToken = default)
 		{
@@ -33,19 +35,17 @@ namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.UpdateShif
 			var tile = await _shiftTileRepository.GetByIdAsync(command.ShiftTileId);
 
 			if (tile is null)
-				return UpdateShiftResult.Failure;
+				return Result.Failure(Errors.ShiftTile.NotFound);
 
 			if (!this.IsAnyEmployeeAssigned(command.EmployeeWorkHours))
-				return UpdateShiftResult.Failure;
-			else if (!await this.AllEmployeesExist(command.EmployeeWorkHours))
-				return UpdateShiftResult.Failure;
+				return Result.Failure(Errors.ShiftTile.NoEmployeesAssigned);
 			else if (this.IsEmployeeDuplicatedOnShift(command.EmployeeWorkHours))
-				return UpdateShiftResult.Failure;
+				return Result.Failure(Errors.ShiftTile.EmployeeDuplicated);
 
 			foreach (var employeeShift in command.EmployeeWorkHours) {
 
 				if (!await this.IsEmployeeAssignedOnce(employeeShift.Employee.Id,tile.Date))
-					return UpdateShiftResult.Failure;
+					return Result.Failure(Errors.ShiftTile.TooManyEmployeeAssignments);
 			}
 
 			//delete employee shifts for that tile
@@ -71,20 +71,7 @@ namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.UpdateShif
 
 			await _unitOfWork.SaveAsync();
 
-			return UpdateShiftResult.Success;
-		}
-
-		private async Task<bool> AllEmployeesExist(List<EmployeeWorkHoursDto> employeeWorkHours)
-		{
-			foreach (var employee in employeeWorkHours) {
-
-				var exists = await _employeeRepository.GetByIdAsync(employee.Employee.Id);
-
-				if (exists is null)
-					return false;
-			}
-
-			return true;
+			return Result.Success();
 		}
 
 		private async Task<bool> IsEmployeeAssignedOnce(int employeeId,DateTime date)
