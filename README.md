@@ -22,6 +22,16 @@ A Web application for managing employee work schedules. It allows creating, edit
 - User registration and login
 - Shift reports generation
 
+## Architecture
+
+The project follows: 
+- **Clean Architecture** principles with clear separation of concerns  
+- **CQRS** to separate commands (writes) from queries (reads)
+- **Repository** and **Unit of Work** patterns for data access and transactional consistency
+- **Result Pattern** for consistent error handling.  
+
+This design makes the application modular, testable, and easy to maintain.
+
 ## Running locally
 
 1. **Clone the repository**
