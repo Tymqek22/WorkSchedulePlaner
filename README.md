@@ -52,13 +52,13 @@ A Web application for managing employee work schedules. It allows creating, edit
 
 ## Future Improvements
 
-Integration with external calendars (e.g., Google Calendar)
-Email/SMS notifications for employees
-Mobile-friendly / PWA version
-Drag & drop shift assignment
-Public API for external integrations
+- Integration with external calendars (e.g., Google Calendar)
+- Email/SMS notifications for employees
+- Mobile-friendly / PWA version
+- Drag & drop shift assignment
+- Public API for external integrations
 
 ## Author
 
-Educational project built to practice ASP.NET Core and MVC architecture following with Clean Architecture and CQRS pattern.
-Author: Tymoteusz Procner
+- Educational project built to practice ASP.NET Core and MVC architecture following with Clean Architecture and CQRS pattern.
+- Author: Tymoteusz Procner
