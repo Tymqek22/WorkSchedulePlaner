@@ -3,25 +3,22 @@ using WorkSchedulePlaner.Application.Abstractions.Repository;
 using WorkSchedulePlaner.Application.Abstractions.Services;
 using WorkSchedulePlaner.Application.Common.Errors;
 using WorkSchedulePlaner.Application.Common.Results;
-using WorkSchedulePlaner.Domain.Entities;
+using WorkSchedulePlaner.Domain.Repositories;
 
 namespace WorkSchedulePlaner.Application.Features.Employees.Commands.AddEmployee
 {
 	public class AddEmployeeCommandHandler : ICommandHandler<AddEmployeeCommand,Result>
 	{
-		private readonly IRepository<Employee> _employeeRepository;
-		private readonly IRepository<ScheduleUser> _scheduleUserRepository;
+		private readonly IWorkScheduleRepository _workScheduleRepository;
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IIdentityService _identityService;
 
 		public AddEmployeeCommandHandler(
-			IRepository<Employee> employeeRepository,
-			IRepository<ScheduleUser> scheduleUserRepository,
+			IWorkScheduleRepository workScheduleRepository,
 			IUnitOfWork unitOfWork,
 			IIdentityService identityService)
 		{
-			_employeeRepository = employeeRepository;
-			_scheduleUserRepository = scheduleUserRepository;
+			_workScheduleRepository = workScheduleRepository;
 			_unitOfWork = unitOfWork;
 			_identityService = identityService;
 		}
@@ -38,27 +35,15 @@ namespace WorkSchedulePlaner.Application.Features.Employees.Commands.AddEmployee
 
 				if (userId is null)
 					return Result.Failure(Errors.Employee.NotFound);
-
-				var scheduleUser = new ScheduleUser
-				{
-					ScheduleId = command.ScheduleId,
-					UserId = userId,
-					Role = "employee"
-				};
-
-				await _scheduleUserRepository.InsertAsync(scheduleUser);
 			}
 
-			var employee = new Employee
-			{
-				Name = command.Name,
-				LastName = command.LastName,
-				Position = command.Position,
-				UserId = userId,
-				ScheduleId = command.ScheduleId
-			};
+			var schedule = await _workScheduleRepository.GetByIdAsync(command.ScheduleId);
 
-			await _employeeRepository.InsertAsync(employee);
+			if (schedule is null)
+				return Result.Failure(Errors.Schedule.NotFound);
+
+			schedule.AddEmployee(command.FirstName,command.LastName,schedule.Id,userId,command.Position);
+
 			await _unitOfWork.SaveAsync();
 
 			return Result.Success();

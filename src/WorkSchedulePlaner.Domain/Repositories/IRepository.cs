@@ -1,4 +1,4 @@
-﻿namespace WorkSchedulePlaner.Application.Abstractions.Repository
+﻿namespace WorkSchedulePlaner.Domain.Repositories
 {
 	public interface IRepository<T> where T : class
 	{

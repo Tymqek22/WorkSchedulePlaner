@@ -1,6 +1,6 @@
 ﻿using WorkSchedulePlaner.Domain.Entities;
 
-namespace WorkSchedulePlaner.Application.Abstractions.Repository
+namespace WorkSchedulePlaner.Domain.Repositories
 {
 	public interface IShiftTileRepository : IRepository<ShiftTile>
 	{
