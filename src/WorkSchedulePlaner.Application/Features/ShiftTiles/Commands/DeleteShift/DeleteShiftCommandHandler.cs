@@ -1,10 +1,12 @@
 ﻿using WorkSchedulePlaner.Application.Abstractions.Messaging;
 using WorkSchedulePlaner.Application.Abstractions.Repository;
+using WorkSchedulePlaner.Application.Common.Errors;
+using WorkSchedulePlaner.Application.Common.Results;
 using WorkSchedulePlaner.Domain.Entities;
 
 namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.DeleteShift
 {
-	public class DeleteShiftCommandHandler : ICommandHandler<DeleteShiftCommand,DeleteShiftResult>
+	public class DeleteShiftCommandHandler : ICommandHandler<DeleteShiftCommand,Result>
 	{
 		private readonly IRepository<ShiftTile> _shiftTileRepository;
 		private readonly IRepository<EmployeeShift> _shiftsRepository;
@@ -20,7 +22,7 @@ namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.DeleteShif
 			_unitOfWork = unitOfWork;
 		}
 
-		public async Task<DeleteShiftResult> Handle(
+		public async Task<Result> Handle(
 			DeleteShiftCommand command,
 			CancellationToken cancellationToken = default)
 		{
@@ -28,7 +30,7 @@ namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.DeleteShif
 			var shiftTile = await _shiftTileRepository.GetByIdAsync(command.Id);
 
 			if (shiftTile is null)
-				return DeleteShiftResult.Failure;
+				return Result.Failure(Errors.ShiftTile.NotFound);
 
 			//delete all shifts related with this tile
 			await _shiftsRepository.DeleteManyAsync(es => es.ShiftTileId == shiftTile.Id);
@@ -37,7 +39,7 @@ namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.DeleteShif
 			await _shiftTileRepository.DeleteAsync(shiftTile.Id);
 			await _unitOfWork.SaveAsync();
 
-			return DeleteShiftResult.Success;
+			return Result.Success();
 		}
 	}
 }

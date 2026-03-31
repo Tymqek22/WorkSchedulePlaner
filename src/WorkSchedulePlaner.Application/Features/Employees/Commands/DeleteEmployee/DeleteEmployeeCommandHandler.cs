@@ -1,11 +1,13 @@
 ﻿using WorkSchedulePlaner.Application.Abstractions.Messaging;
 using WorkSchedulePlaner.Application.Abstractions.Repository;
+using WorkSchedulePlaner.Application.Common.Errors;
+using WorkSchedulePlaner.Application.Common.Results;
 using WorkSchedulePlaner.Domain.Entities;
 
 namespace WorkSchedulePlaner.Application.Features.Employees.Commands.DeleteEmployee
 {
 	public class DeleteEmployeeCommandHandler
-		: ICommandHandler<DeleteEmployeeCommand,DeleteEmployeeResult>
+		: ICommandHandler<DeleteEmployeeCommand,Result>
 	{
 		private readonly IRepository<Employee> _employeeRepository;
 		private readonly IRepository<EmployeeShift> _shiftsRepository;
@@ -21,7 +23,7 @@ namespace WorkSchedulePlaner.Application.Features.Employees.Commands.DeleteEmplo
 			_unitOfWork = unitOfWork;
 		}
 
-		public async Task<DeleteEmployeeResult> Handle(
+		public async Task<Result> Handle(
 			DeleteEmployeeCommand command,
 			CancellationToken cancellationToken = default)
 		{
@@ -29,7 +31,7 @@ namespace WorkSchedulePlaner.Application.Features.Employees.Commands.DeleteEmplo
 			var employee = await _employeeRepository.GetByIdAsync(command.Id);
 
 			if (employee is null)
-				return DeleteEmployeeResult.Failure;
+				return Result.Failure(Errors.Employee.NotFound);
 
 			//delete all employees shifts
 			await _shiftsRepository.DeleteManyAsync(es => es.EmployeeId == employee.Id);
@@ -38,7 +40,7 @@ namespace WorkSchedulePlaner.Application.Features.Employees.Commands.DeleteEmplo
 			await _employeeRepository.DeleteAsync(employee.Id);
 			await _unitOfWork.SaveAsync();
 
-			return DeleteEmployeeResult.Success;
+			return Result.Success();
 		}
 	}
 }

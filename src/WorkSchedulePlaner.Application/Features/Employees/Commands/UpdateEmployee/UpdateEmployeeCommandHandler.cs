@@ -1,11 +1,13 @@
 ﻿using WorkSchedulePlaner.Application.Abstractions.Messaging;
 using WorkSchedulePlaner.Application.Abstractions.Repository;
 using WorkSchedulePlaner.Application.Abstractions.Services;
+using WorkSchedulePlaner.Application.Common.Errors;
+using WorkSchedulePlaner.Application.Common.Results;
 using WorkSchedulePlaner.Domain.Entities;
 
 namespace WorkSchedulePlaner.Application.Features.Employees.Commands.UpdateEmployee
 {
-	public class UpdateEmployeeCommandHandler : ICommandHandler<UpdateEmployeeCommand,UpdateEmployeeResult>
+	public class UpdateEmployeeCommandHandler : ICommandHandler<UpdateEmployeeCommand,Result>
 	{
 		private readonly IRepository<Employee> _employeeRepository;
 		private readonly IScheduleUserRepository _scheduleUserRepository;
@@ -24,21 +26,21 @@ namespace WorkSchedulePlaner.Application.Features.Employees.Commands.UpdateEmplo
 			_identityService = identityService;
 		}
 
-		public async Task<UpdateEmployeeResult> Handle(
+		public async Task<Result> Handle(
 			UpdateEmployeeCommand command,
 			CancellationToken cancellationToken = default)
 		{
 			var employee = await _employeeRepository.GetByIdAsync(command.Id);
 
 			if (employee is null)
-				return UpdateEmployeeResult.Failure;
+				return Result.Failure(Errors.Employee.NotFound);
 
 			if (command.Email is not null) {
 
 				var userId = await _identityService.GetUserIdByEmail(command.Email);
 
 				if (userId is null)
-					return UpdateEmployeeResult.Failure;
+					return Result.Failure(Errors.Employee.NotFound);
 
 				if (employee.UserId is not null) 
 					await _scheduleUserRepository.DeleteAsyncByIds(employee.UserId,employee.ScheduleId);
@@ -65,7 +67,7 @@ namespace WorkSchedulePlaner.Application.Features.Employees.Commands.UpdateEmplo
 			await _employeeRepository.UpdateAsync(employee);
 			await _unitOfWork.SaveAsync();
 
-			return UpdateEmployeeResult.Success;
+			return Result.Success();
 		}
 	}
 }

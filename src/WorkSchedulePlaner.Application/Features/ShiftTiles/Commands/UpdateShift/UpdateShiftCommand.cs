@@ -1,4 +1,5 @@
 ﻿using WorkSchedulePlaner.Application.Abstractions.Messaging;
+using WorkSchedulePlaner.Application.Common.Results;
 using WorkSchedulePlaner.Application.DTOs;
 
 namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.UpdateShift
@@ -8,5 +9,5 @@ namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.UpdateShif
 		string Title,
 		string? Description,
 		List<EmployeeWorkHoursDto> EmployeeWorkHours)
-		: ICommand<UpdateShiftResult>;
+		: ICommand<Result>;
 }

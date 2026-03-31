@@ -1,12 +1,13 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using WorkSchedulePlaner.Application.Abstractions.Messaging;
+﻿using WorkSchedulePlaner.Application.Abstractions.Messaging;
 using WorkSchedulePlaner.Application.Abstractions.Repository;
+using WorkSchedulePlaner.Application.Common.Errors;
+using WorkSchedulePlaner.Application.Common.Results;
 using WorkSchedulePlaner.Application.DTOs;
 using WorkSchedulePlaner.Domain.Entities;
 
 namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.AssignShift
 {
-	public class AssignShiftCommandHandler : ICommandHandler<AssignShiftCommand,AssignShiftResult>
+	public class AssignShiftCommandHandler : ICommandHandler<AssignShiftCommand,Result>
 	{
 		private readonly IRepository<Employee> _employeeRepository;
 		private readonly IShiftTileRepository _shiftTileRepository;
@@ -25,22 +26,20 @@ namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.AssignShif
 			_unitOfWork = unitOfWork;
 		}
 
-		public async Task<AssignShiftResult> Handle(
+		public async Task<Result> Handle(
 			AssignShiftCommand command,
 			CancellationToken cancellationToken = default)
 		{
 			//temp validation
 			if (!this.IsAnyEmployeeAssigned(command.EmployeeWorkHours))
-				return AssignShiftResult.Failure;
-			else if (!await this.AllEmployeesExist(command.EmployeeWorkHours))
-				return AssignShiftResult.UserNotFound;
+				return Result.Failure(Errors.ShiftTile.NoEmployeesAssigned);
 			else if (this.IsEmployeeDuplicatedOnShift(command.EmployeeWorkHours))
-				return AssignShiftResult.Failure;
+				return Result.Failure(Errors.ShiftTile.EmployeeDuplicated);
 
 			foreach (var employeeShift in command.EmployeeWorkHours) {
 
 				if (!await this.IsEmployeeAssignedOnce(employeeShift.Employee.Id,command.Date))
-					return AssignShiftResult.Failure;
+					return Result.Failure(Errors.ShiftTile.TooManyEmployeeAssignments);
 			}
 
 			//add tile to DB
@@ -67,20 +66,7 @@ namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.AssignShif
 			}
 			await _unitOfWork.SaveAsync();
 
-			return AssignShiftResult.Success;
-		}
-
-		private async Task<bool> AllEmployeesExist(List<EmployeeWorkHoursDto> employeeWorkHours)
-		{
-			foreach (var employee in employeeWorkHours) {
-
-				var exists = await _employeeRepository.GetByIdAsync(employee.Employee.Id);
-
-				if (exists is null)
-					return false;
-			}
-
-			return true;
+			return Result.Success();
 		}
 
 		private async Task<bool> IsEmployeeAssignedOnce(int employeeId,DateTime date)

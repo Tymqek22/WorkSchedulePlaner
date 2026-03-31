@@ -1,4 +1,5 @@
 ﻿using WorkSchedulePlaner.Application.Abstractions.Messaging;
+using WorkSchedulePlaner.Application.Common.Results;
 
 namespace WorkSchedulePlaner.Application.Features.Employees.Commands.UpdateEmployee
 {
@@ -8,5 +9,5 @@ namespace WorkSchedulePlaner.Application.Features.Employees.Commands.UpdateEmplo
 		string LastName,
 		string? Position,
 		string? Email)
-		: ICommand<UpdateEmployeeResult>;
+		: ICommand<Result>;
 }

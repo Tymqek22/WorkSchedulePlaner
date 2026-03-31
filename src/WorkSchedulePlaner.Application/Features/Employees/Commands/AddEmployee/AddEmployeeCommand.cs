@@ -1,4 +1,5 @@
 ﻿using WorkSchedulePlaner.Application.Abstractions.Messaging;
+using WorkSchedulePlaner.Application.Common.Results;
 
 namespace WorkSchedulePlaner.Application.Features.Employees.Commands.AddEmployee
 {
@@ -8,5 +9,5 @@ namespace WorkSchedulePlaner.Application.Features.Employees.Commands.AddEmployee
 		string? Position,
 		string? UserEmail,
 		int ScheduleId)
-		: ICommand<AddEmployeeResult>;
+		: ICommand<Result>;
 }
