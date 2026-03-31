@@ -1,20 +1,26 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using WorkSchedulePlaner.Domain.ValueObjects;
 
 namespace WorkSchedulePlaner.Domain.Entities
 {
 	public class ShiftTile
 	{
-		[Key]
-		public int Id { get; set; }
-		public string Title { get; set; }
-		public string? Description { get; set; }
-		public DateTime Date { get; set; }
+		private readonly List<Assignment> _assignments = new();
 
-		[ForeignKey("ScheduleId")]
-		public int ScheduleId { get; set; }
-		public WorkSchedule Schedule { get; set; }
+		public int Id { get; private set; }
+		public string Title { get; private set; }
+		public string? Description { get; private set; }
+		public DateOnly Date { get; private set; }
 
-		public ICollection<EmployeeShift> EmployeeShifts { get; set; }
+		public int ScheduleId { get; private set; }
+
+		public IReadOnlyCollection<Assignment> Assignments => _assignments.AsReadOnly();
+
+		private ShiftTile() { }
+
+		public ShiftTile(string title, string? description)
+		{
+			Title = title;
+			Description = description;
+		}
 	}
 }

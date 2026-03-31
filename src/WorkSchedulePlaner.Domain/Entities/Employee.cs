@@ -1,20 +1,35 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using WorkSchedulePlaner.Domain.ValueObjects;
 
 namespace WorkSchedulePlaner.Domain.Entities
 {
 	public class Employee
 	{
-		public int Id { get; set; }
-		public string Name { get; set; }
-		public string LastName { get; set; }
-		public string? Position { get; set; }
+		public int Id { get; private set; }
+		public string Name { get; private set; }
+		public string LastName { get; private set; }
+		public string? Position { get; private set; }
 
-		public string? UserId { get; set; }
+		public string? UserId { get; private set; }
+		public int ScheduleId { get; private set; }
+		public string ScheduleRole { get; private set; }
 
-		public int ScheduleId { get; set; }
-		public WorkSchedule Schedule { get; set; }
+		private Employee() { }
 
-		public ICollection<EmployeeShift>? EmployeeShifts { get; set; }
+		public Employee(
+			string name,
+			string lastName,
+			int scheduleId,
+			string scheduleRole,
+			string? position,
+			string? userId
+			) 
+		{
+			Name = name;
+			LastName = lastName;
+			Position = position;
+			UserId = userId;
+			ScheduleId = scheduleId;
+			ScheduleRole = scheduleRole;
+		}
 	}
 }
