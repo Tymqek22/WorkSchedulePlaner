@@ -1,4 +1,4 @@
-﻿namespace WorkSchedulePlaner.Application.Common.Errors
+﻿namespace WorkSchedulePlaner.Domain.Common.Errors
 {
 	public static class Errors
 	{
@@ -22,6 +22,9 @@
 		{
 			public static readonly Error NotFound =
 				new("Schedule.NotFound","Schedule not found.");
+
+			public static readonly Error EmployeeAlreadyExist =
+				new("Schedule.EmployeeAlreadyExist","Employee is already assigned to schedule.");
 		}
 
 		public static class ShiftTile

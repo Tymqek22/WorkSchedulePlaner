@@ -1,4 +1,4 @@
-﻿namespace WorkSchedulePlaner.Application.Common.Errors
+﻿namespace WorkSchedulePlaner.Domain.Common.Errors
 {
 	public class Error
 	{

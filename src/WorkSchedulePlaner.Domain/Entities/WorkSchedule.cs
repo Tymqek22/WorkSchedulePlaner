@@ -1,4 +1,6 @@
-﻿using WorkSchedulePlaner.Domain.ValueObjects;
+﻿using WorkSchedulePlaner.Application.Common.Results;
+using WorkSchedulePlaner.Domain.Common.Errors;
+using WorkSchedulePlaner.Domain.ValueObjects;
 
 namespace WorkSchedulePlaner.Domain.Entities
 {
@@ -22,12 +24,14 @@ namespace WorkSchedulePlaner.Domain.Entities
 			OwnerId = ownerId;
 		}
 
-		public void AddEmployee(string firstName,string lastName,int scheduleId,string? userId,string? position)
+		public Result AddEmployee(string firstName,string lastName,int scheduleId,string? userId,string? position)
 		{
 			if (_employees.Any(e => e.FirstName == firstName && e.LastName == lastName))
-				throw new ArgumentException("Employee is already assigned to schedule.");
+				return Result.Failure(Errors.Schedule.EmployeeAlreadyExist);
 
 			_employees.Add(new Employee(firstName,lastName,scheduleId,position,userId));
+
+			return Result.Success();
 		}
 
 		public void RemoveEmployee(int employeeId)

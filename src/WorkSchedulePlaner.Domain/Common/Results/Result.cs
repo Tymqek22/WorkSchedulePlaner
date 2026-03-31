@@ -1,4 +1,4 @@
-﻿using WorkSchedulePlaner.Application.Common.Errors;
+﻿using WorkSchedulePlaner.Domain.Common.Errors;
 
 namespace WorkSchedulePlaner.Application.Common.Results
 {

@@ -4,8 +4,8 @@ namespace WorkSchedulePlaner.Domain.Repositories
 {
 	public interface IWorkScheduleRepository : IRepository<WorkSchedule>
 	{
-		Task<WorkSchedule> GetWithIncludesAsync(int id);
-		Task<WorkSchedule> GetScheduleDetailsFromPeriod(int id,DateTime startDate,DateTime endDate);
+		Task<WorkSchedule> GetByIdWithDetailsAsync(int id);
+		Task<WorkSchedule> GetScheduleDetailsFromPeriod(int id,DateOnly startDate,DateOnly endDate);
 		Task<IEnumerable<WorkSchedule>> GetAllUserSchedules(string userId);
 	}
 }

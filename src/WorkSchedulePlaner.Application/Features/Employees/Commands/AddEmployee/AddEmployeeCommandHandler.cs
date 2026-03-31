@@ -1,8 +1,8 @@
 ﻿using WorkSchedulePlaner.Application.Abstractions.Messaging;
 using WorkSchedulePlaner.Application.Abstractions.Repository;
 using WorkSchedulePlaner.Application.Abstractions.Services;
-using WorkSchedulePlaner.Application.Common.Errors;
 using WorkSchedulePlaner.Application.Common.Results;
+using WorkSchedulePlaner.Domain.Common.Errors;
 using WorkSchedulePlaner.Domain.Repositories;
 
 namespace WorkSchedulePlaner.Application.Features.Employees.Commands.AddEmployee
@@ -27,7 +27,7 @@ namespace WorkSchedulePlaner.Application.Features.Employees.Commands.AddEmployee
 			AddEmployeeCommand command,
 			CancellationToken cancellationToken = default)
 		{
-			string userId = null;
+			string? userId = null;
 
 			if (command.UserEmail is not null) {
 
@@ -37,12 +37,20 @@ namespace WorkSchedulePlaner.Application.Features.Employees.Commands.AddEmployee
 					return Result.Failure(Errors.Employee.NotFound);
 			}
 
-			var schedule = await _workScheduleRepository.GetByIdAsync(command.ScheduleId);
+			var schedule = await _workScheduleRepository.GetByIdWithDetailsAsync(command.ScheduleId);
 
 			if (schedule is null)
 				return Result.Failure(Errors.Schedule.NotFound);
 
-			schedule.AddEmployee(command.FirstName,command.LastName,schedule.Id,userId,command.Position);
+			var result = schedule.AddEmployee(
+				command.FirstName,
+				command.LastName,
+				schedule.Id,
+				userId,
+				command.Position);
+
+			if (!result.IsSuccess)
+				return result;
 
 			await _unitOfWork.SaveAsync();
 
