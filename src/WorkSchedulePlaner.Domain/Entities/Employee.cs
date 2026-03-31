@@ -1,6 +1,4 @@
-﻿using WorkSchedulePlaner.Domain.ValueObjects;
-
-namespace WorkSchedulePlaner.Domain.Entities
+﻿namespace WorkSchedulePlaner.Domain.Entities
 {
 	public class Employee
 	{
@@ -11,7 +9,6 @@ namespace WorkSchedulePlaner.Domain.Entities
 
 		public string? UserId { get; private set; }
 		public int ScheduleId { get; private set; }
-		public string ScheduleRole { get; private set; }
 
 		private Employee() { }
 
@@ -19,7 +16,6 @@ namespace WorkSchedulePlaner.Domain.Entities
 			string name,
 			string lastName,
 			int scheduleId,
-			string scheduleRole,
 			string? position,
 			string? userId
 			) 
@@ -29,7 +25,6 @@ namespace WorkSchedulePlaner.Domain.Entities
 			Position = position;
 			UserId = userId;
 			ScheduleId = scheduleId;
-			ScheduleRole = scheduleRole;
 		}
 	}
 }

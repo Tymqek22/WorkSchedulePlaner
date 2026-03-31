@@ -17,10 +17,20 @@ namespace WorkSchedulePlaner.Domain.Entities
 
 		private ShiftTile() { }
 
-		public ShiftTile(string title, string? description)
+		public ShiftTile(string title, int scheduleId, string? description)
 		{
 			Title = title;
 			Description = description;
+			ScheduleId = scheduleId;
+			Date = DateOnly.FromDateTime(DateTime.UtcNow);
+		}
+
+		public void AssignEmployee(int employeeId, string displayName, TimeRange timeRange)
+		{
+			if (_assignments.Any(a => a.EmployeeId == employeeId))
+				throw new ArgumentException($"Employee with this id:{employeeId} is already assigned.");
+
+			_assignments.Add(new Assignment(employeeId,displayName,timeRange));
 		}
 	}
 }
