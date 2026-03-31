@@ -4,6 +4,6 @@ using WorkSchedulePlaner.Application.Features.Employees.Commands.AddEmployee;
 
 namespace WorkSchedulePlaner.Application.Features.Employees.Commands.DeleteEmployee
 {
-	public record DeleteEmployeeCommand(int Id) 
+	public record DeleteEmployeeCommand(int EmployeeId,int ScheduleId) 
 		: ICommand<Result>;
 }

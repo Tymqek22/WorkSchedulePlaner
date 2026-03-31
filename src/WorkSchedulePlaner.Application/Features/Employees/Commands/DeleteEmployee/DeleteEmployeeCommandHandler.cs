@@ -1,25 +1,24 @@
 ﻿using WorkSchedulePlaner.Application.Abstractions.Messaging;
 using WorkSchedulePlaner.Application.Abstractions.Repository;
-using WorkSchedulePlaner.Application.Common.Errors;
 using WorkSchedulePlaner.Application.Common.Results;
+using WorkSchedulePlaner.Domain.Common.Errors;
 using WorkSchedulePlaner.Domain.Entities;
+using WorkSchedulePlaner.Domain.Repositories;
 
 namespace WorkSchedulePlaner.Application.Features.Employees.Commands.DeleteEmployee
 {
 	public class DeleteEmployeeCommandHandler
 		: ICommandHandler<DeleteEmployeeCommand,Result>
 	{
-		private readonly IRepository<Employee> _employeeRepository;
-		private readonly IRepository<EmployeeShift> _shiftsRepository;
+		private readonly IWorkScheduleRepository _workScheduleRepository;
 		private readonly IUnitOfWork _unitOfWork;
 
 		public DeleteEmployeeCommandHandler(
 			IRepository<Employee> employeeRepository,
-			IRepository<EmployeeShift> shiftsRepository,
+			IWorkScheduleRepository workScheduleRepository,
 			IUnitOfWork unitOfWork)
 		{
-			_employeeRepository = employeeRepository;
-			_shiftsRepository = shiftsRepository;
+			_workScheduleRepository = workScheduleRepository;
 			_unitOfWork = unitOfWork;
 		}
 
@@ -27,17 +26,16 @@ namespace WorkSchedulePlaner.Application.Features.Employees.Commands.DeleteEmplo
 			DeleteEmployeeCommand command,
 			CancellationToken cancellationToken = default)
 		{
-			//find employee in DB
-			var employee = await _employeeRepository.GetByIdAsync(command.Id);
+			var schedule = await _workScheduleRepository.GetByIdWithDetailsAsync(command.ScheduleId);
 
-			if (employee is null)
-				return Result.Failure(Errors.Employee.NotFound);
+			if (schedule is null)
+				return Result.Failure(Errors.Schedule.NotFound);
 
-			//delete all employees shifts
-			await _shiftsRepository.DeleteManyAsync(es => es.EmployeeId == employee.Id);
+			var result = schedule.RemoveEmployee(command.EmployeeId);
 
-			//delete employee from DB
-			await _employeeRepository.DeleteAsync(employee.Id);
+			if (!result.IsSuccess)
+				return result;
+
 			await _unitOfWork.SaveAsync();
 
 			return Result.Success();

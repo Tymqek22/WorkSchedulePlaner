@@ -25,6 +25,9 @@
 
 			public static readonly Error EmployeeAlreadyExist =
 				new("Schedule.EmployeeAlreadyExist","Employee is already assigned to schedule.");
+
+			public static readonly Error EmployeeNotFound =
+				new("Schedule.EmployeeNotFound","Employee is not a member of this schedule.");
 		}
 
 		public static class ShiftTile

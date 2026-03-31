@@ -1,19 +1,18 @@
 ﻿using WorkSchedulePlaner.Application.Abstractions.Messaging;
-using WorkSchedulePlaner.Application.Abstractions.Repository;
 using WorkSchedulePlaner.Application.Abstractions.Services;
 using WorkSchedulePlaner.Application.DTOs;
 using WorkSchedulePlaner.Application.Mappings;
-using WorkSchedulePlaner.Domain.Entities;
+using WorkSchedulePlaner.Domain.Repositories;
 
 namespace WorkSchedulePlaner.Application.Features.Employees.Queries.GetByIdFromSchedule
 {
 	public class GetByIdFromScheduleQueryHandler : IQueryHandler<GetByIdFromScheduleQuery,EmployeeDto>
 	{
-		private readonly IRepository<Employee> _employeeRepository;
+		private readonly IEmployeeRepository _employeeRepository;
 		private readonly IIdentityService _identityService;
 
 		public GetByIdFromScheduleQueryHandler(
-			IRepository<Employee> employeeRepository,
+			IEmployeeRepository employeeRepository,
 			IIdentityService identityService)
 		{
 			_employeeRepository = employeeRepository;

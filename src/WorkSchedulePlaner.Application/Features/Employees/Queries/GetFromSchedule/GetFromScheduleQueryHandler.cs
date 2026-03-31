@@ -3,14 +3,15 @@ using WorkSchedulePlaner.Application.Abstractions.Repository;
 using WorkSchedulePlaner.Application.DTOs;
 using WorkSchedulePlaner.Application.Mappings;
 using WorkSchedulePlaner.Domain.Entities;
+using WorkSchedulePlaner.Domain.Repositories;
 
 namespace WorkSchedulePlaner.Application.Features.Employees.Queries.GetFromSchedule
 {
 	public class GetFromScheduleQueryHandler : IQueryHandler<GetFromScheduleQuery,List<EmployeeDto>>
 	{
-		private readonly IRepository<Employee> _employeeRepository;
+		private readonly IEmployeeRepository _employeeRepository;
 
-		public GetFromScheduleQueryHandler(IRepository<Employee> employeeRepository)
+		public GetFromScheduleQueryHandler(IEmployeeRepository employeeRepository)
 		{
 			_employeeRepository = employeeRepository;
 		}

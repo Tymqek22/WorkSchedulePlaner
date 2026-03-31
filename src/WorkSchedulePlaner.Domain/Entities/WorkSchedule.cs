@@ -34,14 +34,16 @@ namespace WorkSchedulePlaner.Domain.Entities
 			return Result.Success();
 		}
 
-		public void RemoveEmployee(int employeeId)
+		public Result RemoveEmployee(int employeeId)
 		{
 			var employee = _employees.FirstOrDefault(e => e.Id == employeeId);
 
 			if (employee is null)
-				throw new ArgumentException($"Employee with id:{employeeId} is not in a schedule.");
+				return Result.Failure(Errors.Schedule.EmployeeNotFound);
 
 			_employees.Remove(employee);
+
+			return Result.Success();
 		}
 
 		public void AddShiftTile(string title, string? description)
