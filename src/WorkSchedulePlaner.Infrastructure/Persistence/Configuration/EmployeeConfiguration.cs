@@ -12,16 +12,10 @@ namespace WorkSchedulePlaner.Infrastructure.Persistence.Configuration
 			builder.HasKey(e => e.Id);
 
 			builder
-				.HasOne(e => e.Schedule)
-				.WithMany(s => s.Employees)
-				.HasForeignKey(e => e.ScheduleId)
-				.OnDelete(DeleteBehavior.NoAction);
-
-			builder
 				.HasOne<ApplicationUser>()
-				.WithMany(u => u.AssignedEmployees)
+				.WithMany()
 				.HasForeignKey(e => e.UserId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.SetNull);
 		}
 	}
 }

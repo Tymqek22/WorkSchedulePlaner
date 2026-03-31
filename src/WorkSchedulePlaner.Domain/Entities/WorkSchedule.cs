@@ -22,12 +22,12 @@ namespace WorkSchedulePlaner.Domain.Entities
 			OwnerId = ownerId;
 		}
 
-		public void AddEmployee(string name,string lastName,int scheduleId,string? userId,string? position)
+		public void AddEmployee(string firstName,string lastName,int scheduleId,string? userId,string? position)
 		{
-			if (_employees.Any(e => e.Name == name && e.LastName == lastName))
+			if (_employees.Any(e => e.FirstName == firstName && e.LastName == lastName))
 				throw new ArgumentException("Employee is already assigned to schedule.");
 
-			_employees.Add(new Employee(name,lastName,scheduleId,position,userId));
+			_employees.Add(new Employee(firstName,lastName,scheduleId,position,userId));
 		}
 
 		public void RemoveEmployee(int employeeId)
@@ -57,7 +57,7 @@ namespace WorkSchedulePlaner.Domain.Entities
 			if (shiftTile is null)
 				throw new ArgumentException($"Shift tile with that id:{shiftTileId} doesn't exist.");
 
-			string employeeFullName = $"{employee.Name} {employee.LastName}";
+			string employeeFullName = $"{employee.FirstName} {employee.LastName}";
 
 			shiftTile.AssignEmployee(employeeId,employeeFullName,timeRange);
 		}

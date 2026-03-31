@@ -14,10 +14,21 @@ namespace WorkSchedulePlaner.Infrastructure.Persistence.Configuration
 			builder.Property(s => s.OwnerId).IsRequired();
 
 			builder
+				.HasMany(s => s.Employees)
+				.WithOne()
+				.HasForeignKey(e => e.ScheduleId)
+				.OnDelete(DeleteBehavior.Cascade);
+
+			builder
+				.HasMany(s => s.ShiftTiles)
+				.WithOne()
+				.HasForeignKey(st => st.ScheduleId)
+				.OnDelete(DeleteBehavior.Cascade);
+
+			builder
 				.HasOne<ApplicationUser>()
-				.WithMany(u => u.SchedulesOwned)
-				.HasForeignKey(s => s.OwnerId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.WithMany()
+				.HasForeignKey(s => s.OwnerId);
 		}
 	}
 }

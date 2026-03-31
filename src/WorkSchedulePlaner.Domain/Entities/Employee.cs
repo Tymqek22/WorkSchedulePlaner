@@ -3,7 +3,7 @@
 	public class Employee
 	{
 		public int Id { get; private set; }
-		public string Name { get; private set; }
+		public string FirstName { get; private set; }
 		public string LastName { get; private set; }
 		public string? Position { get; private set; }
 
@@ -13,14 +13,14 @@
 		private Employee() { }
 
 		public Employee(
-			string name,
-			string lastName,
-			int scheduleId,
-			string? position,
-			string? userId
+				string firstName,
+				string lastName,
+				int scheduleId,
+				string? position,
+				string? userId
 			) 
 		{
-			Name = name;
+			FirstName = firstName;
 			LastName = lastName;
 			Position = position;
 			UserId = userId;
