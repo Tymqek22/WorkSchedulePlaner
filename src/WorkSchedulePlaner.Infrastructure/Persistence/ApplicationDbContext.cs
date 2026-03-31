@@ -15,17 +15,14 @@ namespace WorkSchedulePlaner.Infrastructure.Persistence
 		public DbSet<Employee> Employees { get; set; }
 		public DbSet<ShiftTile> ShiftTiles { get; set; }
 		public DbSet<WorkSchedule> WorkSchedules { get; set; }
-		public DbSet<EmployeeShift> EmployeesShifts { get; set; }
-		public DbSet<ScheduleUser> SchedulesUsers { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			base.OnModelCreating(modelBuilder);
 
-			modelBuilder.ApplyConfiguration(new EmployeeShiftConfiguration());
 			modelBuilder.ApplyConfiguration(new ScheduleConfiguration());
 			modelBuilder.ApplyConfiguration(new EmployeeConfiguration());
-			modelBuilder.ApplyConfiguration(new ScheduleUserConfiguration());
+			modelBuilder.ApplyConfiguration(new ShiftTileConfiguration());
 		}
 	}
 }

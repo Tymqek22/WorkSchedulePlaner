@@ -28,7 +28,8 @@ namespace WorkSchedulePlaner.Infrastructure.Persistence.Configuration
 			builder
 				.HasOne<ApplicationUser>()
 				.WithMany()
-				.HasForeignKey(s => s.OwnerId);
+				.HasForeignKey(s => s.OwnerId)
+				.OnDelete(DeleteBehavior.NoAction);
 		}
 	}
 }

@@ -5,18 +5,18 @@ namespace WorkSchedulePlaner.Application.Features.Employees.Queries.GetUserRoleI
 {
 	public class GetUserRoleInScheduleQueryHandler : IQueryHandler<GetUserRoleInScheduleQuery,string>
 	{
-		private readonly IScheduleUserRepository _scheduleUserRepository;
+		//private readonly IScheduleUserRepository _scheduleUserRepository;
 
-		public GetUserRoleInScheduleQueryHandler(IScheduleUserRepository scheduleUserRepository)
+		/*public GetUserRoleInScheduleQueryHandler(IScheduleUserRepository scheduleUserRepository)
 		{
 			_scheduleUserRepository = scheduleUserRepository;
-		}
+		}*/
 
 		public async Task<string> Handle(
 			GetUserRoleInScheduleQuery query,
 			CancellationToken cancellationToken = default)
 		{
-			return await _scheduleUserRepository.GetUserRoleInSchedule(query.UserId,query.ScheduleId);
+			return string.Empty;//await _scheduleUserRepository.GetUserRoleInSchedule(query.UserId,query.ScheduleId);
 		}
 	}
 }
