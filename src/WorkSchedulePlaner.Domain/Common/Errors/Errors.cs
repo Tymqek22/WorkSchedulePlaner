@@ -16,6 +16,9 @@
 		{
 			public static readonly Error NotFound =
 				new("Employee.NotFound","Employee not found.");
+
+			public static readonly Error ArgumentsInWrongFormat =
+				new("Employee.ArgumentsInWrongFormat","First or last name are not appropriate.");
 		}
 
 		public static class Schedule

@@ -14,7 +14,6 @@ namespace WorkSchedulePlaner.Application.Features.Employees.Commands.DeleteEmplo
 		private readonly IUnitOfWork _unitOfWork;
 
 		public DeleteEmployeeCommandHandler(
-			IRepository<Employee> employeeRepository,
 			IWorkScheduleRepository workScheduleRepository,
 			IUnitOfWork unitOfWork)
 		{

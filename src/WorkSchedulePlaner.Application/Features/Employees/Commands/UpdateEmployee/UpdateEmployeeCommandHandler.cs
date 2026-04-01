@@ -3,25 +3,24 @@ using WorkSchedulePlaner.Application.Abstractions.Repository;
 using WorkSchedulePlaner.Application.Abstractions.Services;
 using WorkSchedulePlaner.Application.Common.Errors;
 using WorkSchedulePlaner.Application.Common.Results;
+using WorkSchedulePlaner.Domain.Common.Errors;
 using WorkSchedulePlaner.Domain.Entities;
+using WorkSchedulePlaner.Domain.Repositories;
 
 namespace WorkSchedulePlaner.Application.Features.Employees.Commands.UpdateEmployee
 {
 	public class UpdateEmployeeCommandHandler : ICommandHandler<UpdateEmployeeCommand,Result>
 	{
-		private readonly IRepository<Employee> _employeeRepository;
-		private readonly IScheduleUserRepository _scheduleUserRepository;
+		private readonly IWorkScheduleRepository _workScheduleRepository;
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IIdentityService _identityService;
 
 		public UpdateEmployeeCommandHandler(
-			IRepository<Employee> employeeRepository,
-			IScheduleUserRepository scheduleUserRepository,
+			IWorkScheduleRepository workScheduleRepository,
 			IUnitOfWork unitOfWork,
 			IIdentityService identityService)
 		{
-			_employeeRepository = employeeRepository;
-			_scheduleUserRepository = scheduleUserRepository;
+			_workScheduleRepository = workScheduleRepository;
 			_unitOfWork = unitOfWork;
 			_identityService = identityService;
 		}
@@ -30,41 +29,16 @@ namespace WorkSchedulePlaner.Application.Features.Employees.Commands.UpdateEmplo
 			UpdateEmployeeCommand command,
 			CancellationToken cancellationToken = default)
 		{
-			var employee = await _employeeRepository.GetByIdAsync(command.Id);
+			var schedule = await _workScheduleRepository.GetByIdWithDetailsAsync(command.ScheduleId);
 
-			if (employee is null)
-				return Result.Failure(Errors.Employee.NotFound);
+			if (schedule is null)
+				return Result.Failure(Errors.Schedule.NotFound);
 
-			if (command.Email is not null) {
+			var result = schedule.UpdateEmployee(command.Id,command.FirstName,command.LastName,command.Position);
 
-				var userId = await _identityService.GetUserIdByEmail(command.Email);
+			if (!result.IsSuccess)
+				return result;
 
-				if (userId is null)
-					return Result.Failure(Errors.Employee.NotFound);
-
-				if (employee.UserId is not null) 
-					await _scheduleUserRepository.DeleteAsyncByIds(employee.UserId,employee.ScheduleId);
-
-				var scheduleUser = new ScheduleUser
-				{
-					UserId = userId,
-					ScheduleId = employee.ScheduleId,
-					Role = "employee"
-				};
-
-				await _scheduleUserRepository.InsertAsync(scheduleUser);
-				employee.UserId = userId;
-			}
-			else {
-				await _scheduleUserRepository.DeleteAsyncByIds(employee.UserId,employee.ScheduleId);
-				employee.UserId = null;
-			}
-
-			employee.Name = command.Name;
-			employee.LastName = command.LastName;
-			employee.Position = command.Position;
-
-			await _employeeRepository.UpdateAsync(employee);
 			await _unitOfWork.SaveAsync();
 
 			return Result.Success();

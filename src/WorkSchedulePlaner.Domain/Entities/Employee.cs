@@ -1,4 +1,7 @@
-﻿namespace WorkSchedulePlaner.Domain.Entities
+﻿using WorkSchedulePlaner.Application.Common.Results;
+using WorkSchedulePlaner.Domain.Common.Errors;
+
+namespace WorkSchedulePlaner.Domain.Entities
 {
 	public class Employee
 	{
@@ -25,6 +28,17 @@
 			Position = position;
 			UserId = userId;
 			ScheduleId = scheduleId;
+		}
+
+		public Result UpdateDetails(string firstName, string lastName, string? position)
+		{
+			if (!string.IsNullOrWhiteSpace(firstName) || !string.IsNullOrWhiteSpace(lastName))
+				return Result.Failure(Errors.Employee.ArgumentsInWrongFormat);
+
+			FirstName = firstName;
+			LastName = lastName;
+
+			return Result.Success();
 		}
 	}
 }

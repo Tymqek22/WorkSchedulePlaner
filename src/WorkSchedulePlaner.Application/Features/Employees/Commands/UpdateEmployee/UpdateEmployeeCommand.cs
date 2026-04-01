@@ -5,9 +5,9 @@ namespace WorkSchedulePlaner.Application.Features.Employees.Commands.UpdateEmplo
 {
 	public record UpdateEmployeeCommand(
 		int Id,
-		string Name,
+		string FirstName,
 		string LastName,
 		string? Position,
-		string? Email)
+		int ScheduleId)
 		: ICommand<Result>;
 }

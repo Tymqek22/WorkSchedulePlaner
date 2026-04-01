@@ -46,6 +46,21 @@ namespace WorkSchedulePlaner.Domain.Entities
 			return Result.Success();
 		}
 
+		public Result UpdateEmployee(int employeeId, string firstName, string lastName, string? position)
+		{
+			var employee = _employees.FirstOrDefault(e => e.Id == employeeId);
+
+			if (employee is null)
+				return Result.Failure(Errors.Schedule.EmployeeNotFound);
+
+			var result = employee.UpdateDetails(firstName,lastName,position);
+
+			if (!result.IsSuccess)
+				return result;
+
+			return Result.Success();
+		}
+
 		public void AddShiftTile(string title, string? description)
 		{
 			_shiftTiles.Add(new ShiftTile(title,Id,description));
