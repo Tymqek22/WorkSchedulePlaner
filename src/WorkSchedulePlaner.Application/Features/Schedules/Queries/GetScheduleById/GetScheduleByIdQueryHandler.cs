@@ -1,7 +1,7 @@
 ﻿using WorkSchedulePlaner.Application.Abstractions.Messaging;
-using WorkSchedulePlaner.Application.Abstractions.Repository;
 using WorkSchedulePlaner.Application.DTOs;
 using WorkSchedulePlaner.Application.Mappings;
+using WorkSchedulePlaner.Domain.Repositories;
 
 namespace WorkSchedulePlaner.Application.Features.Schedules.Queries.GetScheduleById
 {
@@ -18,7 +18,7 @@ namespace WorkSchedulePlaner.Application.Features.Schedules.Queries.GetScheduleB
 			GetScheduleByIdQuery query,
 			CancellationToken cancellationToken = default)
 		{
-			var schedule = await _workScheduleRepository.GetWithIncludesAsync(query.Id);
+			var schedule = await _workScheduleRepository.GetByIdWithDetailsAsync(query.Id);
 
 			return schedule.MapToDto();
 		}

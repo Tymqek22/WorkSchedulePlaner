@@ -1,22 +1,28 @@
 ﻿using WorkSchedulePlaner.Application.Abstractions.Messaging;
 using WorkSchedulePlaner.Application.Abstractions.Repository;
+using WorkSchedulePlaner.Domain.Repositories;
 
 namespace WorkSchedulePlaner.Application.Features.Employees.Queries.GetUserRoleInSchedule
 {
 	public class GetUserRoleInScheduleQueryHandler : IQueryHandler<GetUserRoleInScheduleQuery,string>
 	{
-		//private readonly IScheduleUserRepository _scheduleUserRepository;
+		private readonly IWorkScheduleRepository _workScheduleRepository;
 
-		/*public GetUserRoleInScheduleQueryHandler(IScheduleUserRepository scheduleUserRepository)
+		public GetUserRoleInScheduleQueryHandler(IWorkScheduleRepository workScheduleRepository)
 		{
-			_scheduleUserRepository = scheduleUserRepository;
-		}*/
+			_workScheduleRepository = workScheduleRepository;
+		}
 
 		public async Task<string> Handle(
 			GetUserRoleInScheduleQuery query,
 			CancellationToken cancellationToken = default)
 		{
-			return string.Empty;//await _scheduleUserRepository.GetUserRoleInSchedule(query.UserId,query.ScheduleId);
+			var schedule = await _workScheduleRepository.GetByIdAsync(query.ScheduleId);
+
+			if (schedule.OwnerId == query.UserId)
+				return "admin";
+
+			return "employee";
 		}
 	}
 }

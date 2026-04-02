@@ -1,24 +1,26 @@
 ﻿using WorkSchedulePlaner.Application.Abstractions.Messaging;
-using WorkSchedulePlaner.Application.Abstractions.Repository;
 using WorkSchedulePlaner.Application.DTOs;
 using WorkSchedulePlaner.Application.Mappings;
+using WorkSchedulePlaner.Domain.Repositories;
 
 namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Queries.GetTileById
 {
 	public class GetTileByIdQueryHandler : IQueryHandler<GetTileByIdQuery,ShiftTileDto>
 	{
-		private readonly IShiftTileRepository _shiftTileRepository;
+		private readonly IWorkScheduleRepository _workScheduleRepository;
 
-		public GetTileByIdQueryHandler(IShiftTileRepository shiftTileRepository)
+		public GetTileByIdQueryHandler(IWorkScheduleRepository workScheduleRepository)
 		{
-			_shiftTileRepository = shiftTileRepository;
+			_workScheduleRepository = workScheduleRepository;
 		}
 
 		public async Task<ShiftTileDto> Handle(
 			GetTileByIdQuery query,
 			CancellationToken cancellationToken = default)
 		{
-			var tile = await _shiftTileRepository.GetByIdWithAllIncludes(query.Id);
+			var schedule = await _workScheduleRepository.GetByIdWithDetailsAsync(query.scheduleId);
+
+			var tile = schedule.ShiftTiles.FirstOrDefault(st => st.Id == query.shiftId);
 
 			return tile.MapToDto();
 		}

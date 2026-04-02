@@ -5,7 +5,7 @@ namespace WorkSchedulePlaner.Application.Features.Schedules.Queries.GetScheduleD
 {
 	public record GetScheduleDetailsFromPeriodQuery(
 		int Id,
-		DateTime StartDate,
-		DateTime EndDate)
+		DateOnly StartDate,
+		DateOnly EndDate)
 		: IQuery<WorkScheduleDto>;
 }
