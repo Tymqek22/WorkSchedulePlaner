@@ -11,6 +11,9 @@
 		{
 			if (start >= end)
 				throw new ArgumentException("End time must be after start time.");
+
+			Start = start;
+			End = end;
 		}
 	}
 }
