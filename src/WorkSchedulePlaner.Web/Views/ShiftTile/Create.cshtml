@@ -89,7 +89,7 @@
 			const itemHtml = `
 					<div id="${itemId}" class="subitem">
 						<input class="form-control subitem" value="${employeeId} | ${startTime} | ${endTime}" disabled readonly/>
-						<input type="hidden" name="Shifts[${index}].Employee.Id" value="${employeeId}" />
+						<input type="hidden" name="Shifts[${index}].EmployeeId" value="${employeeId}" />
 						<input type="hidden" name="Shifts[${index}].StartTime" value="${startTime}" />
 						<input type="hidden" name="Shifts[${index}].EndTime" value="${endTime}" />
 						<button type="button" class="btn btn-danger remove-btn" onclick="removeItem('${itemId}')">Delete</button>

@@ -30,6 +30,9 @@ namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.UpdateShif
 			if (schedule is null)
 				return Result.Failure(Errors.Schedule.NotFound);
 
+			if (command.EmployeeWorkHours is null)
+				return Result.Failure(Errors.ShiftTile.NoEmployeesAssigned);
+
 			var domainAssignments = command.EmployeeWorkHours
 				.Select(wh => new ShiftAssignment(wh.EmployeeId,new TimeRange(wh.StartTime,wh.EndTime)))
 				.ToList();

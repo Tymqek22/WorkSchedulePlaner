@@ -7,6 +7,7 @@ namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.AssignShif
 	public record CreateShiftCommand(
 		string Title,
 		string? Description,
+		DateOnly Date,
 		List<EmployeeWorkHoursDto> EmployeeWorkHours,
 		int ScheduleId)
 		: ICommand<Result>;

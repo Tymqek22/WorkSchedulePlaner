@@ -19,12 +19,12 @@ namespace WorkSchedulePlaner.Domain.Entities
 
 		private ShiftTile() { }
 
-		public ShiftTile(string title, int scheduleId, string? description)
+		public ShiftTile(string title, int scheduleId, string? description, DateOnly date)
 		{
 			Title = title;
 			Description = description;
 			ScheduleId = scheduleId;
-			Date = DateOnly.FromDateTime(DateTime.UtcNow);
+			Date = date;
 		}
 
 		public void ClearAssignments() => _assignments.Clear();

@@ -90,9 +90,10 @@ namespace WorkSchedulePlaner.Domain.Entities
 		public Result CreateShift(
 			string title,
 			string? description,
+			DateOnly date,
 			List<ShiftAssignment> shiftAssignments)
 		{
-			var newShift = new ShiftTile(title,Id,description);
+			var newShift = new ShiftTile(title,Id,description,date);
 
 			foreach (var assignment in shiftAssignments) {
 

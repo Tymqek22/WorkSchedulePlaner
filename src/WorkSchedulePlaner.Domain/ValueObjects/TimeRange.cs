@@ -7,7 +7,7 @@
 
 		private TimeRange() { }
 
-		public TimeRange(TimeOnly start, TimeOnly end)
+		public TimeRange(TimeOnly start,TimeOnly end)
 		{
 			if (start >= end)
 				throw new ArgumentException("End time must be after start time.");

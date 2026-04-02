@@ -46,6 +46,7 @@ namespace WorkSchedulePlaner.Web.Controllers
 			var command = new CreateShiftCommand(
 				viewModel.Title,
 				viewModel.Description,
+				viewModel.Date,
 				viewModel.Shifts,
 				scheduleId);
 
