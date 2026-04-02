@@ -31,7 +31,7 @@ namespace WorkSchedulePlaner.Domain.Entities
 
 		public Result UpdateDetails(string firstName, string lastName, string? position)
 		{
-			if (!string.IsNullOrWhiteSpace(firstName) || !string.IsNullOrWhiteSpace(lastName))
+			if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName))
 				return Result.Failure(Errors.Employee.ArgumentsInWrongFormat);
 
 			FirstName = firstName;
