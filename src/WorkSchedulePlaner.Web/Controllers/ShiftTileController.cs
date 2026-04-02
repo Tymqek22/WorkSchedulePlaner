@@ -43,11 +43,10 @@ namespace WorkSchedulePlaner.Web.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Create(int scheduleId,ShiftTileDto viewModel)
 		{
-			var command = new AssignShiftCommand(
+			var command = new CreateShiftCommand(
 				viewModel.Title,
 				viewModel.Description,
 				viewModel.Shifts,
-				viewModel.Date,
 				scheduleId);
 
 			var result = await _commandDispatcher.Dispatch<CreateShiftCommand,Result>((CreateShiftCommand)command);
@@ -67,7 +66,7 @@ namespace WorkSchedulePlaner.Web.Controllers
 
 		public async Task<IActionResult> Update(int scheduleId,int tileId)
 		{
-			var query1 = new GetTileByIdQuery(tileId);
+			var query1 = new GetTileByIdQuery(scheduleId,tileId);
 			var shiftTile = await _queryDispatcher.Dispatch<GetTileByIdQuery,ShiftTileDto>(query1);
 
 			ViewBag.ScheduleId = scheduleId;
@@ -88,7 +87,8 @@ namespace WorkSchedulePlaner.Web.Controllers
 				viewModel.Id,
 				viewModel.Title,
 				viewModel.Description,
-				viewModel.Shifts);
+				viewModel.Shifts,
+				scheduleId);
 
 			var result = await _commandDispatcher.Dispatch<UpdateShiftCommand,Result>(command);
 

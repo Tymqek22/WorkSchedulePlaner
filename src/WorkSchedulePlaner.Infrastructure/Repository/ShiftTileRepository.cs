@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using WorkSchedulePlaner.Application.Abstractions.Repository;
 using WorkSchedulePlaner.Domain.Entities;
+using WorkSchedulePlaner.Domain.Repositories;
 using WorkSchedulePlaner.Infrastructure.Persistence;
 
 namespace WorkSchedulePlaner.Infrastructure.Repository
@@ -12,16 +12,14 @@ namespace WorkSchedulePlaner.Infrastructure.Repository
 		public async Task<ShiftTile> GetByIdWithAllIncludes(int id)
 		{
 			return await _dbSet
-				.Include(st => st.EmployeeShifts)
-				.ThenInclude(es => es.Employee)
+				.Include(st => st.Assignments)
 				.FirstOrDefaultAsync(st => st.Id == id);
 		}
 
-		public async Task<IEnumerable<ShiftTile>> GetShiftTilesFromPeriod(DateTime startDate,DateTime endDate)
+		public async Task<IEnumerable<ShiftTile>> GetShiftTilesFromPeriod(DateOnly startDate,DateOnly endDate)
 		{
 			return await _dbSet
-				.Include(st => st.EmployeeShifts)
-				.ThenInclude(es => es.Employee)
+				.Include(st => st.Assignments)
 				.Where(st => st.Date >= startDate && st.Date <= endDate)
 				.ToListAsync();
 		}

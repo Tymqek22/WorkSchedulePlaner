@@ -47,7 +47,7 @@
                                 @foreach (var employee in tile.Shifts) {
                                     <p class="mb-1">
                                         <i class="bi bi-person-badge"></i> 
-                                        @employee.Employee.Name @employee.Employee.LastName<br />
+                                        @employee.EmployeeId<br />
                                         <small class="text-muted">@employee.StartTime - @employee.EndTime</small>
                                     </p>
                                 }

@@ -21,7 +21,7 @@ using WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.AssignShift;
 using WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.DeleteShift;
 using WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.UpdateShift;
 using WorkSchedulePlaner.Application.Features.ShiftTiles.Queries.GetTileById;
-using WorkSchedulePlaner.Domain.Entities;
+using WorkSchedulePlaner.Domain.Repositories;
 using WorkSchedulePlaner.Infrastructure.Dispatching;
 using WorkSchedulePlaner.Infrastructure.Identity.DbInitializer;
 using WorkSchedulePlaner.Infrastructure.Identity.Models;
@@ -45,13 +45,11 @@ options.SignIn.RequireConfirmedAccount = false)
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
-builder.Services.AddScoped<IRepository<Employee>,Repository<Employee>>();
-builder.Services.AddScoped<IRepository<ShiftTile>,Repository<ShiftTile>>();
-builder.Services.AddScoped<IRepository<EmployeeShift>,Repository<EmployeeShift>>();
-builder.Services.AddScoped<IRepository<ScheduleUser>,Repository<ScheduleUser>>();
+
 builder.Services.AddScoped<IWorkScheduleRepository,WorkScheduleRepository>();
 builder.Services.AddScoped<IShiftTileRepository,ShiftTileRepository>();
-builder.Services.AddScoped<IScheduleUserRepository,ScheduleUserRepository>();
+builder.Services.AddScoped<IEmployeeRepository,EmployeeRepository>();
+
 builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
 
 builder.Services.AddScoped<ICommandHandler<AddEmployeeCommand,Result>,AddEmployeeCommandHandler>();

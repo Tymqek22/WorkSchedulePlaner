@@ -12,12 +12,12 @@ namespace WorkSchedulePlaner.Infrastructure.Repository
 
 		public async Task<IEnumerable<WorkSchedule>> GetAllUserSchedules(string userId)
 		{
-			/*return await _dbSet
+			return await _dbSet
 				.Include(ws => ws.ShiftTiles)
 				.Include(es => es.Employees)
-				.Where(ws => ws.OwnerId == userId || ws.UsersInSchedule.Any(su => su.UserId == userId))
-				.ToListAsync();*/
-			return null;
+				.Where(ws => ws.OwnerId == userId || ws.Employees.Any(su => su.UserId == userId))
+				.ToListAsync();
+			
 		}
 
 		public async Task<WorkSchedule> GetByIdWithDetailsAsync(int id)

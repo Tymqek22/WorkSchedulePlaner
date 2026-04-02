@@ -83,7 +83,8 @@ namespace WorkSchedulePlaner.Web.Controllers
 				employee.Name,
 				employee.LastName,
 				employee.Position,
-				employee.Email);
+				employee.Email,
+				employee.ScheduleId);
 
 			var result = await _commandDispatcher.Dispatch<UpdateEmployeeCommand,Result>(command);
 
@@ -102,7 +103,7 @@ namespace WorkSchedulePlaner.Web.Controllers
 
 		public async Task<IActionResult> Delete(int scheduleId, int employeeId)
 		{
-			var command = new DeleteEmployeeCommand(employeeId);
+			var command = new DeleteEmployeeCommand(employeeId,scheduleId);
 
 			var result = await _commandDispatcher.Dispatch<DeleteEmployeeCommand,Result>(command);
 

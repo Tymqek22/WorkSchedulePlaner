@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using WorkSchedulePlaner.Application.Abstractions.Repository;
+using WorkSchedulePlaner.Domain.Repositories;
 using WorkSchedulePlaner.Infrastructure.Persistence;
 
 namespace WorkSchedulePlaner.Infrastructure.Repository

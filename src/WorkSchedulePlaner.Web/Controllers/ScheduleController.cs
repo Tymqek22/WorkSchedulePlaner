@@ -61,7 +61,10 @@ namespace WorkSchedulePlaner.Web.Controllers
 				.Select(i => startDay.AddDays(i))
 				.ToList();
 
-			var query1 = new GetScheduleDetailsFromPeriodQuery(id,dates[0],dates[6]);
+			var query1 = new GetScheduleDetailsFromPeriodQuery(
+				id,
+				DateOnly.FromDateTime(dates[0]),
+				DateOnly.FromDateTime(dates[6]));
 			var schedule = await _queryDispatcher.Dispatch<GetScheduleDetailsFromPeriodQuery,WorkScheduleDto>(query1);
 
 			var userId = _userManager.GetUserId(User);
@@ -77,7 +80,7 @@ namespace WorkSchedulePlaner.Web.Controllers
 			var viewModel = new ScheduleDetailsVM
 			{
 				Schedule = schedule,
-				Dates = dates,
+				Dates = dates.Select(d => DateOnly.FromDateTime(d)).ToList(),
 				IsCurrentUserAdmin = admin
 			};
 
