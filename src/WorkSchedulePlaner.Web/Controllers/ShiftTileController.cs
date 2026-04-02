@@ -50,7 +50,7 @@ namespace WorkSchedulePlaner.Web.Controllers
 				viewModel.Date,
 				scheduleId);
 
-			var result = await _commandDispatcher.Dispatch<AssignShiftCommand,Result>(command);
+			var result = await _commandDispatcher.Dispatch<CreateShiftCommand,Result>((CreateShiftCommand)command);
 
 			if (result.IsFailure) {
 

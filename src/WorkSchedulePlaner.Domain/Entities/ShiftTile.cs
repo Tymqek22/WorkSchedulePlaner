@@ -1,4 +1,6 @@
-﻿using WorkSchedulePlaner.Domain.ValueObjects;
+﻿using WorkSchedulePlaner.Application.Common.Results;
+using WorkSchedulePlaner.Domain.Common.Errors;
+using WorkSchedulePlaner.Domain.ValueObjects;
 
 namespace WorkSchedulePlaner.Domain.Entities
 {
@@ -25,12 +27,14 @@ namespace WorkSchedulePlaner.Domain.Entities
 			Date = DateOnly.FromDateTime(DateTime.UtcNow);
 		}
 
-		public void AssignEmployee(int employeeId, string displayName, TimeRange timeRange)
+		public Result AssignEmployee(int employeeId, string displayName, TimeRange timeRange)
 		{
 			if (_assignments.Any(a => a.EmployeeId == employeeId))
-				throw new ArgumentException($"Employee with this id:{employeeId} is already assigned.");
+				return Result.Failure(Errors.ShiftTile.TooManyEmployeeAssignments);
 
 			_assignments.Add(new Assignment(employeeId,displayName,timeRange));
+
+			return Result.Success();
 		}
 	}
 }

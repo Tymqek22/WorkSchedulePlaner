@@ -57,7 +57,7 @@ builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
 builder.Services.AddScoped<ICommandHandler<AddEmployeeCommand,Result>,AddEmployeeCommandHandler>();
 builder.Services.AddScoped<ICommandHandler<UpdateEmployeeCommand,Result>,UpdateEmployeeCommandHandler>();
 builder.Services.AddScoped<ICommandHandler<DeleteEmployeeCommand,Result>,DeleteEmployeeCommandHandler>();
-builder.Services.AddScoped<ICommandHandler<AssignShiftCommand,Result>,AssignShiftCommandHandler>();
+builder.Services.AddScoped<ICommandHandler<CreateShiftCommand,Result>,AssignShiftCommandHandler>();
 builder.Services.AddScoped<ICommandHandler<DeleteShiftCommand,Result>,DeleteShiftCommandHandler>();
 builder.Services.AddScoped<ICommandHandler<UpdateShiftCommand,Result>,UpdateShiftCommandHandler>();
 builder.Services.AddScoped<ICommandHandler<CreateScheduleCommand,Result>,CreateScheduleCommandHandler>();

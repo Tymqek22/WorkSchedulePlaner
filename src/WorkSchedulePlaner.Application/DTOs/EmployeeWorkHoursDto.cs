@@ -2,8 +2,8 @@
 {
 	public class EmployeeWorkHoursDto
 	{
-		public EmployeeDto Employee { get; set; }
-		public TimeSpan StartTime { get; set; }
-		public TimeSpan EndTime { get; set; }
+		public int EmployeeId { get; set; }
+		public TimeOnly StartTime { get; set; }
+		public TimeOnly EndTime { get; set; }
 	}
 }

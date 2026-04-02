@@ -1,7 +1,6 @@
 ﻿using WorkSchedulePlaner.Application.Common.Results;
 using WorkSchedulePlaner.Domain.Common.Errors;
 using WorkSchedulePlaner.Domain.ValueObjects;
-using static WorkSchedulePlaner.Domain.Common.Errors.Errors;
 
 namespace WorkSchedulePlaner.Domain.Entities
 {
@@ -78,26 +77,30 @@ namespace WorkSchedulePlaner.Domain.Entities
 			return Result.Success();
 		}
 
-		public void AddShiftTile(string title, string? description)
+		public async Task<Result> CreateShift(
+			string title,
+			string? description,
+			List<ShiftAssignment> shiftAssignments)
 		{
-			_shiftTiles.Add(new ShiftTile(title,Id,description));
-		}
+			var newShift = new ShiftTile(title,Id,description);
 
-		public void AssignShift(int shiftTileId, int employeeId, TimeRange timeRange)
-		{
-			var employee = _employees.FirstOrDefault(e => e.Id == employeeId);
+			foreach (var assignment in shiftAssignments) {
 
-			if (employee is null)
-				throw new ArgumentException($"Employee with that id:{employeeId} is not in schedule.");
+				var employee = _employees.FirstOrDefault(e => e.Id == assignment.EmployeeId);
 
-			var shiftTile = _shiftTiles.FirstOrDefault(st => st.Id == shiftTileId);
+				if (employee is null)
+					return Result.Failure(Errors.Schedule.EmployeeNotFound);
 
-			if (shiftTile is null)
-				throw new ArgumentException($"Shift tile with that id:{shiftTileId} doesn't exist.");
+				string employeeFullName = $"{employee.FirstName} {employee.LastName}";
 
-			string employeeFullName = $"{employee.FirstName} {employee.LastName}";
+				var result = newShift.AssignEmployee(assignment.EmployeeId,employeeFullName,assignment.TimeRange);
 
-			shiftTile.AssignEmployee(employeeId,employeeFullName,timeRange);
+				if (!result.IsSuccess)
+					return result;
+			}
+
+			_shiftTiles.Add(newShift);
+			return Result.Success();
 		}
 	}
 }

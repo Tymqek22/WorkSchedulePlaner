@@ -4,11 +4,10 @@ using WorkSchedulePlaner.Application.DTOs;
 
 namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.AssignShift
 {
-	public record AssignShiftCommand(
+	public record CreateShiftCommand(
 		string Title,
 		string? Description,
 		List<EmployeeWorkHoursDto> EmployeeWorkHours,
-		DateTime Date,
 		int ScheduleId)
 		: ICommand<Result>;
 }
