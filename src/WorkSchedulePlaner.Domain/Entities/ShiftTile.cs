@@ -27,6 +27,14 @@ namespace WorkSchedulePlaner.Domain.Entities
 			Date = DateOnly.FromDateTime(DateTime.UtcNow);
 		}
 
+		public void ClearAssignments() => _assignments.Clear();
+
+		public void ModifyDetails(string title, string? description)
+		{
+			Title = title;
+			Description = description;
+		}
+
 		public Result AssignEmployee(int employeeId, string displayName, TimeRange timeRange)
 		{
 			if (_assignments.Any(a => a.EmployeeId == employeeId))

@@ -1,4 +1,5 @@
-﻿using WorkSchedulePlaner.Application.Common.Results;
+﻿using System.Threading.Tasks;
+using WorkSchedulePlaner.Application.Common.Results;
 using WorkSchedulePlaner.Domain.Common.Errors;
 using WorkSchedulePlaner.Domain.ValueObjects;
 
@@ -77,7 +78,7 @@ namespace WorkSchedulePlaner.Domain.Entities
 			return Result.Success();
 		}
 
-		public async Task<Result> CreateShift(
+		public Result CreateShift(
 			string title,
 			string? description,
 			List<ShiftAssignment> shiftAssignments)
@@ -100,6 +101,50 @@ namespace WorkSchedulePlaner.Domain.Entities
 			}
 
 			_shiftTiles.Add(newShift);
+			return Result.Success();
+		}
+
+		public Result DeleteShift(int shiftId)
+		{
+			var shiftTile = _shiftTiles.FirstOrDefault(st => st.Id == shiftId);
+
+			if (shiftTile is null)
+				return Result.Failure(Errors.ShiftTile.NotFound);
+
+			_shiftTiles.Remove(shiftTile);
+
+			return Result.Success();
+		}
+
+		public async Task<Result> UpdateShift(
+			int shiftTileId,
+			string title,
+			string? description,
+			List<ShiftAssignment> newShiftAssignments)
+		{
+			var shiftTile = _shiftTiles.FirstOrDefault(st => st.Id == shiftTileId);
+
+			if (shiftTile is null)
+				return Result.Failure(Errors.ShiftTile.NotFound);
+
+			shiftTile.ClearAssignments();
+
+			foreach (var assignment in newShiftAssignments) {
+
+				var employee = _employees.FirstOrDefault(e => e.Id == assignment.EmployeeId);
+
+				if (employee is null)
+					return Result.Failure(Errors.Schedule.EmployeeNotFound);
+
+				string employeeFullName = $"{employee.FirstName} {employee.LastName}";
+
+				var result = shiftTile.AssignEmployee(assignment.EmployeeId,employeeFullName,assignment.TimeRange);
+
+				if (!result.IsSuccess)
+					return result;
+			}
+	
+			shiftTile.ModifyDetails(title, description);
 			return Result.Success();
 		}
 	}
