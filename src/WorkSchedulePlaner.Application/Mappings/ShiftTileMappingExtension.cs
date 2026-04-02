@@ -13,8 +13,8 @@ namespace WorkSchedulePlaner.Application.Mappings
 				Title = shiftTile.Title,
 				Description = shiftTile.Description,
 				Date = shiftTile.Date,
-				Shifts = shiftTile.EmployeeShifts
-					.Select(es => es.MapToDto())
+				Shifts = shiftTile.Assignments
+					.Select(a => a.MapToDto())
 					.ToList()
 			};
 		}

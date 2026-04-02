@@ -10,7 +10,7 @@ namespace WorkSchedulePlaner.Application.Mappings
 			return new EmployeeDto
 			{
 				Id = employee.Id,
-				Name = employee.Name,
+				Name = employee.FirstName,
 				LastName = employee.LastName,
 				Position = employee.Position,
 				ScheduleId = employee.ScheduleId
@@ -22,7 +22,7 @@ namespace WorkSchedulePlaner.Application.Mappings
 			return new EmployeeDto
 			{
 				Id = employee.Id,
-				Name = employee.Name,
+				Name = employee.FirstName,
 				LastName = employee.LastName,
 				Position = employee.Position,
 				Email = email,
