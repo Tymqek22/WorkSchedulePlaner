@@ -8,6 +8,7 @@ namespace WorkSchedulePlaner.Application.Features.Employees.Commands.UpdateEmplo
 		string FirstName,
 		string LastName,
 		string? Position,
+		string? Email,
 		int ScheduleId)
 		: ICommand<Result>;
 }

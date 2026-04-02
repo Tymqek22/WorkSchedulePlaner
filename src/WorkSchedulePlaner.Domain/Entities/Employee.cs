@@ -9,6 +9,7 @@ namespace WorkSchedulePlaner.Domain.Entities
 		public string FirstName { get; private set; }
 		public string LastName { get; private set; }
 		public string? Position { get; private set; }
+		public string? Email { get; private set; }
 
 		public string? UserId { get; private set; }
 		public int ScheduleId { get; private set; }
@@ -19,14 +20,12 @@ namespace WorkSchedulePlaner.Domain.Entities
 				string firstName,
 				string lastName,
 				int scheduleId,
-				string? position,
-				string? userId
+				string? position
 			) 
 		{
 			FirstName = firstName;
 			LastName = lastName;
 			Position = position;
-			UserId = userId;
 			ScheduleId = scheduleId;
 		}
 
@@ -37,8 +36,15 @@ namespace WorkSchedulePlaner.Domain.Entities
 
 			FirstName = firstName;
 			LastName = lastName;
+			Position = position;
 
 			return Result.Success();
+		}
+
+		public void LinkEmployeeWithUser(string email, string userId)
+		{
+			Email = email;
+			UserId = userId;
 		}
 	}
 }

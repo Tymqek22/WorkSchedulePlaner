@@ -46,8 +46,9 @@ namespace WorkSchedulePlaner.Application.Features.Employees.Commands.AddEmployee
 				command.FirstName,
 				command.LastName,
 				schedule.Id,
-				userId,
-				command.Position);
+				command.Position,
+				command.UserEmail,
+				userId);
 
 			if (!result.IsSuccess)
 				return result;

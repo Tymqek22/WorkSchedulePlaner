@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WorkSchedulePlaner.Application.Abstractions.Repository;
 using WorkSchedulePlaner.Domain.Entities;
+using WorkSchedulePlaner.Domain.Repositories;
 using WorkSchedulePlaner.Infrastructure.Persistence;
 
 namespace WorkSchedulePlaner.Infrastructure.Repository
@@ -11,35 +12,39 @@ namespace WorkSchedulePlaner.Infrastructure.Repository
 
 		public async Task<IEnumerable<WorkSchedule>> GetAllUserSchedules(string userId)
 		{
+			/*return await _dbSet
+				.Include(ws => ws.ShiftTiles)
+				.Include(es => es.Employees)
+				.Where(ws => ws.OwnerId == userId || ws.UsersInSchedule.Any(su => su.UserId == userId))
+				.ToListAsync();*/
+			return null;
+		}
+
+		public async Task<WorkSchedule> GetByIdWithDetailsAsync(int id)
+		{
 			return await _dbSet
 				.Include(ws => ws.ShiftTiles)
-				.ThenInclude(st => st.EmployeeShifts)
-				.ThenInclude(es => es.Employee)
-				.Include(ws => ws.UsersInSchedule)
-				.Where(ws => ws.OwnerId == userId || ws.UsersInSchedule.Any(su => su.UserId == userId))
-				.ToListAsync();
+				.Include(e => e.Employees)
+				.FirstOrDefaultAsync(ws => ws.Id == id);
+		}
+
+		public async Task<Employee> GetEmployeeByIdAsync(int id)
+		{
+			//return await _dbContext.Employees
+			//	.FirstOrDefaultAsync(e => e.)
+			return null;
 		}
 
 		public async Task<WorkSchedule> GetScheduleDetailsFromPeriod(
 			int id,
-			DateTime startDate,
-			DateTime endDate)
+			DateOnly startDate,
+			DateOnly endDate)
 		{
 			return await _dbSet
 				.Where(ws => ws.Id == id)
 				.Include(ws => ws.ShiftTiles.Where(st => st.Date >= startDate && st.Date <= endDate))
-				.ThenInclude(st => st.EmployeeShifts)
-				.ThenInclude(e => e.Employee)
+				.Include(e => e.Employees)
 				.FirstOrDefaultAsync();
-		}
-
-		public async Task<WorkSchedule> GetWithIncludesAsync(int id)
-		{
-			return await _dbSet
-				.Include(ws => ws.ShiftTiles)
-				.ThenInclude(st => st.EmployeeShifts)
-				.ThenInclude(e => e.Employee)
-				.FirstOrDefaultAsync(ws => ws.Id == id);
 		}
 	}
 }

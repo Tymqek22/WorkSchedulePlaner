@@ -1,6 +1,7 @@
 ﻿using WorkSchedulePlaner.Application.Common.Results;
 using WorkSchedulePlaner.Domain.Common.Errors;
 using WorkSchedulePlaner.Domain.ValueObjects;
+using static WorkSchedulePlaner.Domain.Common.Errors.Errors;
 
 namespace WorkSchedulePlaner.Domain.Entities
 {
@@ -24,12 +25,21 @@ namespace WorkSchedulePlaner.Domain.Entities
 			OwnerId = ownerId;
 		}
 
-		public Result AddEmployee(string firstName,string lastName,int scheduleId,string? userId,string? position)
+		public Result AddEmployee(
+			string firstName,
+			string lastName,
+			int scheduleId,
+			string? position,
+			string? email,
+			string? userId)
 		{
 			if (_employees.Any(e => e.FirstName == firstName && e.LastName == lastName))
 				return Result.Failure(Errors.Schedule.EmployeeAlreadyExist);
 
-			_employees.Add(new Employee(firstName,lastName,scheduleId,position,userId));
+			var employeeToAdd = new Employee(firstName,lastName,scheduleId,position);
+			employeeToAdd.LinkEmployeeWithUser(email,userId);
+
+			_employees.Add(employeeToAdd);
 
 			return Result.Success();
 		}
@@ -46,17 +56,24 @@ namespace WorkSchedulePlaner.Domain.Entities
 			return Result.Success();
 		}
 
-		public Result UpdateEmployee(int employeeId, string firstName, string lastName, string? position)
+		public Result UpdateEmployee(
+			int employeeId, 
+			string firstName, 
+			string lastName, 
+			string? position,
+			string? email,
+			string? userId)
 		{
 			var employee = _employees.FirstOrDefault(e => e.Id == employeeId);
 
 			if (employee is null)
 				return Result.Failure(Errors.Schedule.EmployeeNotFound);
 
-			var result = employee.UpdateDetails(firstName,lastName,position);
+			var updateResult = employee.UpdateDetails(firstName,lastName,position);
+			employee.LinkEmployeeWithUser(email,userId);
 
-			if (!result.IsSuccess)
-				return result;
+			if (!updateResult.IsSuccess)
+				return updateResult;
 
 			return Result.Success();
 		}
