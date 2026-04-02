@@ -15,6 +15,7 @@ using WorkSchedulePlaner.Application.Features.Schedules.Queries.GetUserSchedules
 using WorkSchedulePlaner.Domain.Entities;
 using WorkSchedulePlaner.Infrastructure.Identity.Models;
 using WorkSchedulePlaner.Web.Models;
+using WorkSchedulePlaner.Web.Requests;
 using WorkSchedulePlaner.Web.ViewModels;
 
 namespace WorkSchedulePlaner.Web.Controllers
@@ -93,7 +94,7 @@ namespace WorkSchedulePlaner.Web.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Create(WorkSchedule schedule)
+		public async Task<IActionResult> Create(WorkScheduleRequest schedule)
 		{
 			var command = new CreateScheduleCommand(schedule.Title,schedule.OwnerId);
 
@@ -141,7 +142,7 @@ namespace WorkSchedulePlaner.Web.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Update(WorkSchedule schedule)
+		public async Task<IActionResult> Update(WorkScheduleDto schedule)
 		{
 			var command = new UpdateScheduleCommand(schedule.Id,schedule.Title);
 
