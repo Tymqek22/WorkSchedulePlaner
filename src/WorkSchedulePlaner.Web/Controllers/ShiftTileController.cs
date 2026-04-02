@@ -108,7 +108,7 @@ namespace WorkSchedulePlaner.Web.Controllers
 
 		public async Task<IActionResult> Delete(int tileId, int scheduleId)
 		{
-			var command = new DeleteShiftCommand(tileId);
+			var command = new DeleteShiftCommand(scheduleId,tileId);
 
 			var result = await _commandDispatcher.Dispatch<DeleteShiftCommand,Result>(command);
 

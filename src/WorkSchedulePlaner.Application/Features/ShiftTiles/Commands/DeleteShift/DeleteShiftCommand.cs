@@ -3,6 +3,6 @@ using WorkSchedulePlaner.Application.Common.Results;
 
 namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.DeleteShift
 {
-	public record DeleteShiftCommand(int Id)
+	public record DeleteShiftCommand(int scheduleId,int shiftId)
 		: ICommand<Result>;
 }

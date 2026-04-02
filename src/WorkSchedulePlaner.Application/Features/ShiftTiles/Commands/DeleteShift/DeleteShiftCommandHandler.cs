@@ -23,12 +23,12 @@ namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.DeleteShif
 			DeleteShiftCommand command,
 			CancellationToken cancellationToken = default)
 		{
-			var shiftTile = await _workScheduleRepository.GetByIdAsync(command.Id);
+			var schedule = await _workScheduleRepository.GetByIdWithDetailsAsync(command.scheduleId);
 
-			if (shiftTile is null)
-				return Result.Failure(Errors.ShiftTile.NotFound);
+			if (schedule is null)
+				return Result.Failure(Errors.Schedule.NotFound);
 
-			var result = shiftTile.DeleteShift(shiftTile.Id);
+			var result = schedule.DeleteShift(command.shiftId);
 
 			if (!result.IsSuccess)
 				return result;
