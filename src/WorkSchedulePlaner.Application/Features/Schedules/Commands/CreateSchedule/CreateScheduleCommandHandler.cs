@@ -2,23 +2,21 @@
 using WorkSchedulePlaner.Application.Abstractions.Repository;
 using WorkSchedulePlaner.Application.Common.Results;
 using WorkSchedulePlaner.Domain.Entities;
+using WorkSchedulePlaner.Domain.Repositories;
 
 namespace WorkSchedulePlaner.Application.Features.Schedules.Commands.CreateSchedule
 {
 	public class CreateScheduleCommandHandler
 		: ICommandHandler<CreateScheduleCommand,Result>
 	{
-		private readonly IWorkScheduleRepository _scheduleRepository;
-		private readonly IRepository<ScheduleUser> _scheduleUserRepository;
+		private readonly IWorkScheduleRepository _workScheduleRepository;
 		private readonly IUnitOfWork _unitOfWork;
 
 		public CreateScheduleCommandHandler(
-			IWorkScheduleRepository scheduleRepository,
-			IRepository<ScheduleUser> scheduleUserRepository,
+			IWorkScheduleRepository workScheduleRepository,
 			IUnitOfWork unitOfWork)
 		{
-			_scheduleRepository = scheduleRepository;
-			_scheduleUserRepository = scheduleUserRepository;
+			_workScheduleRepository = workScheduleRepository;
 			_unitOfWork = unitOfWork;
 		}
 
@@ -26,21 +24,9 @@ namespace WorkSchedulePlaner.Application.Features.Schedules.Commands.CreateSched
 			CreateScheduleCommand command,
 			CancellationToken cancellationToken = default)
 		{
-			var newSchedule = new WorkSchedule
-			{
-				Title = command.Title,
-				OwnerId = command.OwnerId
-			};
+			var newSchedule = new WorkSchedule(command.Title,command.OwnerId);
 
-			var scheduleUserRole = new ScheduleUser
-			{
-				Schedule = newSchedule,
-				UserId = command.OwnerId,
-				Role = "admin"
-			};
-
-			await _scheduleRepository.InsertAsync(newSchedule);
-			await _scheduleUserRepository.InsertAsync(scheduleUserRole);
+			await _workScheduleRepository.InsertAsync(newSchedule);
 			await _unitOfWork.SaveAsync();
 
 			return Result.Success();

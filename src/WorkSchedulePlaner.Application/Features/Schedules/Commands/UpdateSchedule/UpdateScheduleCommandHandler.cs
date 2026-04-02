@@ -1,8 +1,8 @@
 ﻿using WorkSchedulePlaner.Application.Abstractions.Messaging;
 using WorkSchedulePlaner.Application.Abstractions.Repository;
-using WorkSchedulePlaner.Application.Common.Errors;
 using WorkSchedulePlaner.Application.Common.Results;
-using WorkSchedulePlaner.Domain.Entities;
+using WorkSchedulePlaner.Domain.Common.Errors;
+using WorkSchedulePlaner.Domain.Repositories;
 
 namespace WorkSchedulePlaner.Application.Features.Schedules.Commands.UpdateSchedule
 {
@@ -29,9 +29,11 @@ namespace WorkSchedulePlaner.Application.Features.Schedules.Commands.UpdateSched
 			if (schedule is null)
 				return Result.Failure(Errors.Schedule.NotFound);
 
-			schedule.Title = command.Title;
+			var result = schedule.UpdateTitle(command.Title);
 
-			await _scheduleRepository.UpdateAsync(schedule);
+			if (!result.IsSuccess)
+				return result;
+
 			await _unitOfWork.SaveAsync();
 
 			return Result.Success();

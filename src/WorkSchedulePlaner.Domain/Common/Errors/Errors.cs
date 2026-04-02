@@ -23,6 +23,9 @@
 
 		public static class Schedule
 		{
+			public static readonly Error TitleRequired =
+				new("Schedule.TitleRequired","Schedule title is required.");
+
 			public static readonly Error NotFound =
 				new("Schedule.NotFound","Schedule not found.");
 

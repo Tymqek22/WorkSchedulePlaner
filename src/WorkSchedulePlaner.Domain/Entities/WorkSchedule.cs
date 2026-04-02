@@ -25,6 +25,15 @@ namespace WorkSchedulePlaner.Domain.Entities
 			OwnerId = ownerId;
 		}
 
+		public Result UpdateTitle(string title)
+		{
+			if (!string.IsNullOrWhiteSpace(title))
+				return Result.Failure(Errors.Schedule.TitleRequired);
+
+			Title = title;
+			return Result.Success();
+		}
+
 		public Result AddEmployee(
 			string firstName,
 			string lastName,
