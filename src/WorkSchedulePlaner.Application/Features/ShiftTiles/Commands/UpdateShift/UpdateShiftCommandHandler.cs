@@ -1,29 +1,23 @@
 ﻿using WorkSchedulePlaner.Application.Abstractions.Messaging;
 using WorkSchedulePlaner.Application.Abstractions.Repository;
-using WorkSchedulePlaner.Application.Common.Errors;
 using WorkSchedulePlaner.Application.Common.Results;
 using WorkSchedulePlaner.Application.DTOs;
-using WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.AssignShift;
-using WorkSchedulePlaner.Domain.Entities;
+using WorkSchedulePlaner.Domain.Common.Errors;
+using WorkSchedulePlaner.Domain.Repositories;
+using WorkSchedulePlaner.Domain.ValueObjects;
 
 namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.UpdateShift
 {
 	public class UpdateShiftCommandHandler : ICommandHandler<UpdateShiftCommand,Result>
 	{
-		private readonly IShiftTileRepository _shiftTileRepository;
-		private readonly IRepository<EmployeeShift> _shiftsRepository;
-		private readonly IRepository<Employee> _employeeRepository;
+		private readonly IWorkScheduleRepository _workScheduleRepository;
 		private readonly IUnitOfWork _unitOfWork;
 
 		public UpdateShiftCommandHandler(
-			IShiftTileRepository shiftTileRepository,
-			IRepository<EmployeeShift> shiftsRepository,
-			IRepository<Employee> employeeRepository,
+			IWorkScheduleRepository workScheduleRepository,
 			IUnitOfWork unitOfWork)
 		{
-			_shiftTileRepository = shiftTileRepository;
-			_shiftsRepository = shiftsRepository;
-			_employeeRepository = employeeRepository;
+			_workScheduleRepository = workScheduleRepository;
 			_unitOfWork = unitOfWork;
 		}
 
@@ -31,70 +25,27 @@ namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.UpdateShif
 			UpdateShiftCommand command,
 			CancellationToken cancellationToken = default)
 		{
-			//find tile in db
-			var tile = await _shiftTileRepository.GetByIdAsync(command.ShiftTileId);
+			var schedule = await _workScheduleRepository.GetByIdWithDetailsAsync(command.ScheduleId);
 
-			if (tile is null)
-				return Result.Failure(Errors.ShiftTile.NotFound);
+			if (schedule is null)
+				return Result.Failure(Errors.Schedule.NotFound);
 
-			if (!this.IsAnyEmployeeAssigned(command.EmployeeWorkHours))
-				return Result.Failure(Errors.ShiftTile.NoEmployeesAssigned);
-			else if (this.IsEmployeeDuplicatedOnShift(command.EmployeeWorkHours))
-				return Result.Failure(Errors.ShiftTile.EmployeeDuplicated);
+			var domainAssignments = command.EmployeeWorkHours
+				.Select(wh => new ShiftAssignment(wh.EmployeeId,new TimeRange(wh.StartTime,wh.EndTime)))
+				.ToList();
 
-			foreach (var employeeShift in command.EmployeeWorkHours) {
+			var result = schedule.UpdateShift(
+				command.ShiftTileId,
+				command.Title,
+				command.Description,
+				domainAssignments);
 
-				if (!await this.IsEmployeeAssignedOnce(employeeShift.Employee.Id,tile.Date))
-					return Result.Failure(Errors.ShiftTile.TooManyEmployeeAssignments);
-			}
-
-			//delete employee shifts for that tile
-			await _shiftsRepository.DeleteManyAsync(es => es.ShiftTileId == command.ShiftTileId);
-
-			//add updated shifts for tile
-			foreach (var employeeShift in command.EmployeeWorkHours) {
-
-				var shift = new EmployeeShift
-				{
-					EmployeeId = employeeShift.Employee.Id,
-					ShiftTileId = command.ShiftTileId,
-					StartTime = employeeShift.StartTime,
-					EndTime = employeeShift.EndTime
-				};
-
-				await _shiftsRepository.InsertAsync(shift);
-			}
-
-			//update rest of tile
-			tile.Title = command.Title;
-			tile.Description = command.Description;
+			if (!result.IsSuccess)
+				return result;
 
 			await _unitOfWork.SaveAsync();
 
 			return Result.Success();
-		}
-
-		private async Task<bool> IsEmployeeAssignedOnce(int employeeId,DateTime date)
-		{
-			var shiftTilesFromToday = await _shiftTileRepository.GetShiftTilesFromPeriod(date,date);
-
-			if (shiftTilesFromToday.Any(st => st.EmployeeShifts.Any(es => es.EmployeeId == employeeId)))
-				return false;
-
-			return true;
-		}
-
-		private bool IsAnyEmployeeAssigned(List<EmployeeWorkHoursDto> employeeShifts)
-		{
-			return employeeShifts is not null;
-		}
-
-		private bool IsEmployeeDuplicatedOnShift(List<EmployeeWorkHoursDto> employeeShifts)
-		{
-			return employeeShifts
-				.GroupBy(es => es.Employee)
-				.Select(e => e.Count())
-				.Any(c => c > 1);
 		}
 	}
 }

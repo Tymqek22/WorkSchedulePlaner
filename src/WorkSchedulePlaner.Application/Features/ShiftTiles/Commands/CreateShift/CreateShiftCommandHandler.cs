@@ -33,7 +33,7 @@ namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.AssignShif
 				.Select(wh => new ShiftAssignment(wh.EmployeeId,new TimeRange(wh.StartTime,wh.EndTime)))
 				.ToList();
 
-			var result = await schedule.CreateShift(command.Title,command.Description,domainAssignments);
+			var result = schedule.CreateShift(command.Title,command.Description,domainAssignments);
 
 			if (!result.IsSuccess)
 				return result;

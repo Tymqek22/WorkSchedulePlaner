@@ -116,7 +116,7 @@ namespace WorkSchedulePlaner.Domain.Entities
 			return Result.Success();
 		}
 
-		public async Task<Result> UpdateShift(
+		public Result UpdateShift(
 			int shiftTileId,
 			string title,
 			string? description,

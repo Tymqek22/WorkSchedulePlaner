@@ -8,6 +8,7 @@ namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.UpdateShif
 		int ShiftTileId,
 		string Title,
 		string? Description,
-		List<EmployeeWorkHoursDto> EmployeeWorkHours)
+		List<EmployeeWorkHoursDto> EmployeeWorkHours,
+		int ScheduleId)
 		: ICommand<Result>;
 }
