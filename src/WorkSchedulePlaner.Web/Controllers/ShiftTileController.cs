@@ -9,7 +9,9 @@ using WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.AssignShift;
 using WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.DeleteShift;
 using WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.UpdateShift;
 using WorkSchedulePlaner.Application.Features.ShiftTiles.Queries.GetTileById;
+using WorkSchedulePlaner.Web.Mappers;
 using WorkSchedulePlaner.Web.Models;
+using WorkSchedulePlaner.Web.ViewModels;
 
 namespace WorkSchedulePlaner.Web.Controllers
 {
@@ -41,13 +43,13 @@ namespace WorkSchedulePlaner.Web.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Create(int scheduleId,ShiftTileDto viewModel)
+		public async Task<IActionResult> Create(int scheduleId,ShiftTileDto dto)
 		{
 			var command = new CreateShiftCommand(
-				viewModel.Title,
-				viewModel.Description,
-				viewModel.Date,
-				viewModel.Shifts,
+				dto.Title,
+				dto.Description,
+				dto.Date,
+				dto.Shifts,
 				scheduleId);
 
 			var result = await _commandDispatcher.Dispatch<CreateShiftCommand,Result>((CreateShiftCommand)command);
@@ -70,25 +72,25 @@ namespace WorkSchedulePlaner.Web.Controllers
 			var query1 = new GetTileByIdQuery(scheduleId,tileId);
 			var shiftTile = await _queryDispatcher.Dispatch<GetTileByIdQuery,ShiftTileDto>(query1);
 
-			ViewBag.ScheduleId = scheduleId;
-
 			var query2 = new GetFromScheduleQuery(scheduleId);
 			var employees = await _queryDispatcher.Dispatch<GetFromScheduleQuery,List<EmployeeDto>>(query2);
 			ViewBag.Employees = new SelectList(employees,"Id","Name");
 
-			return View(shiftTile);
+			var viewModel = ShiftTileMapper.MapToVM(shiftTile,scheduleId);
+
+			return View(viewModel);
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Update(int scheduleId,ShiftTileDto viewModel)
+		public async Task<IActionResult> Update(int scheduleId,ShiftTileDto dto)
 		{
 			ViewBag.ScheduleId = scheduleId;
 
 			var command = new UpdateShiftCommand(
-				viewModel.Id,
-				viewModel.Title,
-				viewModel.Description,
-				viewModel.Shifts,
+				dto.Id,
+				dto.Title,
+				dto.Description,
+				dto.Shifts,
 				scheduleId);
 
 			var result = await _commandDispatcher.Dispatch<UpdateShiftCommand,Result>(command);

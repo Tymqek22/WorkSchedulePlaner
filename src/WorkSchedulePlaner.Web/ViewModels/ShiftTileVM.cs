@@ -9,5 +9,6 @@ namespace WorkSchedulePlaner.Web.ViewModels
 		public string? Description { get; set; }
 		public DateOnly Date { get; set; }
 		public List<AssignmentVM> Assignments { get; set; }
+		public int ScheduleId { get; set; }
 	}
 }
