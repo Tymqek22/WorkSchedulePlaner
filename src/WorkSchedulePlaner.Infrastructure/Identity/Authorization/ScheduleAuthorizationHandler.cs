@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using WorkSchedulePlaner.Application.Abstractions.Messaging;
+using WorkSchedulePlaner.Application.Common;
 using WorkSchedulePlaner.Application.Features.Employees.Queries.GetUserRoleInSchedule;
-using WorkSchedulePlaner.Infrastructure.Common.Authorization;
 
 namespace WorkSchedulePlaner.Infrastructure.Identity.Authorization
 {

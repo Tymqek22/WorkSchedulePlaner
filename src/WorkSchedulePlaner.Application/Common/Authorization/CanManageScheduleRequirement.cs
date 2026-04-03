@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace WorkSchedulePlaner.Infrastructure.Common.Authorization
+namespace WorkSchedulePlaner.Application.Common
 {
 	public class CanManageScheduleRequirement : IAuthorizationRequirement {}
 }
