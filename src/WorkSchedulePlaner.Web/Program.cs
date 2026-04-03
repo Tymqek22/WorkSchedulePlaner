@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WorkSchedulePlaner.Application.Abstractions.Messaging;
@@ -22,7 +23,9 @@ using WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.DeleteShift;
 using WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.UpdateShift;
 using WorkSchedulePlaner.Application.Features.ShiftTiles.Queries.GetTileById;
 using WorkSchedulePlaner.Domain.Repositories;
+using WorkSchedulePlaner.Infrastructure.Common.Authorization;
 using WorkSchedulePlaner.Infrastructure.Dispatching;
+using WorkSchedulePlaner.Infrastructure.Identity.Authorization;
 using WorkSchedulePlaner.Infrastructure.Identity.DbInitializer;
 using WorkSchedulePlaner.Infrastructure.Identity.Models;
 using WorkSchedulePlaner.Infrastructure.Identity.Services;
@@ -42,6 +45,14 @@ options.SignIn.RequireConfirmedAccount = false)
     .AddDefaultUI()
 	.AddDefaultTokenProviders();
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("ScheduleAdminPolicy",policy =>
+        policy.Requirements.Add(new CanManageScheduleRequirement()));
+});
+
+builder.Services.AddScoped<IAuthorizationHandler,ScheduleAuthorizationHandler>();
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
@@ -49,7 +60,6 @@ builder.Services.AddRazorPages();
 builder.Services.AddScoped<IWorkScheduleRepository,WorkScheduleRepository>();
 builder.Services.AddScoped<IShiftTileRepository,ShiftTileRepository>();
 builder.Services.AddScoped<IEmployeeRepository,EmployeeRepository>();
-
 builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
 
 builder.Services.AddScoped<ICommandHandler<AddEmployeeCommand,Result>,AddEmployeeCommandHandler>();
