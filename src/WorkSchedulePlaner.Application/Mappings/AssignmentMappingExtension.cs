@@ -6,11 +6,12 @@ namespace WorkSchedulePlaner.Application.Mappings
 {
 	public static class AssignmentMappingExtension
 	{
-		public static EmployeeWorkHoursDto MapToDto(this Assignment employeeShift)
+		public static AssignmentDto MapToDto(this Assignment employeeShift)
 		{
-			return new EmployeeWorkHoursDto
+			return new AssignmentDto
 			{
 				EmployeeId = employeeShift.EmployeeId,
+				DisplayName = employeeShift.DisplayName,
 				StartTime = employeeShift.TimeRange.Start,
 				EndTime = employeeShift.TimeRange.End
 			};

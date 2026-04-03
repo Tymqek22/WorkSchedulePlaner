@@ -8,7 +8,7 @@ namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.AssignShif
 		string Title,
 		string? Description,
 		DateOnly Date,
-		List<EmployeeWorkHoursDto> EmployeeWorkHours,
+		List<AssignmentDto> EmployeeAssignments,
 		int ScheduleId)
 		: ICommand<Result>;
 }

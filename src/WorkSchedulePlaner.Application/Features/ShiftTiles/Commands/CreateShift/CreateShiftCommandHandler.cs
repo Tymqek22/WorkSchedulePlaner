@@ -29,11 +29,11 @@ namespace WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.AssignShif
 			if (schedule is null)
 				return Result.Failure(Errors.Schedule.NotFound);
 
-			if (command.EmployeeWorkHours is null)
+			if (command.EmployeeAssignments is null)
 				return Result.Failure(Errors.ShiftTile.NoEmployeesAssigned);
 
-			var domainAssignments = command.EmployeeWorkHours
-				.Select(wh => new ShiftAssignment(wh.EmployeeId,new TimeRange(wh.StartTime,wh.EndTime)))
+			var domainAssignments = command.EmployeeAssignments
+				.Select(a => new ShiftAssignment(a.EmployeeId,new TimeRange(a.StartTime,a.EndTime)))
 				.ToList();
 
 			var result = schedule.CreateShift(command.Title,command.Description,command.Date,domainAssignments);
