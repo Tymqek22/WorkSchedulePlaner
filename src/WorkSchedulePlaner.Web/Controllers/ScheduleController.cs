@@ -1,19 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
+using System.Security.Claims;
 using WorkSchedulePlaner.Application.Abstractions.Messaging;
 using WorkSchedulePlaner.Application.Common.Results;
 using WorkSchedulePlaner.Application.DTOs;
-using WorkSchedulePlaner.Application.Features.Employees.Queries.GetUserRoleInSchedule;
 using WorkSchedulePlaner.Application.Features.Schedules.Commands.CreateSchedule;
 using WorkSchedulePlaner.Application.Features.Schedules.Commands.DeleteSchedule;
 using WorkSchedulePlaner.Application.Features.Schedules.Commands.UpdateSchedule;
 using WorkSchedulePlaner.Application.Features.Schedules.Queries.GetScheduleById;
 using WorkSchedulePlaner.Application.Features.Schedules.Queries.GetScheduleDetailsFromPeriod;
 using WorkSchedulePlaner.Application.Features.Schedules.Queries.GetUserSchedules;
-using WorkSchedulePlaner.Domain.Entities;
-using WorkSchedulePlaner.Infrastructure.Identity.Models;
+using WorkSchedulePlaner.Web.Mappers;
 using WorkSchedulePlaner.Web.Models;
 using WorkSchedulePlaner.Web.Requests;
 using WorkSchedulePlaner.Web.ViewModels;
@@ -25,23 +23,23 @@ namespace WorkSchedulePlaner.Web.Controllers
 	{
 		private readonly ICommandDispatcher _commandDispatcher;
 		private readonly IQueryDispatcher _queryDispatcher;
-		private readonly UserManager<ApplicationUser> _userManager;
+		private readonly IAuthorizationService _authorizationService;
 
 		public ScheduleController( 
 			ICommandDispatcher commandDispatcher,
 			IQueryDispatcher queryDispatcher,
-			UserManager<ApplicationUser> userManager)
+			IAuthorizationService authorizationService)
 		{
 			_commandDispatcher = commandDispatcher;
 			_queryDispatcher = queryDispatcher;
-			_userManager = userManager;
+			_authorizationService = authorizationService;
 		}
+
+		private string UserId => User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
 		public async Task<IActionResult> Index()
 		{
-			var userId = _userManager.GetUserId(User);
-
-			var query1 = new GetUserSchedulesQuery(userId);
+			var query1 = new GetUserSchedulesQuery(UserId);
 
 			var schedules = await _queryDispatcher.Dispatch<GetUserSchedulesQuery,List<WorkScheduleDto>>(query1);
 
@@ -55,8 +53,6 @@ namespace WorkSchedulePlaner.Web.Controllers
 				(int)DateTime.Today.DayOfWeek)
 				.AddDays(7 * weekOffset);
 
-			ViewBag.WeekOffset = weekOffset;
-
 			var dates = Enumerable
 				.Range(0,7)
 				.Select(i => startDay.AddDays(i))
@@ -68,22 +64,13 @@ namespace WorkSchedulePlaner.Web.Controllers
 				DateOnly.FromDateTime(dates[6]));
 			var schedule = await _queryDispatcher.Dispatch<GetScheduleDetailsFromPeriodQuery,WorkScheduleDto>(query1);
 
-			var userId = _userManager.GetUserId(User);
+			var authResult = await _authorizationService.AuthorizeAsync(User,id,"ScheduleAdminPolicy");
 
-			var query3 = new GetUserRoleInScheduleQuery(userId,id);
-			var result = await _queryDispatcher.Dispatch<GetUserRoleInScheduleQuery,string>(query3);
-			bool admin;
-			if (result == "admin")
-				admin = true;
-			else
-				admin = false;
-
-			var viewModel = new ScheduleDetailsVM
-			{
-				Schedule = schedule,
-				Dates = dates.Select(d => DateOnly.FromDateTime(d)).ToList(),
-				IsCurrentUserAdmin = admin
-			};
+			var viewModel = ScheduleDetailsMapper.MapToVM(
+				schedule,
+				dates,
+				authResult.Succeeded,
+				weekOffset);
 
 			return View(viewModel);
 		}
