@@ -11,6 +11,7 @@ using WorkSchedulePlaner.Application.Features.Schedules.Commands.UpdateSchedule;
 using WorkSchedulePlaner.Application.Features.Schedules.Queries.GetScheduleById;
 using WorkSchedulePlaner.Application.Features.Schedules.Queries.GetScheduleDetailsFromPeriod;
 using WorkSchedulePlaner.Application.Features.Schedules.Queries.GetUserSchedules;
+using WorkSchedulePlaner.Web.Helpers;
 using WorkSchedulePlaner.Web.Mappers;
 using WorkSchedulePlaner.Web.Models;
 using WorkSchedulePlaner.Web.Requests;
@@ -48,21 +49,14 @@ namespace WorkSchedulePlaner.Web.Controllers
 
 		public async Task<IActionResult> Details(int id, int weekOffset = 0)
 		{
-			DateTime startDay = DateTime.Today.AddDays(
-				(int)CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek -
-				(int)DateTime.Today.DayOfWeek)
-				.AddDays(7 * weekOffset);
+			var dates = DateHelper.GetWeekDates(weekOffset);
 
-			var dates = Enumerable
-				.Range(0,7)
-				.Select(i => startDay.AddDays(i))
-				.ToList();
-
-			var query1 = new GetScheduleDetailsFromPeriodQuery(
+			var query = new GetScheduleDetailsFromPeriodQuery(
 				id,
-				DateOnly.FromDateTime(dates[0]),
-				DateOnly.FromDateTime(dates[6]));
-			var schedule = await _queryDispatcher.Dispatch<GetScheduleDetailsFromPeriodQuery,WorkScheduleDto>(query1);
+				DateOnly.FromDateTime(dates.First()),
+				DateOnly.FromDateTime(dates.Last()));
+
+			var schedule = await _queryDispatcher.Dispatch<GetScheduleDetailsFromPeriodQuery,WorkScheduleDto>(query);
 
 			var authResult = await _authorizationService.AuthorizeAsync(User,id,"ScheduleAdminPolicy");
 
