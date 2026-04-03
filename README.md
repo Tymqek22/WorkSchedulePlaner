@@ -1,6 +1,6 @@
 # WorkSchedule Planner
 
-A Web application for managing employee work schedules. It allows creating, editing and viewing weekly work plans with a user-friendly interface.
+A web application for managing employee work schedules. It enables creating, editing, and visualizing weekly work plans.
 
 ## Tech Stack
 
@@ -9,28 +9,34 @@ A Web application for managing employee work schedules. It allows creating, edit
 - SQL Server
 - Razor Views
 - Bootstrap
-- JavaScript (UI interactivity)
-- ASP.NET Core Identity (authentication & authorization)
+- ASP.NET Core Identity (cookie-based authentication & authorization)
 
 ## Features
 
-- Create and edit weekly work schedules
+- Create and manage weekly work schedules
 - Assign shifts to employees
 - Interactive tile-based weekly view with expandable shift details
-- Multiple user roles (admin, employee)
-- Schedule history / archive
+- Resource-based authorization for schedule management
+- Ability to create own user schedules and be a member of other user schedules
 - User registration and login
-- Shift reports generation
 
 ## Architecture
 
-The project follows: 
-- **Clean Architecture** principles with clear separation of concerns  
-- **CQRS** to separate commands (writes) from queries (reads)
-- **Repository** and **Unit of Work** patterns for data access and transactional consistency
-- **Result Pattern** for consistent error handling.  
+The application follows modern backend design principles:
 
-This design makes the application modular, testable, and easy to maintain.
+- **Clean Architecture** – clear separation of domain, application, and infrastructure layers  
+- **CQRS** – separation of read and write operations for better scalability and clarity  
+- **Rich Domain Model** – business logic encapsulated within domain entities (no anemic models)  
+- **Repository & Unit of Work** – abstraction over data access with transactional consistency  
+- **Result Pattern** – unified way of handling operation outcomes and errors  
+
+### Authorization Model
+
+- **Authentication** is handled via **ASP.NET Core Identity** using **cookie-based authentication**
+- **Authorization** consists of:
+  - **Resource-based authorization** for validating access to specific domain objects (e.g., schedules, shifts)
+
+This approach ensures both high-level and fine-grained security across the application.
 
 ## Running locally
 
@@ -39,36 +45,43 @@ This design makes the application modular, testable, and easy to maintain.
    git clone https://github.com/Tymqek22/WorkSchedulePlaner.git
    cd WorkSchedulePlaner
    ```
-2. **Configure the database**
-   Make sure SQL Server is installed
-   Update the connection string in appsettings.json:
-   ```csharp
+
+2. **Configure the database**  
+   Make sure SQL Server is installed and update the connection string in `appsettings.json`:
+
+   ```json
    "ConnectionStrings": {
        "DefaultConnection": "Server=(localdb)\\SQLEXPRESS;Database=WorkScheduleDb;Trusted_Connection=True;TrustServerCertificate=True;"
    }
    ```
+
 3. **Apply migrations**
    ```bash
    dotnet ef database update
    ```
+
 4. **Run the application**
    ```bash
    dotnet run
    ```
+
 5. **Open in browser**
-   ```bash
+   ```
    https://localhost:port
    ```
 
 ## Future Improvements
 
 - Integration with external calendars (e.g., Google Calendar)
-- Email/SMS notifications for employees
+- Email/SMS notifications
 - Mobile-friendly / PWA version
 - Drag & drop shift assignment
 - Public API for external integrations
+- Advanced reporting and analytics
+- Better UI design
 
 ## Author
 
-- Educational project built to practice ASP.NET Core and MVC architecture following with Clean Architecture and CQRS pattern.
-- Author: Tymoteusz Procner
+Educational project focused on building production-quality backend architecture using ASP.NET Core.
+
+**Author:** Tymoteusz Procner
