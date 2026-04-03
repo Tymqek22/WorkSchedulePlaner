@@ -75,10 +75,9 @@ namespace WorkSchedulePlaner.Web.Controllers
 			var query2 = new GetFromScheduleQuery(scheduleId);
 			var employees = await _queryDispatcher.Dispatch<GetFromScheduleQuery,List<EmployeeDto>>(query2);
 			ViewBag.Employees = new SelectList(employees,"Id","Name");
+			ViewBag.ScheduleId = scheduleId;
 
-			var viewModel = ShiftTileMapper.MapToVM(shiftTile,scheduleId);
-
-			return View(viewModel);
+			return View(shiftTile);
 		}
 
 		[HttpPost]
