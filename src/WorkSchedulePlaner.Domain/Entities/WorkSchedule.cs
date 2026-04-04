@@ -1,8 +1,6 @@
-﻿using System.Threading.Tasks;
-using WorkSchedulePlaner.Application.Common.Results;
+﻿using WorkSchedulePlaner.Application.Common.Results;
 using WorkSchedulePlaner.Domain.Common.Errors;
 using WorkSchedulePlaner.Domain.ValueObjects;
-using static WorkSchedulePlaner.Domain.Common.Errors.Errors;
 
 namespace WorkSchedulePlaner.Domain.Entities
 {

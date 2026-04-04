@@ -1,87 +1,16 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using WorkSchedulePlaner.Application.Abstractions.Messaging;
-using WorkSchedulePlaner.Application.Abstractions.Repository;
-using WorkSchedulePlaner.Application.Abstractions.Services;
-using WorkSchedulePlaner.Application.Common;
-using WorkSchedulePlaner.Application.Common.Results;
-using WorkSchedulePlaner.Application.DTOs;
-using WorkSchedulePlaner.Application.Features.Employees.Commands.AddEmployee;
-using WorkSchedulePlaner.Application.Features.Employees.Commands.DeleteEmployee;
-using WorkSchedulePlaner.Application.Features.Employees.Commands.UpdateEmployee;
-using WorkSchedulePlaner.Application.Features.Employees.Queries.GetByIdFromSchedule;
-using WorkSchedulePlaner.Application.Features.Employees.Queries.GetFromSchedule;
-using WorkSchedulePlaner.Application.Features.Employees.Queries.GetUserRoleInSchedule;
-using WorkSchedulePlaner.Application.Features.Schedules.Commands.CreateSchedule;
-using WorkSchedulePlaner.Application.Features.Schedules.Commands.DeleteSchedule;
-using WorkSchedulePlaner.Application.Features.Schedules.Commands.UpdateSchedule;
-using WorkSchedulePlaner.Application.Features.Schedules.Queries.GetScheduleById;
-using WorkSchedulePlaner.Application.Features.Schedules.Queries.GetScheduleDetailsFromPeriod;
-using WorkSchedulePlaner.Application.Features.Schedules.Queries.GetUserSchedules;
-using WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.AssignShift;
-using WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.DeleteShift;
-using WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.UpdateShift;
-using WorkSchedulePlaner.Application.Features.ShiftTiles.Queries.GetTileById;
-using WorkSchedulePlaner.Domain.Repositories;
-using WorkSchedulePlaner.Infrastructure.Dispatching;
-using WorkSchedulePlaner.Infrastructure.Identity.Authorization;
+using WorkSchedulePlaner.Application;
+using WorkSchedulePlaner.Infrastructure;
 using WorkSchedulePlaner.Infrastructure.Identity.DbInitializer;
-using WorkSchedulePlaner.Infrastructure.Identity.Models;
-using WorkSchedulePlaner.Infrastructure.Identity.Services;
-using WorkSchedulePlaner.Infrastructure.Persistence;
-using WorkSchedulePlaner.Infrastructure.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("SchedulePlaner")));
-
-builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
-options.SignIn.RequireConfirmedAccount = false)
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultUI()
-	.AddDefaultTokenProviders();
-
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("ScheduleAdminPolicy",policy =>
-        policy.Requirements.Add(new CanManageScheduleRequirement()));
-});
-
-builder.Services.AddScoped<IAuthorizationHandler,ScheduleAuthorizationHandler>();
+builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddApplication();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
-
-builder.Services.AddScoped<IWorkScheduleRepository,WorkScheduleRepository>();
-builder.Services.AddScoped<IShiftTileRepository,ShiftTileRepository>();
-builder.Services.AddScoped<IEmployeeRepository,EmployeeRepository>();
-builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
-
-builder.Services.AddScoped<ICommandHandler<AddEmployeeCommand,Result>,AddEmployeeCommandHandler>();
-builder.Services.AddScoped<ICommandHandler<UpdateEmployeeCommand,Result>,UpdateEmployeeCommandHandler>();
-builder.Services.AddScoped<ICommandHandler<DeleteEmployeeCommand,Result>,DeleteEmployeeCommandHandler>();
-builder.Services.AddScoped<ICommandHandler<CreateShiftCommand,Result>,AssignShiftCommandHandler>();
-builder.Services.AddScoped<ICommandHandler<DeleteShiftCommand,Result>,DeleteShiftCommandHandler>();
-builder.Services.AddScoped<ICommandHandler<UpdateShiftCommand,Result>,UpdateShiftCommandHandler>();
-builder.Services.AddScoped<ICommandHandler<CreateScheduleCommand,Result>,CreateScheduleCommandHandler>();
-builder.Services.AddScoped<ICommandHandler<UpdateScheduleCommand,Result>,UpdateScheduleCommandHandler>();
-builder.Services.AddScoped<ICommandHandler<DeleteScheduleCommand,Result>,DeleteScheduleCommandHandler>();
-builder.Services.AddScoped<IQueryHandler<GetFromScheduleQuery,List<EmployeeDto>>,GetFromScheduleQueryHandler>();
-builder.Services.AddScoped<IQueryHandler<GetByIdFromScheduleQuery,EmployeeDto>,GetByIdFromScheduleQueryHandler>();
-builder.Services.AddScoped<IQueryHandler<GetScheduleByIdQuery,WorkScheduleDto>,GetScheduleByIdQueryHandler>();
-builder.Services.AddScoped<IQueryHandler<GetScheduleDetailsFromPeriodQuery,WorkScheduleDto>,GetScheduleDetailsFromPeriodQueryHandler>();
-builder.Services.AddScoped<IQueryHandler<GetUserSchedulesQuery,List<WorkScheduleDto>>,GetUserSchedulesQueryHandler>();
-builder.Services.AddScoped<IQueryHandler<GetTileByIdQuery,ShiftTileDto>,GetTileByIdQueryHandler>();
-builder.Services.AddScoped<IQueryHandler<GetUserRoleInScheduleQuery,string>,GetUserRoleInScheduleQueryHandler>();
-builder.Services.AddScoped<ICommandDispatcher,CommandDispatcher>();
-builder.Services.AddScoped<IQueryDispatcher,QueryDispatcher>();
-
-builder.Services.AddScoped<IIdentityService,IdentityService>();
 
 var app = builder.Build();
 
