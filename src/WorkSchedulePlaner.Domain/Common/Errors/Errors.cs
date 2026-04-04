@@ -34,6 +34,9 @@
 
 			public static readonly Error EmployeeNotFound =
 				new("Schedule.EmployeeNotFound","Employee is not a member of this schedule.");
+
+			public static readonly Error EmailAlreadyAssigned =
+				new("Schedule.EmailAlreadyAssigned","Employee with that email exists in schedule.");
 		}
 
 		public static class ShiftTile

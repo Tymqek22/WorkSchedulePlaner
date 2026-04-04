@@ -2,6 +2,7 @@
 using WorkSchedulePlaner.Application.Common.Results;
 using WorkSchedulePlaner.Domain.Common.Errors;
 using WorkSchedulePlaner.Domain.ValueObjects;
+using static WorkSchedulePlaner.Domain.Common.Errors.Errors;
 
 namespace WorkSchedulePlaner.Domain.Entities
 {
@@ -46,6 +47,10 @@ namespace WorkSchedulePlaner.Domain.Entities
 				return Result.Failure(Errors.Schedule.EmployeeAlreadyExist);
 
 			var employeeToAdd = new Employee(firstName,lastName,scheduleId,position);
+
+			if (IsEmailAssignedToEmployee(email,null))
+				return Result.Failure(Errors.Schedule.EmailAlreadyAssigned);
+
 			employeeToAdd.LinkEmployeeWithUser(email,userId);
 
 			_employees.Add(employeeToAdd);
@@ -79,6 +84,10 @@ namespace WorkSchedulePlaner.Domain.Entities
 				return Result.Failure(Errors.Schedule.EmployeeNotFound);
 
 			var updateResult = employee.UpdateDetails(firstName,lastName,position);
+
+			if (IsEmailAssignedToEmployee(email,employeeId))
+				return Result.Failure(Errors.Schedule.EmailAlreadyAssigned);
+
 			employee.LinkEmployeeWithUser(email,userId);
 
 			if (!updateResult.IsSuccess)
@@ -157,5 +166,10 @@ namespace WorkSchedulePlaner.Domain.Entities
 			shiftTile.ModifyDetails(title, description);
 			return Result.Success();
 		}
+
+		private bool IsEmailAssignedToEmployee(string? email, int? employeeId) 
+		{
+			return _employees.Any(e => e.Email == email && e.Id != employeeId);
+		} 
 	}
 }
