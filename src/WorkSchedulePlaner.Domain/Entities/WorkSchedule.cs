@@ -167,7 +167,7 @@ namespace WorkSchedulePlaner.Domain.Entities
 
 		private bool IsEmailAssignedToEmployee(string? email, int? employeeId) 
 		{
-			return _employees.Any(e => e.Email == email && e.Id != employeeId);
+			return _employees.Any(e => e.Email == email && e.Id != employeeId && !string.IsNullOrEmpty(email));
 		} 
 	}
 }

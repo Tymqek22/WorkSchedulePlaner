@@ -34,7 +34,7 @@ namespace WorkSchedulePlaner.Application.Features.Employees.Commands.UpdateEmplo
 				userId = await _identityService.GetUserIdByEmail(command.Email);
 
 				if (userId is null)
-					return Result.Failure(Errors.Employee.NotFound);
+					return Result.Failure(Errors.User.DoesntExist);
 			}
 
 			var schedule = await _workScheduleRepository.GetByIdWithDetailsAsync(command.ScheduleId);
