@@ -1,5 +1,5 @@
-﻿@using WorkSchedulePlaner.Application.DTOs
-@model EmployeeDto
+﻿@using WorkSchedulePlaner.Web.Requests
+@model UpsertEmployeeRequest
 
 <div class="card">
 	<div class="card-header text-center">
@@ -10,10 +10,12 @@
 			<div class="form-floating mb-2">
 				<input class="form-control" id="floatingName" asp-for="Name" />
 				<label for="floatingName" class="ms-2">First Name</label>
+				<span asp-validation-for="Name" class="text-danger"></span>
 			</div>
 			<div class="form-floating mb-2">
 				<input class="form-control" id="floatingLastName" asp-for="LastName" />
 				<label for="floatingLastName" class="ms-2">Last Name</label>
+				<span asp-validation-for="LastName" class="text-danger"></span>
 			</div>
 			<div class="form-floating mb-2">
 				<input class="form-control" id="floatingPosition" asp-for="Position" />
@@ -35,8 +37,8 @@
 					</button>
 				</div>
 				<div class="col-4">
-					<a class="btn btn-danger w-100" asp-controller="Schedule" asp-action="Details"
-					   asp-route-id="@Model.ScheduleId">
+					<a class="btn btn-danger w-100" asp-controller="Employee" asp-action="Employees"
+					   asp-route-scheduleId="@Model.ScheduleId">
 						<i class="bi bi-x-circle"></i>
 						Cancel
 					</a>

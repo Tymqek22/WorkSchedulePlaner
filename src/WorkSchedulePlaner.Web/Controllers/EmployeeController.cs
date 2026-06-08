@@ -9,6 +9,7 @@ using WorkSchedulePlaner.Application.Features.Employees.Commands.UpdateEmployee;
 using WorkSchedulePlaner.Application.Features.Employees.Queries.GetByIdFromSchedule;
 using WorkSchedulePlaner.Application.Features.Employees.Queries.GetFromSchedule;
 using WorkSchedulePlaner.Web.Models;
+using WorkSchedulePlaner.Web.Requests;
 
 namespace WorkSchedulePlaner.Web.Controllers
 {
@@ -36,14 +37,21 @@ namespace WorkSchedulePlaner.Web.Controllers
 
 		public IActionResult Create(int scheduleId)
 		{
-			ViewBag.ScheduleId = scheduleId;
+			var request = new UpsertEmployeeRequest
+			{
+				ScheduleId = scheduleId
+			};
 
-			return View();
+			return View(request);
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Create(EmployeeDto employee)
+		public async Task<IActionResult> Create(UpsertEmployeeRequest employee)
 		{
+			if (!ModelState.IsValid) {
+				return View(employee);
+			}
+
 			var command = new AddEmployeeCommand(
 				employee.Name,
 				employee.LastName,
@@ -72,12 +80,26 @@ namespace WorkSchedulePlaner.Web.Controllers
 
 			var employee = await _queryDispatcher.Dispatch<GetByIdFromScheduleQuery,EmployeeDto>(query);
 
-			return View(employee);
+			var request = new UpsertEmployeeRequest
+			{
+				Id = employee.Id,
+				Name = employee.Name,
+				LastName = employee.LastName,
+				Position = employee.Position,
+				Email = employee.Email,
+				ScheduleId = scheduleId
+			};
+
+			return View(request);
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Update(EmployeeDto employee)
+		public async Task<IActionResult> Update(UpsertEmployeeRequest employee)
 		{
+			if (!ModelState.IsValid) {
+				return View(employee);
+			}
+
 			var command = new UpdateEmployeeCommand(
 				employee.Id,
 				employee.Name,
