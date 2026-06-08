@@ -109,6 +109,9 @@ namespace WorkSchedulePlaner.Domain.Entities
 				if (employee is null)
 					return Result.Failure(Errors.Schedule.EmployeeNotFound);
 
+				if (_shiftTiles.Any(st => st.Date == date && st.Assignments.Any(a => a.EmployeeId == assignment.EmployeeId)))
+					return Result.Failure(Errors.ShiftTile.TooManyEmployeeAssignments);
+
 				string employeeFullName = $"{employee.FirstName} {employee.LastName}";
 
 				var result = newShift.AssignEmployee(assignment.EmployeeId,employeeFullName,assignment.TimeRange);
