@@ -11,6 +11,7 @@ using WorkSchedulePlaner.Application.Features.ShiftTiles.Commands.UpdateShift;
 using WorkSchedulePlaner.Application.Features.ShiftTiles.Queries.GetTileById;
 using WorkSchedulePlaner.Web.Mappers;
 using WorkSchedulePlaner.Web.Models;
+using WorkSchedulePlaner.Web.Requests;
 using WorkSchedulePlaner.Web.ViewModels;
 
 namespace WorkSchedulePlaner.Web.Controllers
@@ -31,28 +32,47 @@ namespace WorkSchedulePlaner.Web.Controllers
 
 		public async Task<IActionResult> Create(DateTime date, int scheduleId)
 		{
-			ViewBag.Date = date.ToString("dd.MM.yyyy");
-			ViewBag.ScheduleId = scheduleId;
+			var employeesList = await GetEmployeesSelectListAsync(scheduleId);
 
-			var query = new GetFromScheduleQuery(scheduleId);
-			var employees = await _queryDispatcher.Dispatch<GetFromScheduleQuery,List<EmployeeDto>>(query);
+			var formattedDate = DateOnly.FromDateTime(date).ToString("dd.MM.yyyy");
 
-			ViewBag.Employees = new SelectList(employees,"Id","Name");
+			var request = new UpsertAssignmentRequest
+			{
+				Date = DateOnly.ParseExact(formattedDate,"dd.MM.yyyy"),
+				ScheduleId = scheduleId,
+				Employees = employeesList
+			};
 
-			return View();
+			return View(request);
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Create(int scheduleId,ShiftTileDto dto)
+		public async Task<IActionResult> Create(UpsertAssignmentRequest request)
 		{
+			int scheduleId = request.ScheduleId;
+
+			if (!ModelState.IsValid) {
+
+				request.Employees = await GetEmployeesSelectListAsync(scheduleId);
+				return View(request);
+			}
+
+			var assignmentDtos = request.Shifts?.Select(s => new AssignmentDto
+			{
+				EmployeeId = s.EmployeeId,
+				StartTime = s.StartTime,
+				EndTime = s.EndTime,
+				DisplayName = string.Empty
+			}).ToList() ?? new List<AssignmentDto>();
+
 			var command = new CreateShiftCommand(
-				dto.Title,
-				dto.Description,
-				dto.Date,
-				dto.Shifts,
+				request.Title!,
+				request.Description,
+				request.Date,
+				assignmentDtos,
 				scheduleId);
 
-			var result = await _commandDispatcher.Dispatch<CreateShiftCommand,Result>((CreateShiftCommand)command);
+			var result = await _commandDispatcher.Dispatch<CreateShiftCommand,Result>(command);
 
 			if (result.IsFailure) {
 
@@ -74,22 +94,47 @@ namespace WorkSchedulePlaner.Web.Controllers
 
 			var query2 = new GetFromScheduleQuery(scheduleId);
 			var employees = await _queryDispatcher.Dispatch<GetFromScheduleQuery,List<EmployeeDto>>(query2);
-			ViewBag.Employees = new SelectList(employees,"Id","Name");
-			ViewBag.ScheduleId = scheduleId;
 
-			return View(shiftTile);
+			var request = new UpsertAssignmentRequest
+			{
+				Id = shiftTile.Id,
+				Title = shiftTile.Title,
+				Description = shiftTile.Description,
+				Shifts = shiftTile.Shifts.Select(st => new AssignmentRequest
+				{
+					EmployeeId = st.EmployeeId,
+					StartTime = st.StartTime,
+					EndTime = st.EndTime
+				}).ToList(),
+				Employees = await GetEmployeesSelectListAsync(scheduleId),
+				ScheduleId = scheduleId
+			};
+
+			return View(request);
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Update(int scheduleId,ShiftTileDto dto)
+		public async Task<IActionResult> Update(int scheduleId,UpsertAssignmentRequest request)
 		{
-			ViewBag.ScheduleId = scheduleId;
+			if (!ModelState.IsValid) {
+
+				request.Employees = await GetEmployeesSelectListAsync(scheduleId);
+				return View(request);
+			}
+
+			var assignmentDtos = request.Shifts?.Select(s => new AssignmentDto
+			{
+				EmployeeId = s.EmployeeId,
+				StartTime = s.StartTime,
+				EndTime = s.EndTime,
+				DisplayName = string.Empty
+			}).ToList() ?? new List<AssignmentDto>();
 
 			var command = new UpdateShiftCommand(
-				dto.Id,
-				dto.Title,
-				dto.Description,
-				dto.Shifts,
+				request.Id,
+				request.Title,
+				request.Description,
+				assignmentDtos,
 				scheduleId);
 
 			var result = await _commandDispatcher.Dispatch<UpdateShiftCommand,Result>(command);
@@ -124,6 +169,20 @@ namespace WorkSchedulePlaner.Web.Controllers
 			}
 
 			return RedirectToAction("Details","Schedule", new { id = scheduleId });
+		}
+
+		private async Task<SelectList> GetEmployeesSelectListAsync(int scheduleId)
+		{
+			var query = new GetFromScheduleQuery(scheduleId);
+			var employees = await _queryDispatcher.Dispatch<GetFromScheduleQuery,List<EmployeeDto>>(query);
+
+			var employeesItems = employees.Select(employee => new SelectListItem
+			{
+				Text = $"{employee.Name} {employee.LastName}",
+				Value = employee.Id.ToString()
+			}).ToList();
+
+			return new SelectList(employeesItems,"Value","Text");
 		}
 	}
 }
