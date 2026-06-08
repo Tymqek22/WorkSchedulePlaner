@@ -75,8 +75,12 @@ namespace WorkSchedulePlaner.Web.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Create(WorkScheduleRequest schedule)
+		public async Task<IActionResult> Create(AddScheduleRequest schedule)
 		{
+			if (!ModelState.IsValid) {
+				return View(schedule);
+			}
+
 			var command = new CreateScheduleCommand(schedule.Title,schedule.OwnerId);
 
 			var result = await _commandDispatcher.Dispatch<CreateScheduleCommand,Result>(command);

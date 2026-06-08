@@ -1,4 +1,4 @@
-﻿@model WorkSchedulePlaner.Web.Requests.WorkScheduleRequest
+﻿@model WorkSchedulePlaner.Web.Requests.AddScheduleRequest
 
 <div class="card">
 	<div class="card-header text-center">
@@ -9,6 +9,7 @@
 			<div class="form-floating py-1 col-12">
 				<input class="form-control" asp-for="Title" />
 				<label for="Title" class="ms-2" >Title</label>
+				<span asp-validation-for="Title" class="text-danger"></span>
 			</div>
 
 			<input type="hidden" asp-for="OwnerId" value="@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value" />
@@ -21,7 +22,7 @@
 					</button>
 				</div>
 				<div class="col-4">
-					<a class="btn btn-danger w-100" asp-controller="Home" asp-action="Index">
+					<a class="btn btn-danger w-100" asp-controller="Schedule" asp-action="Index">
 						<i class="bi bi-x-circle"></i>
 						Cancel
 					</a>
